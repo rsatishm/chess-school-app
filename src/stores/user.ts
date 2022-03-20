@@ -1,6 +1,6 @@
 import * as jsEnv from 'browser-or-node'
 import { observable, action, computed, reaction, makeObservable } from 'mobx'
-import { decode } from 'jwt-simple'
+//import { decode } from 'jwt-simple'
 import axios, { AxiosInstance } from 'axios'
 //import { analysisBoardStore } from './analysis-board-store'
 import { preferencesStore } from './preferences'
@@ -107,7 +107,8 @@ export class UserStore {
     this.refreshToken = refreshToken
 
     try {
-      const payload = decode(this.accessToken, '', true)
+      const payload : any = '';
+      // = decode(this.accessToken, '', true)
       if (payload.exp < +new Date()) {
         this.accessToken = ''
         this.refreshToken = ''

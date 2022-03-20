@@ -172,7 +172,7 @@ const Login = observer(() => {
 
     let isInCustomDomain = () => {
         if (jsEnv.isBrowser) {
-            return !(window.location.hostname.indexOf('chesslang') >= 0)
+            return !(window.location.hostname.indexOf('localhost') >= 0)
         }
 
         return false

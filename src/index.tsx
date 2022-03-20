@@ -6,10 +6,12 @@ import reportWebVitals from './reportWebVitals';
 import { loginStore } from './stores/login';
 import { signupStore } from './stores/signup';
 import { Provider } from 'mobx-react';
+import { userStore } from './stores/user';
 
 const stores = {
   signupStore,
-  loginStore
+  loginStore,
+  userStore
 }
 
 ReactDOM.render(
