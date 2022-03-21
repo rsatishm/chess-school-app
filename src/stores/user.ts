@@ -1,6 +1,6 @@
 import * as jsEnv from 'browser-or-node'
 import { observable, action, computed, reaction, makeObservable } from 'mobx'
-//import { decode } from 'jwt-simple'
+import { decode } from 'jwt-simple'
 import axios, { AxiosInstance } from 'axios'
 //import { analysisBoardStore } from './analysis-board-store'
 import { preferencesStore } from './preferences'
@@ -46,7 +46,7 @@ export class UserStore {
   private analyticsAxiosClient: AxiosInstance | null = null
 
   private apiCoreAxiosClient: AxiosInstance | null = axios.create({
-    baseURL: process.env.API_CORE_URL,
+    baseURL: "http://localhost:8080/",
     timeout: 30 * 1000
   })
 
@@ -56,7 +56,7 @@ export class UserStore {
   })
 
   private apiCoreV3AxiosClient: AxiosInstance | null = axios.create({
-    baseURL: process.env.API_CORE_URL,
+    baseURL: "http://localhost:8080/",
     timeout: 30 * 1000
   })
 
@@ -103,12 +103,14 @@ export class UserStore {
   }
 
   public consumeTokens(accessToken: string, refreshToken: string) {
+    console.log("accesstoken: " + accessToken)  
     this.accessToken = accessToken
     this.refreshToken = refreshToken
 
     try {
-      const payload : any = '';
-      // = decode(this.accessToken, '', true)
+      console.log("decode")
+      const payload : any = decode(this.accessToken, '', true)
+      console.log("after decode: " + payload)
       if (payload.exp < +new Date()) {
         this.accessToken = ''
         this.refreshToken = ''
@@ -133,6 +135,7 @@ export class UserStore {
       this.tokenExpiry = payload.exp
       this.isTournamentOn = payload.user.is_tournament_on
     } catch (e) {
+      console.log("exception " + e)
       // this.complete = false
       // this.error = 'Error decoding the user data'
       this.logout()
@@ -161,13 +164,13 @@ export class UserStore {
       })
 
       this.apiCoreAxiosClient = axios.create({
-        baseURL: process.env.API_CORE_URL,
+        baseURL: "http://localhost:8080/",
         timeout: 30 * 1000,
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })
 
       this.apiCoreV3AxiosClient = axios.create({
-        baseURL: process.env.API_V3_CORE_URL,
+        baseURL: "http://localhost:8080/",
         timeout: 30 * 1000,
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })
@@ -286,6 +289,7 @@ export class UserStore {
   }
 
   getApiCoreAxiosClient() {
+    console.log("get client")
     return this.apiCoreAxiosClient
   }
 
