@@ -99,11 +99,13 @@ const Login = observer(() => {
         console.log('Sending login request')
         
         try {
+            console.log(loginState.formFields.username);
           const response = await userStore
             .getApiCoreAxiosClient()!
             .post('identity/oauth/token', {
-              username: loginState.formFields.username,
-              password: loginState.formFields.password,
+              
+              username: "moorthattilarunkumar@gmail.com",
+              password: "Priya&1985",
               grant_type: 'password',
               client_id: 'default',
               client_secret: 'xyzfgh'

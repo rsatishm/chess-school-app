@@ -47,7 +47,7 @@ export class UserStore {
   private analyticsAxiosClient: AxiosInstance | null = null
 
   private apiCoreAxiosClient: AxiosInstance | null = axios.create({
-    baseURL: "http://localhost:8080/",
+    baseURL: "https://api-core.chesslang.com/api/v2/",
     timeout: 30 * 1000
   })
 
@@ -57,7 +57,7 @@ export class UserStore {
   })
 
   private apiCoreV3AxiosClient: AxiosInstance | null = axios.create({
-    baseURL: "http://localhost:8080/",
+    baseURL: "https://api-core.chesslang.com/api/v2/",
     timeout: 30 * 1000
   })
 
@@ -148,7 +148,7 @@ export class UserStore {
       localStorage.setItem('chesslang-refresh-token', this.refreshToken)
 
       this.axiosClient = axios.create({
-        baseURL: process.env.API_URL,
+        baseURL: "https://api.chesslang.com/",
         timeout: 30 * 1000,
         headers: { 'X-Authorization': `Bearer ${this.accessToken}` }
       })
