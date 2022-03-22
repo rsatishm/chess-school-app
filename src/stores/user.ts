@@ -4,7 +4,8 @@ import { decode } from 'jwt-simple'
 import axios, { AxiosInstance } from 'axios'
 //import { analysisBoardStore } from './analysis-board-store'
 import { preferencesStore } from './preferences'
-import { act } from 'react-dom/test-utils'
+import { useContext } from 'react'
+import { MobXProviderContext } from 'mobx-react'
 
 export interface ChangePasswordArgs {
   currentPassword: string
@@ -132,6 +133,7 @@ export class UserStore {
       if (payload.user.role <= 0) {
         this.role = 'admin'
       }
+      console.log("role: " + payload.user.role);
       this.tokenExpiry = payload.exp
       this.isTournamentOn = payload.user.is_tournament_on
     } catch (e) {
@@ -210,6 +212,7 @@ export class UserStore {
           '/identity/profile/me'
         )
         this.profile = profile.data
+        console.log("Profile loaded " + this.profile.firstname)
         this.profileLoading = false
         preferencesStore!.load()
       } catch (e) {
@@ -304,6 +307,11 @@ export class UserStore {
   get fullName() {
     return this.firstname + ' ' + this.lastname
   }
+}
+
+export const useUserStore = ()=> {
+  const {userStore} = useContext(MobXProviderContext);
+  return userStore;
 }
 
 export const userStore = new UserStore(
