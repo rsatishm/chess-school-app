@@ -124,6 +124,7 @@ export class UserStore {
       this.username = payload.user.username
       this.firstname = payload.user.firstname
       this.lastname = payload.user.lastname
+      console.log("username: " + this.username)
       if (payload.user.role <= 100) {
         this.role = 'student'
       }
@@ -166,13 +167,13 @@ export class UserStore {
       })
 
       this.apiCoreAxiosClient = axios.create({
-        baseURL: "http://localhost:8080/",
+        baseURL: "https://api-core.chesslang.com/api/v2/",
         timeout: 30 * 1000,
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })
 
       this.apiCoreV3AxiosClient = axios.create({
-        baseURL: "http://localhost:8080/",
+        baseURL: "https://api.chesslang.com/",
         timeout: 30 * 1000,
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })
@@ -209,7 +210,7 @@ export class UserStore {
       this.profileLoading = true
       try {
         const profile = await this.getApiCoreAxiosClient()!.get(
-          '/identity/profile/me'
+          'identity/profile/me'
         )
         this.profile = profile.data
         console.log("Profile loaded " + this.profile.firstname)

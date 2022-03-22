@@ -99,11 +99,9 @@ const Login = observer(() => {
         console.log('Sending login request')
         
         try {
-            console.log(loginState.formFields.username);
           const response = await userStore
             .getApiCoreAxiosClient()!
-            .post('identity/oauth/token', {
-              
+            .post('identity/oauth/token', {              
               username: "moorthattilarunkumar@gmail.com",
               password: "Priya&1985",
               grant_type: 'password',
@@ -111,6 +109,7 @@ const Login = observer(() => {
               client_secret: 'xyzfgh'
             })
           const { access_token, refresh_token } = response.data
+          console.log("access token: " + access_token)
           if (access_token && refresh_token) {
             userStore.consumeTokens(access_token, refresh_token)
             //this.props.invitationStore.init()
@@ -156,6 +155,7 @@ const Login = observer(() => {
 
     useEffect(() => {
         // send login request
+        console.log("Before login username" + loginState.formFields.username)
         login()
     }, [loginState.formFields]);
 
