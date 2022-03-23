@@ -202,7 +202,7 @@ export class UserStore {
     //analysisBoardStore.reset()
     localStorage.removeItem('chesslang-access-token')
     localStorage.removeItem('chesslang-refresh-token')
-    this.constructor()
+    //this.constructor()
   }
 
   async loadProfile(reload = false) {

@@ -96,14 +96,13 @@ const Login = observer(() => {
       }
 
     const login = async () => {
-        console.log('Sending login request')
-        
         try {
+          console.log("Call login api for " + loginState.formFields.username)  
           const response = await userStore
             .getApiCoreAxiosClient()!
             .post('identity/oauth/token', {              
-              username: "moorthattilarunkumar@gmail.com",
-              password: "Priya&1985",
+              username: loginState.formFields.username,
+              password: loginState.formFields.password,
               grant_type: 'password',
               client_id: 'default',
               client_secret: 'xyzfgh'
@@ -141,8 +140,9 @@ const Login = observer(() => {
         }        
     }
 
-    let handleSubmit = (e: any) => {
-        form.validateFields().then((values: any) => {
+    let handleSubmit = (v : any) => {
+        form.validateFields().then((values) => {
+            console.log(values)
             console.log("Copy form fields into state");
             setLoginState((prevState) => {
                 return {
@@ -156,12 +156,13 @@ const Login = observer(() => {
 
     useEffect(() => {
         // send login request
-        console.log("Login details changed, lets try login" + loginState.formFields.username)
+        console.log("Login details changed, lets try login for " + loginState.formFields.username)
         login()
     }, [loginState.formFields]);
 
     useEffect(() => {
         if (loginStore.complete === true) {
+            console.log("login is comlete so redirect to app")
             navigate('/app')
         }
         document
@@ -211,12 +212,13 @@ const Login = observer(() => {
                     </Col>
                     <Col md={12} xs={24}>
                         <Form form={form} className="login-form" onFinish={handleSubmit}>
-                            {loginStore.error && (
+							{loginStore.error && (
                                 <p className="error-message">
                                     {loginStore.error}
                                 </p>
-                            )}
+                            )}                            
                             <Form.Item
+                                name="username"
                                 label="Username or Email"
                                 rules={[
                                     {
@@ -234,6 +236,7 @@ const Login = observer(() => {
                                 }
                             </Form.Item>
                             <Form.Item
+                            name="password"
                                 label="Password"
                                 rules={[
                                     {
