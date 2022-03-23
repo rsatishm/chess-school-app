@@ -147,6 +147,7 @@ const Login = observer(() => {
             setLoginState((prevState) => {
                 return {
                     ...prevState,
+                    confirmDirty: !prevState.confirmDirty,
                     formFields: { ...values }
                 }
             });
@@ -155,9 +156,11 @@ const Login = observer(() => {
     };
 
     useEffect(() => {
+        if (loginState.confirmDirty) {
         // send login request
         console.log("Login details changed, lets try login for " + loginState.formFields.username)
         login()
+        }
     }, [loginState.formFields]);
 
     useEffect(() => {
