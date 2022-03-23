@@ -114,7 +114,7 @@ const Login = observer(() => {
             //this.props.invitationStore.init()
             //this.props.liveGameStore.init()
             navigate('/app')
-            refresh()
+            //refresh()
           } else {
             throw new Error('Server Error')
           }
