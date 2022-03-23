@@ -143,6 +143,7 @@ const Login = observer(() => {
 
     let handleSubmit = (e: any) => {
         form.validateFields().then((values: any) => {
+            console.log("Copy form fields into state");
             setLoginState((prevState) => {
                 return {
                     ...prevState,
@@ -155,7 +156,7 @@ const Login = observer(() => {
 
     useEffect(() => {
         // send login request
-        console.log("Before login username" + loginState.formFields.username)
+        console.log("Login details changed, lets try login" + loginState.formFields.username)
         login()
     }, [loginState.formFields]);
 

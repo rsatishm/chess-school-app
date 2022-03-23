@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Layout, Form, Input, Button, Radio, DatePicker } from 'antd'
-import Icon from '@ant-design/icons';
+import Icon, { CheckCircleOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react'
 
 import './signup.less'
@@ -59,7 +59,7 @@ export const Signup = observer(() => {
           <div className="wrapper">
             <h1 className="title">Sign Up</h1>
             <div className="message-box">
-              <Icon className="check-icon" type="check-circle-o" />
+              <CheckCircleOutlined className='check-icon'/>
               <h3>Congrats!</h3>
               <h3>Check your inbox for further instructions</h3>
             </div>

@@ -49,6 +49,7 @@ export const Dashboard = observer(() => {
   const handleLogout = () => {
     setTimeout(() => {
       userStore!.logout()
+      console.log("Logged out, now navigate to login")
       navigate('/login')
     }, 300)
   }
@@ -56,7 +57,7 @@ export const Dashboard = observer(() => {
   const confirmLogout = () => {
     Modal.confirm({
       title: 'Are you sure you want to logout?',
-      icon: 'logout',
+      icon: <LogoutOutlined/>,
       okType: 'danger',
       onOk: () => handleLogout(),
       onCancel: () => {

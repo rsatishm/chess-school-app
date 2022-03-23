@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Layout, Button } from 'antd'
-import Icon from '@ant-design/icons';
+import Icon, { ExceptionOutlined } from '@ant-design/icons';
 import { BrowserRouter, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
 import { UserStore } from '../../stores/user'
@@ -28,7 +28,7 @@ export const CoachApp = observer(() => {
         <Layout.Content className="content" style={{ paddingLeft: 0 }}>
           <div className="inner">
             <div className="error-state container">
-              <Icon type="exception" />
+              <ExceptionOutlined/>
               <p className="exception-text">
                 An unexpected error was encountered.
               </p>
