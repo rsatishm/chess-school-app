@@ -11,6 +11,8 @@ import { studentsGroupsStore } from './stores/students-groups';
 import { academyStore } from './stores/academy';
 import { preferencesStore } from './stores/preferences';
 import { BrowserRouter } from 'react-router-dom';
+import { studentAssignmentStore } from './stores/student-assignment';
+import { announcementStore } from './stores/announcements';
 
 const stores = {
   signupStore,
@@ -18,7 +20,9 @@ const stores = {
   userStore,
   studentsGroupsStore,
   academyStore,
-  preferencesStore
+  preferencesStore,
+  studentAssignmentStore,
+  announcementStore
 }
 
 ReactDOM.render(

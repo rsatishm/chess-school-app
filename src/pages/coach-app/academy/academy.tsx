@@ -1,6 +1,6 @@
 import { Layout, Menu } from 'antd'
 import { inject, MobXProviderContext, observer } from 'mobx-react'
-import { Route, useNavigate, useLocation, Routes, Navigate, useMatch } from 'react-router-dom'
+import { Route, useNavigate, useLocation, Routes, Navigate, useMatch, useRoutes, useSearchParams } from 'react-router-dom'
 
 import './academy.less'
 
@@ -22,8 +22,9 @@ export const Academy = observer(()=>{
   const academy = academyStore!.academy
   const navigate = useNavigate();
   const location = useLocation();
-  const match = useMatch(location.pathname);
-  console.log("matchpath: " + match?.pattern.path)
+  const match = useMatch("/*");
+
+  console.log("match on: " + JSON.stringify(match))
   
   useEffect(()=>{
     console.log("Load academies")
@@ -48,8 +49,7 @@ export const Academy = observer(()=>{
   }
 
   const handleMenuClick = (link: string) => () => {
-    console.log("matchpath: " + match?.pattern.path)
-    navigate(match?.pattern.path + link)
+    navigate("/app/academy" + link)
   }
 
   const handleRetry = ()=> {

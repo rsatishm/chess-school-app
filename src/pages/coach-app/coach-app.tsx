@@ -1,11 +1,12 @@
-import * as React from 'react'
 import { Layout, Button } from 'antd'
-import Icon, { ExceptionOutlined } from '@ant-design/icons';
-import { BrowserRouter, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router-dom'
-import { inject, observer } from 'mobx-react'
+import { ExceptionOutlined } from '@ant-design/icons';
+import { Route, Routes } from 'react-router-dom'
+import { observer } from 'mobx-react'
 import { UserStore } from '../../stores/user'
 import { Dashboard } from '../dashboard/dashboard';
 import { Academy } from './academy/academy';
+import { Sidebar } from '../../components/sidebar/sidebar';
+import { useState } from 'react';
 
 interface Props {
   userStore?: UserStore
@@ -16,7 +17,7 @@ interface State {
 }
 
 export const CoachApp = observer(() => {
-  const [state, setState] = React.useState({
+  const [state] = useState({
     hasError: false
   });
   const handleReload = () => {
@@ -95,9 +96,10 @@ export const CoachApp = observer(() => {
     return <h1>TournamentListingWithRouter</h1>
   }
 
-  console.log("In coachApp " + useLocation().pathname)
+  console.log("In coachApp")
   return (
     <Layout className="coach app page">
+      <Sidebar />
       <Routes>
         <Route path="/academy/*" element={<Academy/>} />
         <Route path="/assignment" element={<Assignment/>} />
