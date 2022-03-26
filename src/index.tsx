@@ -7,17 +7,26 @@ import { loginStore } from './stores/login';
 import { signupStore } from './stores/signup';
 import { Provider } from 'mobx-react';
 import { userStore } from './stores/user';
+import { studentsGroupsStore } from './stores/students-groups';
+import { academyStore } from './stores/academy';
+import { preferencesStore } from './stores/preferences';
+import { BrowserRouter } from 'react-router-dom';
 
 const stores = {
   signupStore,
   loginStore,
-  userStore
+  userStore,
+  studentsGroupsStore,
+  academyStore,
+  preferencesStore
 }
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider {...stores}>
+    <BrowserRouter>
       <App />
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

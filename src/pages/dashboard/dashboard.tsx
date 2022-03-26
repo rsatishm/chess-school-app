@@ -32,7 +32,7 @@ export const Dashboard = observer(() => {
 
         document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
       }*/
-  })
+  }, [userStore])
 
   if (userStore!.profileLoading) {
     return (

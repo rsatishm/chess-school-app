@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes, useLocation, useMatch, useNavigate } from
 import { inject, observer } from 'mobx-react'
 import { UserStore } from '../../stores/user'
 import { Dashboard } from '../dashboard/dashboard';
+import { Academy } from './academy/academy';
 
 interface Props {
   userStore?: UserStore
@@ -40,10 +41,6 @@ export const CoachApp = observer(() => {
         </Layout.Content>
       </Layout>
     )
-  }
-
-  function Academy() {
-    return <h1>Academy</h1>
   }
 
   function Assignment() {
@@ -102,7 +99,7 @@ export const CoachApp = observer(() => {
   return (
     <Layout className="coach app page">
       <Routes>
-        <Route path="/academy" element={<Academy/>} />
+        <Route path="/academy/*" element={<Academy/>} />
         <Route path="/assignment" element={<Assignment/>} />
         <Route path="/practice" element={<Practice/>} />
         <Route
@@ -139,7 +136,7 @@ export const CoachApp = observer(() => {
           element={<TournamentListingWithRouter/>}
         />
         <Route
-          path="/"
+          path="/*"
           element={<Dashboard />}
         />
       </Routes>

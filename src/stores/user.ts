@@ -6,6 +6,7 @@ import axios, { AxiosInstance } from 'axios'
 import { preferencesStore } from './preferences'
 import { useContext } from 'react'
 import { MobXProviderContext } from 'mobx-react'
+import { init } from 'ramda'
 
 export interface ChangePasswordArgs {
   currentPassword: string
@@ -62,21 +63,7 @@ export class UserStore {
   })
 
   constructor(initValues: any = {}) {
-    this.uuid = initValues.uuid || ''
-    this.username = initValues.username || ''
-    this.firstname = initValues.firstname || ''
-    this.lastname = initValues.lastname || ''
-    this.role = initValues.role || ''
-
-    this.accessToken = initValues.accessToken || ''
-    this.refreshToken = initValues.refreshToken || ''
-
-    this.accessToken = localStorage.getItem('chesslang-access-token')
-    this.refreshToken = localStorage.getItem('chesslang-refresh-token')
-
-    if (this.accessToken && this.refreshToken) {
-      this.consumeTokens(this.accessToken, this.refreshToken)
-    }
+    this.initStore(initValues)
 
     makeObservable(this, {
       isLoggedIn: observable,
@@ -99,8 +86,27 @@ export class UserStore {
       loadProfile: action.bound,
       changePassword: action.bound,
       resetChangePasswordErrors: action.bound,
+      logout: action.bound,
       fullName: computed
     })
+  }
+
+  initStore(initValues: any = {}) {
+    this.uuid = initValues.uuid || ''
+    this.username = initValues.username || ''
+    this.firstname = initValues.firstname || ''
+    this.lastname = initValues.lastname || ''
+    this.role = initValues.role || ''
+
+    this.accessToken = initValues.accessToken || ''
+    this.refreshToken = initValues.refreshToken || ''
+
+    this.accessToken = localStorage.getItem('chesslang-access-token')
+    this.refreshToken = localStorage.getItem('chesslang-refresh-token')
+
+    if (this.accessToken && this.refreshToken) {
+      this.consumeTokens(this.accessToken, this.refreshToken)
+    }
   }
 
   public consumeTokens(accessToken: string, refreshToken: string) {
@@ -173,7 +179,7 @@ export class UserStore {
       })
 
       this.apiCoreV3AxiosClient = axios.create({
-        baseURL: "https://api.chesslang.com/",
+        baseURL: "https://api-core.chesslang.com/api/v2/",
         timeout: 30 * 1000,
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })
@@ -202,6 +208,7 @@ export class UserStore {
     //analysisBoardStore.reset()
     localStorage.removeItem('chesslang-access-token')
     localStorage.removeItem('chesslang-refresh-token')
+    this.initStore();
     //this.constructor()
   }
 

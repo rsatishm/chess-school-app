@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Layout, Form, Input, Button, Radio, DatePicker } from 'antd'
-import Icon, { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react'
 
 import './signup.less'
@@ -37,7 +37,7 @@ export const Signup = observer(() => {
   }
 
   const handleSubmit = (e: any) => {
-    e.preventDefault();
+    //e.preventDefault();
     form.validateFields().then((values: any) => {
       setState((prevState)=>{
         return {
@@ -47,6 +47,7 @@ export const Signup = observer(() => {
       );
       signup();
     })
+    return false;
   }
 
   const backingFormRef = React.createRef<HTMLFormElement>()
@@ -115,7 +116,7 @@ export const Signup = observer(() => {
           </p>
           <p className="muted-message">All fields are required.</p>
           <form
-            className="hidden-form"
+            className="hi   dden-form"
             ref={backingFormRef}
             action="/signup"
             method="POST"
@@ -150,7 +151,7 @@ export const Signup = observer(() => {
             />
           </form>
           <Form form={form} className="signup-form" onFinish={handleSubmit}>
-            <Form.Item rules={[
+            <Form.Item name="username" rules={[
                   {
                     required: true,
                     message: 'Username is required, no spaces',
@@ -169,7 +170,8 @@ export const Signup = observer(() => {
                 />
               
             </Form.Item>
-            <Form.Item initialValue={signupStore.email}
+            <Form.Item name="email" 
+            initialValue={signupStore.email}
                 rules={ [
                   {
                     required: true,
@@ -187,7 +189,7 @@ export const Signup = observer(() => {
                   autoComplete="email"
                 />
             </Form.Item>
-            <Form.Item
+            <Form.Item name="phoneNumber"
             initialValue={signupStore.phone}
             rules={[
               {
@@ -203,6 +205,7 @@ export const Signup = observer(() => {
                 />
             </Form.Item>
             <Form.Item 
+            name="password"
             initialValue= {signupStore.password}
             rules={ [
               {

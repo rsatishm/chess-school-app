@@ -1,10 +1,8 @@
 
 import { Button, Col, Form, Input, Layout, message, Row } from 'antd';
 import 'antd/dist/antd.css';
-import { Header } from 'antd/lib/layout/layout';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import pawnImage from '../../images/pawn.png'
-import * as React from "react";
 import { observer } from "mobx-react-lite"
 import { LoginStore } from '../../stores/login';
 import { useContext, useEffect, useState } from 'react';
@@ -175,7 +173,7 @@ const Login = observer(() => {
         return () => {
             document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
         }
-    })
+    }, [loginStore.complete])
 
     let isInCustomDomain = () => {
         if (jsEnv.isBrowser) {
