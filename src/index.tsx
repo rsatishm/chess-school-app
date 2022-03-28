@@ -13,6 +13,7 @@ import { preferencesStore } from './stores/preferences';
 import { BrowserRouter } from 'react-router-dom';
 import { studentAssignmentStore } from './stores/student-assignment';
 import { announcementStore } from './stores/announcements';
+import { ratingSystemStore } from './stores/rating-system';
 
 const stores = {
   signupStore,
@@ -22,7 +23,8 @@ const stores = {
   academyStore,
   preferencesStore,
   studentAssignmentStore,
-  announcementStore
+  announcementStore,
+  ratingSystemStore
 }
 
 ReactDOM.render(

@@ -49,6 +49,7 @@
     "jwt-simple": "^0.5.6",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
+    "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.4.5",
     "mobx": "^6.5.0",
     "mobx-react": "^7.3.0",
@@ -83,6 +84,7 @@
     "workbox-webpack-plugin": "^6.4.1"
   },
   "scripts": {
+    "dev-start": "set PORT=8001 && node scripts/start.js",
     "start": "serve-build",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
@@ -106,6 +108,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.180",
     "@types/ramda": "^0.28.1"
   },
   "jest": {

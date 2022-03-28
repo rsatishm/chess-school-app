@@ -9,6 +9,7 @@ import { AcademyStore } from '../../../stores/academy'
 import { StudentsGroupsStore } from '../../../stores/students-groups'
 import { useContext, useEffect } from 'react'
 import { States } from '../../../components/states/states'
+import { Students } from './students/students'
 
 const { Content } = Layout
 
@@ -108,10 +109,6 @@ export const Academy = observer(()=>{
     }
 
     return ''
-  }
-
-  const Students = ()=>{
-    return <h1>Students</h1>
   }
 
   const Groups = ()=>{

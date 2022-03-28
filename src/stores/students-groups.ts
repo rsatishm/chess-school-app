@@ -80,7 +80,7 @@ export class StudentsGroupsStore {
 
         this.loading = false
       } catch (e) {
-        console.log("Error getting students by coach " + e)
+        //console.log("Error getting students by coach " + e)
         this.loading = false
         this.error = 'Error loading students and groups'
         this.students = null
