@@ -146,6 +146,10 @@ export const Academy = observer(()=>{
         path="/"
         element={<Students/>}
       />
+       <Route
+        path="/students"
+        element={<Students/>}
+      />
       <Route
         path="/groups"
         element={<Groups />}
