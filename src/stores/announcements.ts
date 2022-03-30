@@ -57,7 +57,11 @@ export class AnnouncementStore {
   }
 
   async loadAnnouncements() {
-    var settings: any 
+    var settings: any = {data : ()=>{
+      return {
+        lastSeenAnnouncementId: "xyz"
+      }
+    }}
     //TODO
     /*
     settings = await Firebase.firestore()

@@ -7,6 +7,7 @@ import { Dashboard } from '../dashboard/dashboard';
 import { Academy } from './academy/academy';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { useState } from 'react';
+import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
 
 interface Props {
   userStore?: UserStore
@@ -54,10 +55,6 @@ export const CoachApp = observer(() => {
 
   function User() {
     return <h1>User</h1>
-  }
-
-  function AnalysisBoard() {
-    return <h1>AnalysisBoard</h1>
   }
 
   function Blindbot() {

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Chessground as NativeChessground } from 'chessground'
-import { Chess, ShortMove } from 'chess.js'
+import * as _ChessJS from 'chess.js'
 import ReactResizeDetector from 'react-resize-detector'
 import wQ from './assets/images/pieces/merida/wQ.svg'
 import wR from './assets/images/pieces/merida/wR.svg'
@@ -14,6 +14,10 @@ import bN from './assets/images/pieces/merida/bN.svg'
 import blankPiece from './assets/images/pieces/merida/1.svg'
 import { Config } from 'chessground/config'
 import { Api } from 'chessground/api'
+
+
+import './assets/theme.css'
+import './assets/chessground.css'
 
 const PIECE_IMAGES = {
   wq: wQ,
@@ -29,8 +33,8 @@ const PIECE_IMAGES = {
 }
 
 interface Props {
-  height: number
-  width: number
+  height: number | string
+  width: number | string
   onMove: (...args: any) => {}
   fen: string
   orientation: string
@@ -40,7 +44,7 @@ interface Props {
 type PromotionPopupDetails = null | {
   file: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h'
   color: 'w' | 'b'
-  pendingMove: ShortMove
+  pendingMove: _ChessJS.ShortMove
 }
 
 interface State {
@@ -49,8 +53,13 @@ interface State {
   promotionPopupDetails: PromotionPopupDetails
 }
 
-const ChessgroundBoard = (props: Props) => {
-  const boardContainer = React.createRef<HTMLDivElement>() 
+export const ChessgroundBoard = (props: Props) => {
+  console.log(JSON.stringify(props))
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+  const [chess, setChess] = useState(new ChessJS())
+  
+  const boardContainer = useRef(null) 
+  
   let ground : Api
   const [state, setState] = useState({
     size: 0,
@@ -69,11 +78,64 @@ const ChessgroundBoard = (props: Props) => {
     onMove: PropTypes.func
   }
 
+  const buildConfigFromProps = () => {
+    const config: any = { events: {} }
+
+    Object.keys(propTypes).forEach(k => {
+      const v = (props as any)[k]
+      if (v) {
+        const match = k.match(/^on([A-Z]\S*)/)
+        if (k === 'onMove') {
+          config.events['move'] = handleOnMove
+        } else if (match) {
+          config.events[match[1].toLowerCase()] = v
+        } else {
+          config[k] = v
+        }
+      }
+    })
+
+    return config
+  }
+
+  useEffect(() => {
+    console.log("properties: " + JSON.stringify(props))
+    console.log("Create native chessground " + boardContainer.current)
+    ground = NativeChessground(
+      boardContainer.current!,
+      buildConfigFromProps()
+    )
+    return () => {
+      console.log("destroy chessground");
+      ground.destroy()
+    }
+  });
+
+  useEffect(() => {
+    console.log("properties changed: " + JSON.stringify(props))
+    console.log("ground " + ground)
+    ground.set(buildConfigFromProps())
+
+    console.log("redraw chessground " + ground)
+    // Typical usage (don't forget to compare props):
+    ground!.redrawAll()
+  }, [props.height, props, props.width, props.orientation, state.size, state.width])
+
+  useEffect(() => {
+    playSound()
+  }, [props.fen])
+
+  const playSound = () => {
+    var audio = new Audio('https://lichess1.org/assets/sound/standard/Move.ogg')
+    //audio.play()
+  }
+
+
   const getPromotionDetails = (fen: string, from: string, to: string): PromotionPopupDetails => {
-    const pos = new Chess(props.fen)
+    const pos = new ChessJS(props.fen)
     const turn = pos.turn()
 
-    const move = pos.move({ from, to, promotion: 'q' } as ShortMove)
+    const move = pos.move({ from, to, promotion: 'q' } as _ChessJS.ShortMove)
 
     if (move && move.promotion) {
       return { color: turn, file: to.charAt(0) } as PromotionPopupDetails
@@ -119,54 +181,6 @@ const ChessgroundBoard = (props: Props) => {
     })
   }
 
-  const buildConfigFromProps = () => {
-    const config: any = { events: {} }
-
-    Object.keys(propTypes).forEach(k => {
-      const v = (props as any)[k]
-      if (v) {
-        const match = k.match(/^on([A-Z]\S*)/)
-        if (k === 'onMove') {
-          config.events['move'] = handleOnMove
-        } else if (match) {
-          config.events[match[1].toLowerCase()] = v
-        } else {
-          config[k] = v
-        }
-      }
-    })
-
-    return config
-  }
-
-  useEffect(() => {
-    ground = NativeChessground(
-      boardContainer.current!,
-      buildConfigFromProps()
-    )
-    return () => {
-      ground.destroy()
-    }
-  })
-
-  useEffect(() => {
-    ground.set(buildConfigFromProps())
-  }, [props])
-
-  useEffect(() => {
-    // Typical usage (don't forget to compare props):
-    ground!.redrawAll()
-  }, [props.height, props, props.width, props.orientation, state.size, state.width])
-
-  useEffect(() => {
-    playSound()
-  }, [props.fen])
-
-  const playSound = () => {
-    var audio = new Audio('https://lichess1.org/assets/sound/standard/Move.ogg')
-    audio.play()
-  }
-
   const onResize = (width?: number, height?: number) => {
     console.log(width, height)
     setState((prevState: any) => {
@@ -203,6 +217,7 @@ const ChessgroundBoard = (props: Props) => {
 
     if (!state.promotionPopupDetails) return null
     return (
+      
       <div style={OUTER_STYLE} onClick={() => cancelPromotePiece()}>
         {['w', 'b'].map(
           (color:string) =>
@@ -231,7 +246,7 @@ const ChessgroundBoard = (props: Props) => {
       </div>
     )
   }
-
+console.log("board container: " + boardContainer + ", current " + boardContainer.current)
   return (
     <>
       <div
@@ -251,11 +266,6 @@ const ChessgroundBoard = (props: Props) => {
           }}
         />
         {renderPromotionPopup()}
-        <ReactResizeDetector
-          handleWidth
-          handleHeight
-          onResize={onResize}
-        />
       </div>
     </>
   )
