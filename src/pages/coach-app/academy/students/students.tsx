@@ -40,10 +40,7 @@ export const Students = observer(()=>{
   const {studentsGroupsStore, ratingSystemStore, academyStore} = useContext(MobXProviderContext)
   console.log("Students from store")
   console.log(JSON.stringify(studentsGroupsStore!.students))
-  const { composeWith, compose, map, apply, objOf, sortBy, head, toPairs, nth } = R
-  //discarding key uid, we get the value which contains entire student object
-  const studentsFunc = compose(map(nth(1)), toPairs)
-  const students = studentsFunc(studentsGroupsStore!.students)
+  const students =  R.compose(R.map(R.nth(1)), R.toPairs as any)(studentsGroupsStore!.students)
   console.log("After compose")
   console.log(JSON.stringify(students))
 
