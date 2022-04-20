@@ -8,6 +8,8 @@ import { Academy } from './academy/academy';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { useState } from 'react';
 import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
+import { Chessboard } from '../../components/chessboard/Chessboard';
+import {Chess} from '../../components/chessboard/Chess'
 
 interface Props {
   userStore?: UserStore
@@ -78,7 +80,12 @@ export const CoachApp = observer(() => {
   }
 
   function GameArea() {
-    return <h1>GameArea</h1>
+    //const fen = new Chess().fen()
+    const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+    return <><table><tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="NONE" /></td></tr>
+    <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="MOVE" /></td></tr>
+    <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="ARROW" /></td></tr>
+    <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="SQUARE_HIGHLIGHT" /></td></tr></table></>
   }
 
   function CreateTournamentForm() {
