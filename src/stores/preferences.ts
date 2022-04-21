@@ -3,6 +3,8 @@ import * as jsEnv from 'browser-or-node'
 import { observable, action, computed, makeObservable } from 'mobx'
 
 import { userStore } from './user'
+import React from 'react'
+import { MobXProviderContext } from 'mobx-react'
 
 const TWO_MINUTES = 2 * 60 * 1000
 
@@ -130,6 +132,11 @@ export class PreferencesStore {
       0.2
     )
   }
+}
+
+export const usePreferenceStore = ()=> {
+  const {prefStore} = React.useContext(MobXProviderContext);
+  return prefStore;
 }
 
 export const preferencesStore = new PreferencesStore(

@@ -93,21 +93,28 @@ export const Chessboard = (props: ChessboardProps = {
     }
 
     const getSquareFill = (rank: number, file: number): string => {
+        console.log("r: " + rank + ", f: " + file)
         if (rank % 2 === 0 && file % 2 === 0) {
+            console.log("D")
             return props.darkSquareColor!
         }
 
         if (rank % 2 === 0 && file % 2 !== 0) {
+            console.log("L")
             return props.lightSquareColor!
         }
 
         if (rank % 2 !== 0 && file % 2 === 0) {
+            console.log("L")
             return props.lightSquareColor!
         }
 
         if (rank % 2 !== 0 && file % 2 !== 0) {
+            console.log("D")
             return props.darkSquareColor!
         }
+
+        console.log("M")
 
         return ''
     }
@@ -623,7 +630,6 @@ export const Chessboard = (props: ChessboardProps = {
         }
     }
 
-
     const renderPromotionPrompt = (file: number, side: ChessTypes.Side) => {
         const squareSize = getSquareSize()
         const style = {
@@ -694,89 +700,88 @@ export const Chessboard = (props: ChessboardProps = {
     const handleArrowDragStart = (e: DragEvent) => {
         const offset = getOffsetOnBoard(e.clientX, e.clientY)
         const [rank, file] = getRankFile(offset[0], offset[1])
-    
+
         const dragPreview = document.createElement('img')
         dragPreview.src = arrow
         e.dataTransfer!.setDragImage(dragPreview, 0, 0)
         e.dataTransfer!.effectAllowed = 'all'
         updateState({ fromRank: rank, fromFile: file })
-      }
+    }
 
-      const getColorForMouseEvent = (e: MouseEvent) => {
+    const getColorForMouseEvent = (e: MouseEvent) => {
         if (e.altKey) return 'green'
         if (e.metaKey || e.ctrlKey) return 'yellow'
         if (e.shiftKey) return 'red'
         return 'green'
-      }
+    }
 
-      useEffect(() => {
+    useEffect(() => {
         const e = state.dragEvent
         if (e === undefined) {
             return
         }
         const offset = getOffsetOnBoard(e.clientX, e.clientY)
         const [rank, file] = getRankFile(offset[0], offset[1])
-    
+
         const from = getSquareLabel(state.fromFile, state.fromRank)
         const to = getSquareLabel(file, rank)
         const color = getColorForMouseEvent(e)
         if (props.onArrowChange) {
-          if (file >= 0 && file <= 7 && rank >= 0 && rank <= 7) {
-            const existingAnnotation = props.arrows!.filter(
-              a => a.from === from && a.to === to && a.color === color
-            )
-  
-            const newAnnotations =
-              existingAnnotation.length > 0
-                ? props.arrows!.filter(
-                    a => !(a.from === from && a.to === to)
-                  )
-                : [
-                    ...props.arrows!.filter(
-                      a => !(a.from === from && a.to === to)
-                    ),
-                    { type: 'ARROW', color, from, to }
-                  ]
-  
-            props.onArrowChange(newAnnotations as ChessTypes.ArrowAnnotation[])
-          }
-        }
-      }, [state.dragEvent])
+            if (file >= 0 && file <= 7 && rank >= 0 && rank <= 7) {
+                const existingAnnotation = props.arrows!.filter(
+                    a => a.from === from && a.to === to && a.color === color
+                )
 
-      const handleArrowDragEnd = (e: DragEvent) => {
-        updateState({ fromRank: -1, fromFile: -1 , dragEvent: e})
-      }
-    
+                const newAnnotations =
+                    existingAnnotation.length > 0
+                        ? props.arrows!.filter(
+                            a => !(a.from === from && a.to === to)
+                        )
+                        : [
+                            ...props.arrows!.filter(
+                                a => !(a.from === from && a.to === to)
+                            ),
+                            { type: 'ARROW', color, from, to }
+                        ]
+
+                props.onArrowChange(newAnnotations as ChessTypes.ArrowAnnotation[])
+            }
+        }
+    }, [state.dragEvent])
+
+    const handleArrowDragEnd = (e: DragEvent) => {
+        updateState({ fromRank: -1, fromFile: -1, dragEvent: e })
+    }
 
     const renderArrowInteractionEventSource = () => {
         const squareSize = getSquareSize()
         const sources = []
-    
+
         for (let i = 0; i < 8; i++) {
-          for (let j = 0; j < 8; j++) {
-            const props = {
-              key: `${i}${j}`,
-              style: {
-                position: 'absolute',
-                left: getTopLeftCoordinates(i, j)[0],
-                top: getTopLeftCoordinates(i, j)[1],
-                width: squareSize,
-                height: squareSize
-              },
-              draggable: true
-            } as any
-            sources.push(
-              <div
-                {...props}
-                onDragStart={handleArrowDragStart}
-                onDragEnd={handleArrowDragEnd}
-              />
-            )
-          }
+            for (let j = 0; j < 8; j++) {
+                const props = {
+                    key: `${i}${j}`,
+                    style: {
+                        position: 'absolute',
+                        left: getTopLeftCoordinates(i, j)[0],
+                        top: getTopLeftCoordinates(i, j)[1],
+                        width: squareSize,
+                        height: squareSize
+                    },
+                    draggable: true
+                } as any
+                sources.push(
+                    <div
+                        {...props}
+                        onDragStart={handleArrowDragStart}
+                        onDragEnd={handleArrowDragEnd}
+                    />
+                )
+            }
         }
-    
+
         return sources
-      }
+    }
 
     return <div className={`ChessboardContainer orientation-${props.orientation} interaction-mode-${props.interactionMode.toLowerCase()}`}
         style={{ width: fullSize, height: fullSize }}>
@@ -851,15 +856,15 @@ export const Chessboard = (props: ChessboardProps = {
                     {renderPieces(props.fen)}
                 </div>
             )}
-          {props.interactionMode === 'ARROW' ? (
-            <div
-              ref={interactionLayerRef}
-              className="Interaction Layer"
-              style={{ width: size, height: size }}
-            >
-              {renderArrowInteractionEventSource()}
-            </div>
-          ) : null}            
+            {props.interactionMode === 'ARROW' ? (
+                <div
+                    ref={interactionLayerRef}
+                    className="Interaction Layer"
+                    style={{ width: size, height: size }}
+                >
+                    {renderArrowInteractionEventSource()}
+                </div>
+            ) : null}
             {props.interactionMode === 'MOVE' ? (
                 <div
                     ref={interactionLayerRef}
