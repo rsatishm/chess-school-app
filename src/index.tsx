@@ -17,6 +17,10 @@ import { ratingSystemStore } from './stores/rating-system';
 import { invitationStore } from './stores/invitation-store';
 import { syncedGameStore } from './stores/synced-game';
 import { liveGameStore } from './stores/live-game';
+import { analysisBoardStore } from './stores/analysis-board-store';
+import { gameboxDatabaseStore } from './stores/gamebox-database';
+import { gameboxDatabaseGameStore } from './stores/gamebox-database-game';
+import { gameHistoryStore } from './stores/game-history-store';
 
 const stores = {
   signupStore,
@@ -30,7 +34,11 @@ const stores = {
   ratingSystemStore,
   invitationStore,
   syncedGameStore,
-  liveGameStore
+  liveGameStore,
+  analysisBoardStore,
+  gameboxDatabaseStore,
+  gameboxDatabaseGameStore,
+  gameHistoryStore
 }
 
 ReactDOM.render(

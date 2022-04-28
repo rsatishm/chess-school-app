@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { AnalysisBoardTest } from '../common-pages/analysis-board/analysis-board-test';
 import { Chessboard } from '../../components/chessboard/Chessboard';
 import {Chess} from '../../components/chessboard/Chess'
+import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
 
 interface Props {
   userStore?: UserStore
@@ -112,7 +113,7 @@ export const CoachApp = observer(() => {
           path="/preferences"
           element={<User/>}
         />
-        <Route path="/board" element={<AnalysisBoardTest/>} />
+        <Route path="/board" element={<AnalysisBoard/>} />
 
         <Route
           path="/blindbot"

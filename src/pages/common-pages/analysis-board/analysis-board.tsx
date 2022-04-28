@@ -34,12 +34,6 @@ import { GameboxDatabaseStore } from '../../../stores/gamebox-database'
 
 const { TabPane } = Tabs
 
-interface Props {
-  analysisBoardStore: AnalysisBoardStore
-  gameboxDatabaseStore: GameboxDatabaseStore
-  userStore: UserStore
-}
-
 interface State {
   // moves: String
   modalState: string
@@ -49,7 +43,7 @@ interface State {
   orientation: string
 }
 
-export const AnalysisBoard = (props: Props)=>{
+export const AnalysisBoard = ()=>{
   let gameFormRef= useRef(null)
   const [state, setState] = useState<State>({
     modalState: 'HIDDEN',

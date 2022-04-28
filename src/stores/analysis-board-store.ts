@@ -13,7 +13,8 @@ import {
 
 //import { Util, GameEditor, ChessTypes } from '@chesslang/chess'
 
-import { Chess } from 'chess.js'
+import * as _ChessJS from 'chess.js';
+import { Chess } from 'chess.js';
 
 import { userStore } from './user'
 import { hydrateWithDerviedFields } from '../utils/utils'
@@ -93,8 +94,11 @@ export class AnalysisBoardStore {
   calcMovable() {
     // console.log('Calculating possible moves')
     const dests: any = {}
-
-    const chess = new Chess(this.fen)
+    
+    //const chess = new ChessJs.Chess(this.fen);
+    ///const chess = new Chess(this.fen)
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const chess = new ChessJS(this.fen)
 
     chess.SQUARES.forEach(s => {
       const ms = chess.moves({ square: s, verbose: true })
@@ -367,7 +371,8 @@ export class AnalysisBoardStore {
   // }
 
   get sideToPlay() {
-    const g = new Chess(this.fen)
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const g = new ChessJS(this.fen)
     return g.turn() == 'w' ? 'white' : 'black'
   }
 
