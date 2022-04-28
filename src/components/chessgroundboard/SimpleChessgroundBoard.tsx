@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-//import Chessground from './chessground'
-import { Chessground } from 'chessground'
-import { Chess, ShortMove, Square } from 'chess.js'
-
+import PropTypes from 'prop-types'
+import { Chessground as NativeChessground } from 'chessground'
+import * as _ChessJS from 'chess.js'
+import ReactResizeDetector from 'react-resize-detector'
 import wQ from './assets/images/pieces/merida/wQ.svg'
 import wR from './assets/images/pieces/merida/wR.svg'
 import wB from './assets/images/pieces/merida/wB.svg'
@@ -12,12 +12,12 @@ import bR from './assets/images/pieces/merida/bR.svg'
 import bB from './assets/images/pieces/merida/bB.svg'
 import bN from './assets/images/pieces/merida/bN.svg'
 import blankPiece from './assets/images/pieces/merida/1.svg'
+import { Config } from 'chessground/config'
+import { Api } from 'chessground/api'
+
 
 import './assets/theme.css'
 import './assets/chessground.css'
-import ReactResizeDetector from 'react-resize-detector'
-import PropTypes from 'prop-types'
-import { Api } from 'chessground/api'
 
 const PIECE_IMAGES = {
   wq: wQ,
@@ -33,94 +33,39 @@ const PIECE_IMAGES = {
 }
 
 interface Props {
-  height?: number | string
-  width?: number | string
+  height: number | string
+  width: number | string
   onMove: (...args: any) => {}
   fen: string
   orientation: string
-  turnColor: string,
-  movable?: typeof PropTypes.object,
-  lastMove?: typeof PropTypes.array
+  turnColor: string
 }
 
 type PromotionPopupDetails = null | {
   file: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h'
   color: 'w' | 'b'
-  pendingMove: ShortMove
+  pendingMove: _ChessJS.ShortMove
 }
 
 interface State {
   size: number
   width: number
-  promotionPopupDetails: null | {
-    file: 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h'
-    color: 'w' | 'b'
-    pendingMove: ShortMove
-  }
+  promotionPopupDetails: PromotionPopupDetails
 }
 
-const ChessgroundBoard = (props: Props) => {
-  let boardContainer = useRef(null)
-
-  const [state, setState] = useState<State>({
+export const ChessgroundBoard = (props: Props) => {
+  console.log(JSON.stringify(props))
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+  const [chess, setChess] = useState(new ChessJS())
+  
+  const boardContainer = useRef(null) 
+  
+  let ground : Api
+  const [state, setState] = useState({
     size: 0,
     width: 400,
     promotionPopupDetails: null
   })
-
-  const updateState = (newState: Partial<State>) => {
-    setState((prevState) => {
-      return { ...prevState, ...newState }
-    })
-  }
-
-  const getPromotionDetails = (fen: string, from: string, to: string): PromotionPopupDetails => {
-    const pos = new Chess(props.fen)
-    const turn = pos.turn()
-
-    const move = pos.move({ from, to, promotion: 'q' } as ShortMove)
-
-    if (move && move.promotion) {
-      return { color: turn, file: to.charAt(0) } as PromotionPopupDetails
-    }
-
-    return null
-  }
-
-  const handleOnMove = (from: Square, to: Square) => {
-    const promotion: PromotionPopupDetails = getPromotionDetails(props.fen, from, to)
-    if (promotion) {
-      updateState({
-        promotionPopupDetails: { ...promotion, pendingMove: { from, to } }
-      })
-    } else {
-      props.onMove(from, to)
-    }
-  }
-
-  const handlePromotePiece = (promotionPiece: 'q' | 'r' | 'n' | 'b') => {
-    if (state.promotionPopupDetails) {
-      const pendingMove = state.promotionPopupDetails!.pendingMove
-      props.onMove(pendingMove.from, pendingMove.to, {
-        promotion: promotionPiece
-      })
-      updateState({ promotionPopupDetails: null })
-    }
-  }
-
-  const cancelPromotePiece = () => {
-    updateState({ promotionPopupDetails: null })
-  }
-
-  const onResize = (width: number, height: number) => {
-    console.log(width, height)
-    updateState(
-      {
-        size: Math.min(width, height),
-        width: width
-      }
-    )
-  }
 
   const propTypes = {
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -153,18 +98,18 @@ const ChessgroundBoard = (props: Props) => {
     return config
   }
 
-  let ground: Api
   useEffect(() => {
-    ground = Chessground(
-      boardContainer.current,
+    console.log("properties: " + JSON.stringify(props))
+    console.log("Create native chessground " + boardContainer.current)
+    ground = NativeChessground(
+      boardContainer.current!,
       buildConfigFromProps()
     )
     return () => {
       console.log("destroy chessground");
       ground.destroy()
     }
-  })
-
+  });
 
   useEffect(() => {
     console.log("properties changed: " + JSON.stringify(props))
@@ -176,16 +121,80 @@ const ChessgroundBoard = (props: Props) => {
     ground!.redrawAll()
   }, [props.height, props, props.width, props.orientation, state.size, state.width])
 
-  const playSound = () => {
-    var audio = new Audio('https://lichess1.org/assets/sound/standard/Move.ogg')
-    audio.play()
-  }
-
   useEffect(() => {
     playSound()
   }, [props.fen])
 
+  const playSound = () => {
+    var audio = new Audio('https://lichess1.org/assets/sound/standard/Move.ogg')
+    //audio.play()
+  }
+
+
+  const getPromotionDetails = (fen: string, from: string, to: string): PromotionPopupDetails => {
+    const pos = new ChessJS(props.fen)
+    const turn = pos.turn()
+
+    const move = pos.move({ from, to, promotion: 'q' } as _ChessJS.ShortMove)
+
+    if (move && move.promotion) {
+      return { color: turn, file: to.charAt(0) } as PromotionPopupDetails
+    }
+
+    return null
+  }
+
+  const handleOnMove = (from: string, to: string) => {
+    const promotion: PromotionPopupDetails = getPromotionDetails(props.fen, from, to)
+    if (promotion) {
+      setState((prevState:any) => {
+        return {
+          ...prevState,
+          promotionPopupDetails: {
+            ...promotion,
+            pendingMove: { from, to }
+          }
+        }
+      })
+    } else {
+      props.onMove(from, to)
+    }
+  }
+
   type qrnb = 'q' | 'r' | 'n' | 'b'
+
+  const handlePromotePiece = (promotionPiece: qrnb) => {
+    if (state.promotionPopupDetails) {
+      const pendingMove = (state.promotionPopupDetails as PromotionPopupDetails)!.pendingMove
+      props.onMove(pendingMove.from, pendingMove.to, {
+        promotion: promotionPiece
+      })
+      setState((prevState) => {
+        return { ...prevState, promotionPopupDetails: null }
+      })
+    }
+  }
+
+  const cancelPromotePiece = () => {
+    setState((prevState) => {
+      return { ...prevState, promotionPopupDetails: null }
+    })
+  }
+
+  const onResize = (width?: number, height?: number) => {
+    console.log(width, height)
+    setState((prevState: any) => {
+      return {
+        ...prevState,
+        size: Math.min(width!, height!),
+        width: width
+      }
+    }
+    )
+  }
+
+  const defaultSize = 400
+  const padding = 12
 
   const renderPromotionPopup = () => {
     const POPUP_STYLE = {
@@ -208,13 +217,13 @@ const ChessgroundBoard = (props: Props) => {
 
     if (!state.promotionPopupDetails) return null
     return (
-
+      
       <div style={OUTER_STYLE} onClick={() => cancelPromotePiece()}>
         {['w', 'b'].map(
-          (color: string) =>
+          (color:string) =>
             (state.promotionPopupDetails as PromotionPopupDetails)!.color === color && (
               <div key={color} className="promotion-popup" style={POPUP_STYLE}>
-                {['q', 'r', 'b', 'n', '1'].map((piece: string) => (
+                {['q', 'r', 'b', 'n', '1'].map((piece:string) => (
                   <div
                     key={piece}
                     style={{
@@ -225,7 +234,7 @@ const ChessgroundBoard = (props: Props) => {
                     onClick={() => handlePromotePiece(piece as qrnb)}
                   >
                     <img
-                      src={PIECE_IMAGES[`${color}${piece}` as (keyof typeof PIECE_IMAGES)]}
+                      src={ PIECE_IMAGES[`${color}${piece}` as (keyof typeof PIECE_IMAGES)]}
                       width={state.size / 6}
                       height={state.size / 6}
                     />
@@ -237,37 +246,28 @@ const ChessgroundBoard = (props: Props) => {
       </div>
     )
   }
-
-  const defaultSize = 400
-  const padding = 12
-
+console.log("board container: " + boardContainer + ", current " + boardContainer.current)
   return (
     <>
-    <div
-      className="brown merida"
-      style={{
-        height: state.width + 2 * padding,
-        maxHeight: '95vh',
-        padding: padding
-      }}
-    >
       <div
-        ref={boardContainer}
-        className="cg-board-wrap"
+        className="brown merida"
         style={{
-          height: state.size || defaultSize,
-          width: state.size || defaultSize
+          height: state.width + 2 * padding,
+          maxHeight: '95vh',
+          padding: padding
         }}
-      />
-      {renderPromotionPopup()}
-      <ReactResizeDetector
-        handleWidth
-        handleHeight
-        onResize={onResize}
-      />
-    </div>
+      >
+        <div
+          ref={boardContainer}
+          className="cg-board-wrap"
+          style={{
+            height: state.size || defaultSize,
+            width: state.size || defaultSize
+          }}
+        />
+        {renderPromotionPopup()}
+      </div>
     </>
   )
-}
 
-export default ChessgroundBoard
+}

@@ -14,6 +14,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { studentAssignmentStore } from './stores/student-assignment';
 import { announcementStore } from './stores/announcements';
 import { ratingSystemStore } from './stores/rating-system';
+import { invitationStore } from './stores/invitation-store';
+import { syncedGameStore } from './stores/synced-game';
+import { liveGameStore } from './stores/live-game';
 
 const stores = {
   signupStore,
@@ -24,7 +27,10 @@ const stores = {
   preferencesStore,
   studentAssignmentStore,
   announcementStore,
-  ratingSystemStore
+  ratingSystemStore,
+  invitationStore,
+  syncedGameStore,
+  liveGameStore
 }
 
 ReactDOM.render(

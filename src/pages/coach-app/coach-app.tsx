@@ -7,7 +7,7 @@ import { Dashboard } from '../dashboard/dashboard';
 import { Academy } from './academy/academy';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { useState } from 'react';
-import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
+import { AnalysisBoardTest } from '../common-pages/analysis-board/analysis-board-test';
 import { Chessboard } from '../../components/chessboard/Chessboard';
 import {Chess} from '../../components/chessboard/Chess'
 
@@ -112,7 +112,7 @@ export const CoachApp = observer(() => {
           path="/preferences"
           element={<User/>}
         />
-        <Route path="/board" element={<AnalysisBoard/>} />
+        <Route path="/board" element={<AnalysisBoardTest/>} />
 
         <Route
           path="/blindbot"
