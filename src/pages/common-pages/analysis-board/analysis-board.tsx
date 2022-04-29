@@ -26,10 +26,10 @@ import copy from 'copy-to-clipboard'
 import { Scoresheet } from '../../../components/scoresheet/scoresheet'
 import { ChessTypes } from '../../../types'
 import { SquareLabel } from '../../../types/ChessTypes/ChessTypes'
-import { CopyFilled } from '@ant-design/icons'
 import { SaveGameForm } from './save-game-modal'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ChessgroundBoard from '../../../components/chessgroundboard/Chessgroundboard'
+import {BackwardOutlined, CopyFilled, FastBackwardOutlined, FastForwardFilled, FastForwardOutlined, ForwardFilled, ForwardOutlined, SwapOutlined } from '@ant-design/icons'
 import { GameboxDatabaseStore } from '../../../stores/gamebox-database'
 
 const { TabPane } = Tabs
@@ -241,7 +241,7 @@ export const AnalysisBoard = ()=>{
             <Col span={2} offset={1}>
               <Tooltip title="fast-backward (< key)">
                 <Button
-                  icon="fast-backward"
+                  icon={<FastBackwardOutlined/>}
                   type="ghost"
                   shape="circle"
                   onClick={analysisBoardStore!.backward}
@@ -251,7 +251,7 @@ export const AnalysisBoard = ()=>{
             <Col span={2}>
               <Tooltip title="backward (left arrow)">
                 <Button
-                  icon="backward"
+                  icon={<BackwardOutlined/>}
                   type="ghost"
                   shape="circle"
                   onClick={analysisBoardStore!.prev}
@@ -261,7 +261,7 @@ export const AnalysisBoard = ()=>{
             <Col span={2}>
               <Tooltip title="flip board (f key)">
                 <Button
-                  icon="swap"
+                  icon={<SwapOutlined/>}
                   style={{ transform: 'rotate(90deg)' }}
                   type="ghost"
                   shape="circle"
@@ -272,7 +272,7 @@ export const AnalysisBoard = ()=>{
             <Col span={2}>
               <Tooltip title="forward (right arrow)">
                 <Button
-                  icon="forward"
+                  icon={<ForwardOutlined/>}
                   type="ghost"
                   shape="circle"
                   onClick={analysisBoardStore!.next}
@@ -282,7 +282,7 @@ export const AnalysisBoard = ()=>{
             <Col span={2}>
               <Tooltip title="fast-forward (> key)">
                 <Button
-                  icon="fast-forward"
+                  icon={<FastForwardOutlined/>}
                   type="ghost"
                   shape="circle"
                   onClick={analysisBoardStore!.forward}
