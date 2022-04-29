@@ -235,7 +235,9 @@ export const SetupChessboard = (props: Props = {
 
   const handlePGNTextChange = (e: any) => {
     const pgn = e.target.value
-    const pgnBoard = new Chess()
+    //const pgnBoard = new Chess()
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const pgnBoard = new ChessJS()
     pgnBoard.load_pgn(pgn)
     const inputFen = pgnBoard.fen()
 
