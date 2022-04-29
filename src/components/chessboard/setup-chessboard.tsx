@@ -17,6 +17,7 @@ import wr from './pieces/wr.svg'
 
 import { ConfiguredChessboard } from './configured-chessboard'
 import { ChessTypes } from '../../types'
+import * as _ChessJS from 'chess.js';
 import { Chess } from 'chess.js'
 import { useEffect, useRef, useState } from 'react'
 
@@ -46,7 +47,9 @@ export const SetupChessboard = (props: Props = {
     selectedPieceFenChar: null
   })
   const interactionLayerRef: React.RefObject<HTMLDivElement> = useRef(null)
-  const backingGame = new Chess(state.fen)
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+  const backingGame = new ChessJS(state.fen)
+  //const backingGame = new Chess(state.fen)
   const updateState = (newState: Partial<State>) => {
     setState((prevState) => {
       return { ...prevState, ...newState }
@@ -61,7 +64,9 @@ export const SetupChessboard = (props: Props = {
     return true
   }
   const isValidFen = () => {
-    const g = new Chess()
+    //const g = new Chess()
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const g = new ChessJS()
     return g.validate_fen(state.fen).valid
   }
   const cleanFenWithCastlingRights = (fen: ChessTypes.FEN) => {

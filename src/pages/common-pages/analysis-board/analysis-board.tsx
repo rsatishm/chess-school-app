@@ -31,6 +31,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ChessgroundBoard from '../../../components/chessgroundboard/Chessgroundboard'
 import {BackwardOutlined, CopyFilled, FastBackwardOutlined, FastForwardFilled, FastForwardOutlined, ForwardFilled, ForwardOutlined, SwapOutlined } from '@ant-design/icons'
 import { GameboxDatabaseStore } from '../../../stores/gamebox-database'
+//import { ChessgroundBoard } from '../../../components/chessgroundboard/SimpleChessgroundBoard'
 
 const { TabPane } = Tabs
 
@@ -221,7 +222,8 @@ export const AnalysisBoard = ()=>{
 
   const renderContent = ()=>{
     console.log('board state', analysisBoardStore!.state)
-
+    console.log("fen " + analysisBoardStore!.fen)
+    console.log("sideToPlay: " + analysisBoardStore!.sideToPlay)
     return (
       <Row className="analysis-board scoresheet-container">
         <Col md={{ span: 12, offset: 2 }} sm={24}>

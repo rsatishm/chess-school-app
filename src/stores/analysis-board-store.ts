@@ -348,7 +348,9 @@ export class AnalysisBoardStore {
   //   this.updateFirestore()
   // }
   loadFen(fen: ChessTypes.FEN) {
-    const valid = new Chess(fen)
+    //const valid = new Chess(fen)
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const valid = new ChessJS(fen)
     if (valid) {
       this.editor = new GameEditor.GameEditor(fen)
       this.updateState()

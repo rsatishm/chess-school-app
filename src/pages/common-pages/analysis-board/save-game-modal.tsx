@@ -30,7 +30,8 @@ export const SaveGameForm = forwardRef((props: Props, ref: Ref<FormInstance<any>
   const { visible, onCancel, onCreate } = props
   const [form] = useForm()
   const formRef = React.createRef<FormInstance<any>>()
-  useImperativeHandle(ref, () => (formRef.current!))
+  //useImperativeHandle(ref, () => (formRef.current!))
+  useImperativeHandle(ref, () => (form))
   const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 }

@@ -155,6 +155,7 @@ const ChessgroundBoard = (props: Props) => {
 
   let ground: Api
   useEffect(() => {
+    console.log("chess cfg: " + JSON.stringify(buildConfigFromProps()))
     ground = Chessground(
       boardContainer.current,
       buildConfigFromProps()
