@@ -1,6 +1,7 @@
 import { Chess } from 'chess.js'
 import * as R from 'ramda'
 import { ChessTypes } from '../../types'
+import * as _ChessJS from 'chess.js';
 //import { ChessTypes, Chess, Util } from '../'
 import * as Util from '../../utils/Util'
 
@@ -88,6 +89,7 @@ export class GameEditor {
   }
 
   gotoPath(path: ChessTypes.PlyPath | null) {
+    console.log("GoToPath: " + path)
     if (path === null) {
       this.state.currentPath = null
     } else {
@@ -128,7 +130,9 @@ export class GameEditor {
         ? currentMove.fen
         : this.state.startFen) as ChessTypes.FEN
       try {
-        const g = new Chess(currMoveFen)
+        //const g = new Chess(currMoveFen)
+        const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+        const g = new ChessJS(currMoveFen)
         const m = g.move(move)
 
         // insert move as a variation
@@ -174,6 +178,8 @@ export class GameEditor {
 
       return null
     })()
+
+    console.log("Move to insert: " + JSON.stringify(moveToInsert))
 
     if (moveToInsert != null) {
       const nextMove = this._getMoveAtPath(
@@ -302,6 +308,7 @@ export class GameEditor {
   }
 
   prev() {
+    console.log("Current path is " + this.state.currentPath)
     if (
       Util.pathEquals(this.state.currentPath, [[0, 0]]) ||
       this.state.currentPath === null

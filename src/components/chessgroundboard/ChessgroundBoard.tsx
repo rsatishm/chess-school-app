@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 //import Chessground from './chessground'
 import { Chessground } from 'chessground'
 import { Chess, ShortMove, Square } from 'chess.js'
+import * as _ChessJS from 'chess.js';
 
 import wQ from './assets/images/pieces/merida/wQ.svg'
 import wR from './assets/images/pieces/merida/wR.svg'
@@ -35,7 +36,7 @@ const PIECE_IMAGES = {
 interface Props {
   height?: number | string
   width?: number | string
-  onMove: (...args: any) => {}
+  onMove: (...args: any) => void
   fen: string
   orientation: string
   turnColor: string,
@@ -75,7 +76,8 @@ const ChessgroundBoard = (props: Props) => {
   }
 
   const getPromotionDetails = (fen: string, from: string, to: string): PromotionPopupDetails => {
-    const pos = new Chess(props.fen)
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const pos = new ChessJS(props.fen)
     const turn = pos.turn()
 
     const move = pos.move({ from, to, promotion: 'q' } as ShortMove)
@@ -155,24 +157,23 @@ const ChessgroundBoard = (props: Props) => {
 
   let ground: Api
   useEffect(() => {
-    console.log("chess cfg: " + JSON.stringify(buildConfigFromProps()))
+    console.log("Create chessground. Cfg: " + JSON.stringify(buildConfigFromProps()))
     ground = Chessground(
       boardContainer.current,
       buildConfigFromProps()
     )
     return () => {
-      console.log("destroy chessground");
+      console.log("Destroy chessground");
       ground.destroy()
     }
   })
 
 
   useEffect(() => {
-    console.log("properties changed: " + JSON.stringify(props))
-    console.log("ground " + ground)
+    console.log("Properties changed: " + JSON.stringify(props))
     ground.set(buildConfigFromProps())
+    console.log("Redraw chessground " + ground + ", Cfg: " + buildConfigFromProps())
 
-    console.log("redraw chessground " + ground)
     // Typical usage (don't forget to compare props):
     ground!.redrawAll()
   }, [props.height, props, props.width, props.orientation, state.size, state.width])

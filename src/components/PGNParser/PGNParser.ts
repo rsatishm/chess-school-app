@@ -2,6 +2,7 @@ import { Chess } from 'chess.js'
 import { map, addIndex, last, dropLast, head, drop } from 'ramda'
 import { ChessTypes } from '../../types'
 import * as Util from '../../utils/Util'
+import * as _ChessJS from 'chess.js';
 
 //import { Chess, ChessTypes, Util } from '../'
 
@@ -24,7 +25,9 @@ const getMoves = function getMoves(
     return [[], startFen]
   }
 
-  const g = new Chess()
+  //const g = new Chess()
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+const g = new ChessJS()
   const loaded = g.load_pgn(
     [
       `[FEN "${startFen}"]`,
@@ -45,7 +48,8 @@ const getMoves = function getMoves(
     throw new Error('PGN failed to parse PGN')
   }
 
-  const fenIterator = new Chess(startFen)
+  //const fenIterator = new Chess(startFen)
+const fenIterator = new ChessJS(startFen)
   const variation = addIndex(map)(
     (move: ChessTypes.ChessJSVerboseMove, i) =>
       Util.truncatePromotion({
@@ -270,7 +274,9 @@ const extractVariation = function extractVariation(
       } else if (ch === '-' && moveText.charAt(i + 1) === '-') {
         // Null move
         // Add a null move to the current moves and update current FEN and everything
-        const turn = new Chess(currentFen).turn()
+        //const turn = new Chess(currentFen).turn()
+        const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+        const turn = new ChessJS(currentFen).turn()
         const nextFen = Util.getUpdatedFenWithNullMove(currentFen)
 
         const nullMove: ChessTypes.NullMove = {
@@ -342,7 +348,9 @@ const extractMeta = function extractMeta(
   }, [] as string[])
 
   const header = linesWithTag.join('\n')
-  const g = new Chess()
+  //const g = new Chess()
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+  const g = new ChessJS()
   g.load_pgn(header)
 
   return g.header() as { [tag: string]: string }

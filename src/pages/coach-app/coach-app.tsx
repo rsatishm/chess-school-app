@@ -11,7 +11,7 @@ import { AnalysisBoardTest } from '../common-pages/analysis-board/analysis-board
 import { Chessboard } from '../../components/chessboard/Chessboard';
 import {Chess} from '../../components/chessboard/Chess'
 import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
-import ChessgroundBoard from '../../components/chessgroundboard/chessgroundboard';
+import ChessgroundBoard from '../../components/chessgroundboard/Chessgroundboard';
 import XChessground from '../../components/chessgroundboard/XChessground';
 import { ChessboardDemo } from '../../components/chessgroundboard/ChessboardDemo';
 

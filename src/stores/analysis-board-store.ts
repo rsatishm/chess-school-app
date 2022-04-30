@@ -85,6 +85,8 @@ export class AnalysisBoardStore {
 
   move(move: ChessTypes.ChessJSVerboseInputMove) {
     var state = this.editor.getState()
+    console.log("state: " + JSON.stringify(state))
+    console.log("move: " + JSON.stringify(move))
     this.undoStack.push(JSON.stringify(state))
     this.editor.addMove(move /*, this.allowIllegalMoves */)
     this.updateState()
@@ -93,6 +95,21 @@ export class AnalysisBoardStore {
 
   calcMovable() {
     // console.log('Calculating possible moves')
+
+
+    const dests = new Map()
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const chess = new ChessJS(this.fen)
+    chess.SQUARES.forEach(s => {
+      const ms = chess.moves({ square: s, verbose: true })
+      if (ms.length) dests.set(s, ms.map(m => m.to))
+    })
+    return {
+      free: false,
+      dests,
+      color: chess.turn() == 'b' ? 'black' : 'white'
+    }
+    /*
     const dests: any = {}
     
     //const chess = new ChessJs.Chess(this.fen);
@@ -111,6 +128,7 @@ export class AnalysisBoardStore {
     }
 
     return ret
+    */
   }
 
   async loadGame(gameUuid: string) {
@@ -299,16 +317,19 @@ export class AnalysisBoardStore {
   }
 
   prev() {
+    console.log("prev")
     this.editor.prev()
     this.updateState()
   }
 
   next() {
+    console.log("next")
     this.editor.next()
     this.updateState()
   }
 
   backward() {
+    console.log("backward")
     try {
       for (let i = 0; i < 5; i++) this.editor.prev()
     } catch {}
@@ -316,6 +337,7 @@ export class AnalysisBoardStore {
   }
 
   forward() {
+    console.log("forward")
     try {
       for (let i = 0; i < 5; i++) this.editor.next()
     } catch {}
@@ -323,6 +345,7 @@ export class AnalysisBoardStore {
   }
 
   undo() {
+    console.log("undo")
     if (this.undoStack.length == 0) {
       return
     }

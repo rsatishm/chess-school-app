@@ -3,13 +3,16 @@ import * as R from 'ramda'
 import { FormattedMessage } from 'react-intl'
 import { ChessTypes } from '../types'
 import { Game, GameResult } from '../types/game'
+import * as _ChessJS from 'chess.js';
 
 export const DEFAULT_START_FEN: ChessTypes.FEN =
   'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 export const CLEAR_FEN: ChessTypes.FEN = '8/8/8/8/8/8/8/8 w - - 0 1'
 
 export var convertDbFormatToPgn = (game: Game) => {
-  const c = new Chess(game.meta.fen || DEFAULT_START_FEN)
+  //const c = new Chess(game.meta.fen || DEFAULT_START_FEN)
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+  const c = new ChessJS(game.meta.fen || DEFAULT_START_FEN)
   game.content.mainline.forEach((m: ShortMove) => {
     c.move(m)
   })
@@ -47,7 +50,9 @@ export const hydrateVariationWithDerivedFields = (
   startFen: ChessTypes.FEN,
   variation: ChessTypes.Variation
 ) => {
-  const g = new Chess(startFen)
+  //const g = new Chess(startFen)
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+  const g = new ChessJS(startFen)
   return R.map(m => {
     const currentFen = g.fen()
     const move = g.move({
@@ -75,12 +80,13 @@ export const hydrateVariationWithDerivedFields = (
 }
 
 export const hydrateWithDerviedFields = (meta: any, game: ChessTypes.Game) => {
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
   const startFen =
     meta.startFen ||
     meta.fen ||
     meta.startfen ||
     game.startFen ||
-    new Chess().fen()
+    new ChessJS().fen()
   try {
     return {
       ...game,

@@ -2,6 +2,7 @@ import { Chess } from 'chess.js'
 import * as R from 'ramda'
 import { forEach, omit, last, dropLast } from 'ramda'
 import { ChessTypes } from '../types'
+import * as _ChessJS from 'chess.js';
 
 export const DEFAULT_START_FEN: ChessTypes.FEN =
   'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -172,8 +173,9 @@ export function getFenAtEndOfVariation(
   startFen: ChessTypes.FEN,
   variation: ChessTypes.Variation
 ): ChessTypes.FEN {
-  const g = new Chess(startFen)
-
+  //const g = new Chess(startFen)
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+  const g = new ChessJS(startFen)
   forEach((move: ChessTypes.Move | ChessTypes.NullMove) => {
     if (
       (move as ChessTypes.NullMove).type &&

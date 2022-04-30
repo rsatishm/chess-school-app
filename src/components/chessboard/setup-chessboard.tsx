@@ -70,7 +70,9 @@ export const SetupChessboard = (props: Props = {
     return g.validate_fen(state.fen).valid
   }
   const cleanFenWithCastlingRights = (fen: ChessTypes.FEN) => {
-    const g = new Chess(fen)
+    //const g = new Chess(fen)
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const g = new ChessJS(fen)
     const e1 = g.get('e1')
     const h1 = g.get('h1')
     const a1 = g.get('a1')
@@ -217,7 +219,9 @@ export const SetupChessboard = (props: Props = {
   }
 
   const handleFenTextChange = (e: any) => {
-    const chess = new Chess()
+    //const chess = new Chess()
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const chess = new ChessJS()
     const isValid = chess.validate_fen(e.target.value)
     if (isValid.valid == true) {
       if (

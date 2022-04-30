@@ -28,7 +28,7 @@ import { ChessTypes } from '../../../types'
 import { SquareLabel } from '../../../types/ChessTypes/ChessTypes'
 import { SaveGameForm } from './save-game-modal'
 import { useLocation, useNavigate } from 'react-router-dom'
-import ChessgroundBoard from '../../../components/chessgroundboard/chessgroundboard'
+import ChessgroundBoard from '../../../components/chessgroundboard/Chessgroundboard'
 import {BackwardOutlined, CopyFilled, FastBackwardOutlined, FastForwardFilled, FastForwardOutlined, ForwardFilled, ForwardOutlined, SwapOutlined } from '@ant-design/icons'
 import { GameboxDatabaseStore } from '../../../stores/gamebox-database'
 //import { ChessgroundBoard } from '../../../components/chessgroundboard/SimpleChessgroundBoard'
@@ -41,7 +41,8 @@ interface State {
   selectedDatabase: { uuid: string; name: string }
   setupPositionModalVisible: boolean
   setupPositionFen: ChessTypes.FEN
-  orientation: string
+  orientation: string,
+  fen?: string
 }
 
 export const AnalysisBoard = ()=>{
@@ -87,7 +88,9 @@ export const AnalysisBoard = ()=>{
       to: dest,
       promotion: metadata && metadata.promotion
     })
-    return {}
+    console.log("fen after update " + analysisBoardStore!.fen)
+    updateState({fen: analysisBoardStore!.fen})
+    //return {}
   }
 
   const onGoToPath = () => {}
@@ -231,7 +234,7 @@ export const AnalysisBoard = ()=>{
             height={600}
             width={600}
             orientation={state.orientation}
-            fen={analysisBoardStore!.fen}
+            fen={state.fen!}
             turnColor={analysisBoardStore!.sideToPlay}
             onMove={onMove}
             movable={analysisBoardStore!.calcMovable()}

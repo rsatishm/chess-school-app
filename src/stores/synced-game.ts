@@ -2,6 +2,7 @@ import { observable, action, computed, autorun, makeObservable } from 'mobx'
 import { userStore } from './user'
 import _ from 'lodash'
 import { Chess } from 'chess.js'
+import * as _ChessJS from 'chess.js';
 import { RpcGameState, RpcGameMove, IRpcGame } from '../business-logic/IRpcGame'
 import RpcGame from '../business-logic/RpcGame'
 import { getTimeInSeconds, formattedResult } from '../utils/utils'
@@ -304,7 +305,9 @@ export class SyncedGameStore {
       return
     }
 
-    const chess = new Chess(this.fen)
+    //const chess = new Chess(this.fen)
+    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+    const chess = new ChessJS(this.fen)
     const promotion = metadata && metadata.promotion
     const move: any = {
       from: orig,

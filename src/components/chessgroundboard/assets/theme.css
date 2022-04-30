@@ -1,55 +1,42 @@
-/*
- * Board
+.cg-wrap cg-board {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgeG1sbnM6eD0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgIHZpZXdCb3g9IjAgMCA4IDgiICBzaGFwZS1yZW5kZXJpbmc9Imdlb21ldHJpY1ByZWNpc2lvbiI+PHJlY3Qgd2lkdGg9IjgiIGhlaWdodD0iOCIgZmlsbD0iI2I1ODg2MyIvPjxnIGlkPSJhIj4gIDxnIGlkPSJiIj4gICAgPGcgaWQ9ImMiPiAgICAgIDxnIGlkPSJkIj4gICAgICAgIDxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMGQ5YjUiIGlkPSJlIi8+ICAgICAgICA8dXNlIHg9IjIiIGhyZWY9IiNlIiB4OmhyZWY9IiNlIi8+ICAgICAgPC9nPiAgICAgIDx1c2UgeD0iNCIgaHJlZj0iI2QiIHg6aHJlZj0iI2QiLz4gICAgPC9nPiAgICA8dXNlIHg9IjEiIHk9IjEiIGhyZWY9IiNjIiB4OmhyZWY9IiNjIi8+ICA8L2c+ICA8dXNlIHk9IjIiIGhyZWY9IiNiIiB4OmhyZWY9IiNiIi8+PC9nPjx1c2UgeT0iNCIgaHJlZj0iI2EiIHg6aHJlZj0iI2EiLz48L3N2Zz4=");
+}
+/**
+ * Cburnett
  */
-.blue .cg-board-wrap {
-  background-image: url('images/board/blue.svg');
+piece.pawn.white {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wP.svg");
 }
-
-.brown .cg-board-wrap {
-  background-image: url('../static/images/board/brown.svg');
+piece.bishop.white {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wB.svg");
 }
-
-.green .cg-board-wrap {
-  background-image: url('../static/images/board/green.svg');
+piece.knight.white {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wN.svg");
 }
-
-.purple .cg-board-wrap {
-  background-image: url('../static/images/board/purple.svg');
+piece.rook.white {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wR.svg");
 }
-
-.merida .cg-board-wrap piece.pawn.white {
-  background-image: url('images/pieces/merida/wP.svg');
+piece.queen.white {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wQ.svg");
 }
-.merida .cg-board-wrap piece.bishop.white {
-  background-image: url('images/pieces/merida/wB.svg');
+piece.king.white {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/wK.svg");
 }
-.merida .cg-board-wrap piece.knight.white {
-  background-image: url('images/pieces/merida/wN.svg');
+piece.pawn.black {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bP.svg");
 }
-.merida .cg-board-wrap piece.rook.white {
-  background-image: url('images/pieces/merida/wR.svg');
+piece.bishop.black {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bB.svg");
 }
-.merida .cg-board-wrap piece.queen.white {
-  background-image: url('images/pieces/merida/wQ.svg');
+piece.knight.black {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bN.svg");
 }
-.merida .cg-board-wrap piece.king.white {
-  background-image: url('images/pieces/merida/wK.svg');
+piece.rook.black {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bR.svg");
 }
-.merida .cg-board-wrap piece.pawn.black {
-  background-image: url('images/pieces/merida/bP.svg');
+piece.queen.black {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bQ.svg");
 }
-.merida .cg-board-wrap piece.bishop.black {
-  background-image: url('images/pieces/merida/bB.svg');
-}
-.merida .cg-board-wrap piece.knight.black {
-  background-image: url('images/pieces/merida/bN.svg');
-}
-.merida .cg-board-wrap piece.rook.black {
-  background-image: url('images/pieces/merida/bR.svg');
-}
-.merida .cg-board-wrap piece.queen.black {
-  background-image: url('images/pieces/merida/bQ.svg');
-}
-.merida .cg-board-wrap piece.king.black {
-  background-image: url('images/pieces/merida/bK.svg');
+piece.king.black {
+  background-image: url("https://lichess1.org/assets/_MKI2V3/piece/cburnett/bK.svg");
 }

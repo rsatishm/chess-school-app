@@ -17,7 +17,7 @@ import wq from './pieces/wq.svg'
 import wr from './pieces/wr.svg'
 import arrow from './arrow.svg'
 import { Chess } from 'chess.js'
-
+import * as _ChessJS from 'chess.js';
 
 export interface ChessboardProps {
     width: number
@@ -401,7 +401,9 @@ export const Chessboard = (props: ChessboardProps = {
 
         if (props.onMove && !props.allowIllegal) {
             try {
-                const g = new Chess(props.fen)
+                //const g = new Chess(props.fen)
+                const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+                const g = new ChessJS(props.fen)
                 const side = g.turn()
                 const move = g.move({ from, to })
 
@@ -513,7 +515,9 @@ export const Chessboard = (props: ChessboardProps = {
 
             if (props.onMove && !props.allowIllegal) {
                 try {
-                    const g = new Chess(props.fen)
+                    //const g = new Chess(props.fen)
+                    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+                    const g = new ChessJS(props.fen)
                     const side = g.turn()
                     const move = g.move({ from, to })
 
@@ -614,7 +618,9 @@ export const Chessboard = (props: ChessboardProps = {
                 const to = getSquareLabel(file, rank)
 
                 if (props.onMove) {
-                    const g = new Chess(props.fen)
+                    //const g = new Chess(props.fen)
+                    const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+                    const g = new ChessJS(props.fen)
                     const move = g.move({
                         from,
                         to,
