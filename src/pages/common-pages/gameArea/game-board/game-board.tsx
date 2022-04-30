@@ -272,7 +272,7 @@ const GameBoard = (props: Props)=>{
 
 import { autorun } from 'mobx'
 import { formatTime } from '../../../../utils/utils'
-import ChessgroundBoard from '../../../../components/chessgroundboard/Chessgroundboard'
+import ChessgroundBoard from '../../../../components/chessgroundboard/chessgroundboard'
 
 interface TimerProps {
   name: String
