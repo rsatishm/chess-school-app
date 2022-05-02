@@ -28,8 +28,10 @@ export class GameEditor {
     if (path === null || path.length < 1) {
       return null
     }
-
+    console.log("State: " + JSON.stringify(this.state))
     let currMove = this.state.mainline[path[0][1]]
+    console.log("State.mainline: " + JSON.stringify(this.state.mainline))
+    console.log("CurrMove at path 0,1 " + JSON.stringify(currMove))
     if (currMove) {
       for (const [i, j] of R.drop(1, path)) {
         if (currMove.variations) {
@@ -40,7 +42,7 @@ export class GameEditor {
         }
       }
     }
-
+    console.log("Final curr move " + JSON.stringify(currMove))
     return currMove
   }
 
@@ -94,10 +96,12 @@ export class GameEditor {
       this.state.currentPath = null
     } else {
       const moveAtPath = this._getMoveAtPath(path)
+      console.log("MoveAtPath: " + JSON.stringify(moveAtPath))
       if (moveAtPath != null) {
         this.state.currentPath = path
       }
     }
+    console.log("New current path: " + this.state.currentPath)
   }
 
   getState() {
@@ -182,6 +186,12 @@ export class GameEditor {
     console.log("Move to insert: " + JSON.stringify(moveToInsert))
 
     if (moveToInsert != null) {
+      console.log("Current path: " + this.state.currentPath)
+      if (this.state.currentPath != null) {
+        console.log("add 1 to path: " + JSON.stringify(Util.addOneToPath(this.state.currentPath)))
+      } else {
+        console.log("Path is [[0, 0]]")
+      }
       const nextMove = this._getMoveAtPath(
         this.state.currentPath === null
           ? [[0, 0]]
@@ -190,18 +200,24 @@ export class GameEditor {
 
       if (!nextMove) {
         const variation = this._getVariationAtPath(this.state.currentPath)
+        console.log("variation: " + JSON.stringify(variation))
         const newPath =
           variation.length > 0
             ? Util.addOneToPath(variation[variation.length - 1].path)
             : [[0, 0]]
-        variation.push(
+            if (variation.length > 0) {
+              console.log("New path, add one to variation: " + JSON.stringify(newPath))
+            }
+        variation.push( 
           Util.truncateMoveFields({
             ...moveToInsert,
             path: newPath as ChessTypes.PlyPath
           })
         )
+        console.log("Variations: " + JSON.stringify(variation))
         this.gotoPath(R.last(variation)!.path)
       } else {
+        console.log("Get next move: " + JSON.stringify(nextMove))
         nextMove.variations = nextMove.variations || [] // Create variations array if not exists
         const newPath = [
           ...nextMove.path,
@@ -210,6 +226,7 @@ export class GameEditor {
         nextMove.variations.push([
           Util.truncateMoveFields({ ...moveToInsert, path: newPath })
         ])
+        console.log("New path: " + JSON.stringify(newPath))
         this.gotoPath(newPath)
       }
 
@@ -316,6 +333,13 @@ export class GameEditor {
       this.gotoPath(null)
     } else {
       const lastComponent = R.last(this.state.currentPath)!
+      console.log("last component: " + JSON.stringify(lastComponent))
+      console.log("Size of last component: " + lastComponent.length)
+      if (lastComponent[1] === 0) {
+        console.log("dropLast from current path: " + JSON.stringify(R.dropLast(1, this.state.currentPath)))
+      } else {
+        console.log("Subtract one from path: " + JSON.stringify(Util.subtractOneFromPath(this.state.currentPath)))
+      }
       this.gotoPath(
         lastComponent[1] === 0
           ? R.dropLast(1, this.state.currentPath)

@@ -80,13 +80,14 @@ export class AnalysisBoardStore {
     }
 
     const move = this.editor.getMoveAtPath(this.state.currentPath)
+    console.log("Move: " + JSON.stringify(move))
     this.fen = move ? move.fen : this.fen
   }
 
   move(move: ChessTypes.ChessJSVerboseInputMove) {
     var state = this.editor.getState()
-    console.log("state: " + JSON.stringify(state))
-    console.log("move: " + JSON.stringify(move))
+    console.log("Current state: " + JSON.stringify(state))
+    console.log("Move to: " + JSON.stringify(move))
     this.undoStack.push(JSON.stringify(state))
     this.editor.addMove(move /*, this.allowIllegalMoves */)
     this.updateState()
@@ -317,7 +318,7 @@ export class AnalysisBoardStore {
   }
 
   prev() {
-    console.log("prev")
+    console.log("prev: current state=>" + JSON.stringify(this.editor.getState()))
     this.editor.prev()
     this.updateState()
   }

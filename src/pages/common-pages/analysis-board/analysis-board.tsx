@@ -89,7 +89,7 @@ export const AnalysisBoard = ()=>{
       promotion: metadata && metadata.promotion
     })
     console.log("fen after update " + analysisBoardStore!.fen)
-    updateState({fen: analysisBoardStore!.fen})
+    updateBoard()
     //return {}
   }
 
@@ -103,6 +103,7 @@ export const AnalysisBoard = ()=>{
 
   const handleUndo = () => {
    analysisBoardStore!.undo()
+   updateBoard()
   }
 
   const handleSetupPosition = () => {
@@ -152,6 +153,7 @@ export const AnalysisBoard = ()=>{
   const handleNewGame = async () => {
     navigate(window.location.pathname) // remove gameUuid params
     await analysisBoardStore!.newGame()
+    updateBoard()
   }
 
   const handleUpdateGame = async () => {
@@ -165,6 +167,11 @@ export const AnalysisBoard = ()=>{
   
   const handleResetGame = async () => {
     await analysisBoardStore!.resetGame()
+    updateBoard()
+  }
+
+  const updateBoard = ()=>{
+    updateState({fen: analysisBoardStore!.fen})
   }
 
   const handleDuplicate = async () => {
@@ -223,6 +230,26 @@ export const AnalysisBoard = ()=>{
     )
   }
 
+  const backward = ()=>{
+    analysisBoardStore!.backward()
+    updateBoard()
+  }
+
+  const prev = ()=>{
+    analysisBoardStore!.prev()
+    updateBoard()
+  }
+
+  const next = ()=>{
+    analysisBoardStore!.next()
+    updateBoard()
+  }
+
+  const forward = ()=>{
+    analysisBoardStore!.forward()
+    updateBoard()
+  }  
+
   const renderContent = ()=>{
     console.log('board state', analysisBoardStore!.state)
     console.log("fen " + analysisBoardStore!.fen)
@@ -249,7 +276,7 @@ export const AnalysisBoard = ()=>{
                   icon={<FastBackwardOutlined/>}
                   type="ghost"
                   shape="circle"
-                  onClick={analysisBoardStore!.backward}
+                  onClick={backward}
                 />
               </Tooltip>
             </Col>
@@ -259,7 +286,7 @@ export const AnalysisBoard = ()=>{
                   icon={<BackwardOutlined/>}
                   type="ghost"
                   shape="circle"
-                  onClick={analysisBoardStore!.prev}
+                  onClick={prev}
                 />
               </Tooltip>
             </Col>
@@ -280,7 +307,7 @@ export const AnalysisBoard = ()=>{
                   icon={<ForwardOutlined/>}
                   type="ghost"
                   shape="circle"
-                  onClick={analysisBoardStore!.next}
+                  onClick={next}
                 />
               </Tooltip>
             </Col>
@@ -290,7 +317,7 @@ export const AnalysisBoard = ()=>{
                   icon={<FastForwardOutlined/>}
                   type="ghost"
                   shape="circle"
-                  onClick={analysisBoardStore!.forward}
+                  onClick={forward}
                 />
               </Tooltip>
             </Col>
