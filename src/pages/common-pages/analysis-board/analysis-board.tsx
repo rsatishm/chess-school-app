@@ -31,7 +31,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ChessgroundBoard from '../../../components/chessgroundboard/Chessgroundboard'
 import {BackwardOutlined, CopyFilled, FastBackwardOutlined, FastForwardFilled, FastForwardOutlined, ForwardFilled, ForwardOutlined, SwapOutlined } from '@ant-design/icons'
 import { GameboxDatabaseStore } from '../../../stores/gamebox-database'
+import TextArea from 'antd/lib/input/TextArea'
+import { PastePgn } from '../../../components/chessboard/PastePgn'
 //import { ChessgroundBoard } from '../../../components/chessgroundboard/SimpleChessgroundBoard'
+/////onChange, onPressEnter textarea style={{width: '400px'}} rows={15}
 
 const { TabPane } = Tabs
 
@@ -39,10 +42,12 @@ interface State {
   // moves: String
   modalState: string
   selectedDatabase: { uuid: string; name: string }
-  setupPositionModalVisible: boolean
+  setupPositionModalVisible: boolean,
+  pastePgnModalVisible: boolean,
   setupPositionFen: ChessTypes.FEN
   orientation: string,
-  fen?: string
+  fen?: string,
+  pgn?: string
 }
 
 export const AnalysisBoard = ()=>{
@@ -51,6 +56,7 @@ export const AnalysisBoard = ()=>{
     modalState: 'HIDDEN',
     selectedDatabase: { uuid: '', name: '' },
     setupPositionModalVisible: false,
+    pastePgnModalVisible: false,
     setupPositionFen: '',
     orientation: 'white'
     // moves: []
@@ -140,14 +146,17 @@ export const AnalysisBoard = ()=>{
 
   const handleDeleteVariation = (path: ChessTypes.PlyPath) => {
     analysisBoardStore!.deleteVariation(path)
+    updateBoard()
   }
 
   const handleAddComment = (path: ChessTypes.PlyPath, text: string) => {
     analysisBoardStore!.handleAddComment(path, text)
+    updateBoard()
   }
 
   const handleDeleteComment = (path: ChessTypes.PlyPath) => {
     analysisBoardStore!.handleDeleteComment(path)
+    updateBoard()
   }
 
   const handleNewGame = async () => {
@@ -250,6 +259,30 @@ export const AnalysisBoard = ()=>{
     updateBoard()
   }  
 
+  const pastePgn = ()=>{
+    updateState({
+      pastePgnModalVisible: true
+    })
+  }
+
+  const copyPgn = ()=>{
+
+  }
+
+  const handlePastePgnCancel = () => {
+    updateState({
+      pastePgnModalVisible: false
+    })
+  }
+
+  const handlePastePgnOk = (pgn: string) => {
+    console.log("Load game for pgn: " + pgn)
+    analysisBoardStore!.loadPgnText(pgn)
+    updateState({
+      pastePgnModalVisible: false
+    })
+  }
+
   const renderContent = ()=>{
     console.log('board state', analysisBoardStore!.state)
     console.log("fen " + analysisBoardStore!.fen)
@@ -321,7 +354,7 @@ export const AnalysisBoard = ()=>{
                 />
               </Tooltip>
             </Col>
-          </Row>
+          </Row>  ``
         </Col>
         <Col
           className="analysis-board--tabs"
@@ -385,6 +418,16 @@ export const AnalysisBoard = ()=>{
                 Undo
               </Button>
             </Col>
+            <Col className="operation-button">
+              <Button onClick={pastePgn} size="small">
+                Paste PGN game
+              </Button>
+            </Col>
+            <Col className="operation-button">
+              <Button onClick={copyPgn} size="small">
+                Copy PGN
+              </Button>
+            </Col>
           </Row>
 
           <Tabs type="card" defaultActiveKey="moves">
@@ -419,6 +462,7 @@ export const AnalysisBoard = ()=>{
 
   const handleGoToPath = (path: ChessTypes.PlyPath) => {
     analysisBoardStore!.gotoPath(path)
+    updateBoard()
   }
 
   const handleCreate = () => {
@@ -479,12 +523,12 @@ export const AnalysisBoard = ()=>{
         <KeyHandler
           keyEventName={KEYDOWN}
           keyValue="ArrowLeft"
-          onKeyHandle={analysisBoardStore!.prev}
+          onKeyHandle={prev}
         />
         <KeyHandler
           keyEventName={KEYDOWN}
           keyValue="ArrowRight"
-          onKeyHandle={analysisBoardStore!.next}
+          onKeyHandle={next}
         />
         <KeyHandler
           keyEventName={KEYDOWN}
@@ -494,12 +538,12 @@ export const AnalysisBoard = ()=>{
         <KeyHandler
           keyEventName={KEYDOWN}
           keyValue=","
-          onKeyHandle={analysisBoardStore!.backward}
+          onKeyHandle={backward}
         />
         <KeyHandler
           keyEventName={KEYDOWN}
           keyValue="."
-          onKeyHandle={analysisBoardStore!.forward}
+          onKeyHandle={forward}
         />
       </>
     )
@@ -545,6 +589,9 @@ export const AnalysisBoard = ()=>{
             </div>
           </Modal>
         )}
+        {state.pastePgnModalVisible && (
+          <PastePgn visible={state.pastePgnModalVisible} handleOk={handlePastePgnOk} handleCancel={handlePastePgnCancel}/>
+        )}        
       </Layout.Content>
     </Layout>
   )

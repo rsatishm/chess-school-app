@@ -29,8 +29,10 @@ export class GameEditor {
       return null
     }
     console.log("State: " + JSON.stringify(this.state))
-    let currMove = this.state.mainline[path[0][1]]
+    console.log("Path[0]: " + path[0])
+    console.log("Path[0][1]: " + path[0][1])
     console.log("State.mainline: " + JSON.stringify(this.state.mainline))
+    let currMove = this.state.mainline[path[0][1]]
     console.log("CurrMove at path 0,1 " + JSON.stringify(currMove))
     if (currMove) {
       for (const [i, j] of R.drop(1, path)) {

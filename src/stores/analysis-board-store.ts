@@ -23,6 +23,7 @@ import * as GameEditor from '../components/game-editor'
 import { ChessTypes } from '../types'
 import * as Util from '../utils/Util'
 import { TextAnnotation } from '../types/ChessTypes/ChessTypes'
+import * as PGNParser from '../components/PGNParser/PGNParser'
 
 export class AnalysisBoardStore {
   // @observable fen: string = Util.DEFAULT_START_FEN
@@ -381,6 +382,13 @@ export class AnalysisBoardStore {
       return true
     }
     return false
+  }
+
+  loadPgnText(pgnText : string) {
+    const game : ChessTypes.Game = PGNParser.parsePgn(pgnText)
+    console.log("Game: " + JSON.stringify(game))
+    this.editor.setGame(game)
+    this.updateState()
   }
 
   // @computed
