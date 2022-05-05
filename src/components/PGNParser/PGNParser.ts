@@ -3,6 +3,7 @@ import { map, addIndex, last, dropLast, head, drop } from 'ramda'
 import { ChessTypes } from '../../types'
 import * as Util from '../../utils/Util'
 import * as _ChessJS from 'chess.js';
+import { ConsoleSqlOutlined } from '@ant-design/icons';
 
 //import { Chess, ChessTypes, Util } from '../'
 
@@ -24,7 +25,8 @@ const getMoves = function getMoves(
   if (trimmed.length === 0) {
     return [[], startFen]
   }
-
+  console.log("StartFen:" + `[FEN "${startFen}"]`)
+  console.log("MoveText:" + `${moveText}`)
   //const g = new Chess()
   const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
 const g = new ChessJS()
@@ -32,19 +34,26 @@ const g = new ChessJS()
     [
       `[FEN "${startFen}"]`,
       '[SetUp "1"]',
-      `1. ${moveText}` // '1. ' Due to weird bugs in Chess.JS!
+      `\n`,
+      `${moveText}` // '1. ' Due to weird bugs in Chess.JS!
     ].join('\n'),
     { sloppy: true }
   )
 
   if (!loaded) {
+    console.log('--------------------')
+    console.log('PGN Parse Error: ')
+    console.log('startFEN: ', startFen)
+    console.log('moveText: ', moveText)
+    console.log('--------------------')
+    /*
     if (process && process.env.NODE_ENV !== 'production') {
       console.error('--------------------')
       console.error('PGN Parse Error: ')
       console.error('startFEN: ', startFen)
       console.error('moveText: ', moveText)
       console.error('--------------------')
-    }
+    }*/
     throw new Error('PGN failed to parse PGN')
   }
 
@@ -171,8 +180,13 @@ const extractVariation = function extractVariation(
       ch === '?' ||
       (ch === '-' && moveText.charAt(i + 1) === '-')
     ) {
+      console.log("AccumText: " + accumText)
+      console.log("CurrentFen: " + currentFen)
+      console.log("NextPath: " + nextPath)
       // Convert accumText into moves
       const [movesToConcat, lastFen] = getMoves(accumText, currentFen, nextPath)
+      console.log("MovesToConc: " + JSON.stringify(movesToConcat))
+      console.log("LastFen: " + JSON.stringify(lastFen))
       currentFen = lastFen
       moves = [...moves, ...movesToConcat]
       nextPath =
@@ -325,6 +339,8 @@ const extractMeta = function extractMeta(
   let hasEnteredMoveText = false
 
   const linesWithTag = pgnLines.reduce((acc, line) => {
+    console.log("acc: " + acc)
+    console.log("line: " + line)
     if (!hasEnteredMoveText && line.trim().startsWith('[')) {
       // ChessJS bug, Refer https://github.com/jhlywa/chess.js/pull/154
       if (
@@ -346,12 +362,16 @@ const extractMeta = function extractMeta(
     hasEnteredMoveText = true
     return acc
   }, [] as string[])
+  console.log("Lines with tag: " + linesWithTag)
 
   const header = linesWithTag.join('\n')
+  console.log("Header: " + header)
   //const g = new Chess()
   const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
   const g = new ChessJS()
   g.load_pgn(header)
+
+  console.log("PGN Header: " + JSON.stringify(g.header() as { [tag: string]: string }))
 
   return g.header() as { [tag: string]: string }
 }
@@ -387,6 +407,8 @@ const extractMainline = function extractMainline({
       hasEnteredMoveText = true
       return acc
     }, '')
+
+  console.log("move text: " + moveText)  
 
   const [mainline] = extractVariation(
     moveText,
@@ -513,8 +535,13 @@ export function parsePgn(pgnText: string): ChessTypes.Game {
           .toLowerCase()
           .startsWith('[setup')
     )
+  console.log("lines: " + lines)  
 
   const meta = extractMeta(lines)
+  console.log("meta: " + JSON.stringify(meta))
+  console.log("fen: " + formatFenString(
+    meta['FEN'] || meta['fen'] || meta['Fen'] || meta['StartFen']
+  ))
   const startFen =
     formatFenString(
       meta['FEN'] || meta['fen'] || meta['Fen'] || meta['StartFen']
