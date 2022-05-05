@@ -4,6 +4,7 @@ import { ChessTypes } from '../../types'
 import * as _ChessJS from 'chess.js';
 //import { ChessTypes, Chess, Util } from '../'
 import * as Util from '../../utils/Util'
+import { TextAnnotation } from '../../types/ChessTypes/ChessTypes';
 
 interface EditorState extends ChessTypes.Game {
   currentPath: ChessTypes.PlyPath | null
@@ -12,7 +13,6 @@ interface EditorState extends ChessTypes.Game {
 // Each method modifies the state of the game, akin to chess.js
 export class GameEditor {
   private state : EditorState;
-
   constructor(startFen: ChessTypes.FEN = Util.DEFAULT_START_FEN) {
     this.setGame({
       startFen,
@@ -349,4 +349,11 @@ export class GameEditor {
       )
     }
   }
+
+  pgn() {
+    console.log(JSON.stringify(this.state))
+    //return [this.header(), "\n", this.moves()].join('\n')
+    return Util.gameToPGN(this.state)
+  }
+
 }

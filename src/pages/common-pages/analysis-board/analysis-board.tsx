@@ -266,7 +266,9 @@ export const AnalysisBoard = ()=>{
   }
 
   const copyPgn = ()=>{
-
+    copy(analysisBoardStore!.pgn())
+    message.success('PGN Copied')
+    console.log(analysisBoardStore!.pgn())
   }
 
   const handlePastePgnCancel = () => {

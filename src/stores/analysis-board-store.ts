@@ -391,6 +391,10 @@ export class AnalysisBoardStore {
     this.updateState()
   }
 
+  pgn() {
+    return this.editor.pgn()
+  }
+
   // @computed
   // get annotationsAtCurrentPath() {
   //   if (this.currentPath) {

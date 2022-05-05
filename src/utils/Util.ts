@@ -285,6 +285,64 @@ export function variationToPGN(
   return pgn
 }
 
+export function gameToPGN(game: ChessTypes.Game) {
+  return ['[FEN "' + game.startFen + '"]', 
+  '\n', variationToPGN1(game.mainline, 0)].join('\n')
+}
+
+export function variationToPGN1(
+  variation: ChessTypes.Variation,
+  level: number
+): string {
+  if (!variation) {
+    return ''
+  }
+  
+
+  let pgn = variation
+    .map((m, i) => {
+      const nagAnnotations = R.filter(
+        a => a.type === 'NAG',
+        m.annotations || []
+      )
+      const textAnnotations = R.filter(
+        a => a.type === 'TEXT',
+        m.annotations || []
+      )
+
+      let c = ''
+
+      if (m.side === 'w') {
+        c += `${getFullMoveNumber(m.fen)}. `
+      } else if (m.side === 'b' && i === 0) {
+        c += `${(getFullMoveNumber(m.fen) as any) - 1}... `
+      }
+
+      c += m.san
+
+      if (nagAnnotations.length > 0) {
+        c += ` ${nagAnnotations.join(' ')}`
+      }
+
+      if (textAnnotations.length > 0) {
+        c += ` {${(textAnnotations[0] as ChessTypes.TextAnnotation).body}}`
+      }
+
+      if (m.variations && m.variations.length > 0) {
+        c += ' ' + m.variations.map(v => variationToPGN(v, level + 1)).join(' ')
+      }
+
+      return c
+    })
+    .join(' ')
+
+  if (level > 0) {
+    pgn = `( ${pgn} )`
+  }
+
+  return pgn
+}
+
 /**
  * Add a given number to the path
  * @param path
