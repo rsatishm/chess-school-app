@@ -7,12 +7,8 @@ import { Dashboard } from '../dashboard/dashboard';
 import { Academy } from './academy/academy';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { useState } from 'react';
-import { AnalysisBoardTest } from '../common-pages/analysis-board/analysis-board-test';
 import { Chessboard } from '../../components/chessboard/Chessboard';
-import {Chess} from '../../components/chessboard/Chess'
 import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
-import ChessgroundBoard from '../../components/chessgroundboard/ChessgroundBoard';
-import XChessground from '../../components/chessgroundboard/XChessground';
 import { ChessboardDemo } from '../../components/chessgroundboard/ChessboardDemo';
 
 interface Props {

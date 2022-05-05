@@ -28,10 +28,8 @@ import { ChessTypes } from '../../../types'
 import { SquareLabel } from '../../../types/ChessTypes/ChessTypes'
 import { SaveGameForm } from './save-game-modal'
 import { useLocation, useNavigate } from 'react-router-dom'
-import ChessgroundBoard from '../../../components/chessgroundboard/ChessgroundBoard'
+import Chessgroundboard from '../../../components/chessgroundboard/Chessgroundboard'
 import {BackwardOutlined, CopyFilled, FastBackwardOutlined, FastForwardFilled, FastForwardOutlined, ForwardFilled, ForwardOutlined, SwapOutlined } from '@ant-design/icons'
-import { GameboxDatabaseStore } from '../../../stores/gamebox-database'
-import TextArea from 'antd/lib/input/TextArea'
 import { PastePgn } from '../../../components/chessboard/PastePgn'
 //import { ChessgroundBoard } from '../../../components/chessgroundboard/SimpleChessgroundBoard'
 /////onChange, onPressEnter textarea style={{width: '400px'}} rows={15}
@@ -292,7 +290,7 @@ export const AnalysisBoard = ()=>{
     return (
       <Row className="analysis-board scoresheet-container">
         <Col md={{ span: 12, offset: 2 }} sm={24}>
-          <ChessgroundBoard
+          <Chessgroundboard
             height={600}
             width={600}
             orientation={state.orientation}

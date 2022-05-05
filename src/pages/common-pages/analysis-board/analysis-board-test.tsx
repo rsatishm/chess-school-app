@@ -7,7 +7,7 @@ import queen from "../../../components/chessgroundboard/assets/images/pieces/mer
 import rook from "../../../components/chessgroundboard/assets/images/pieces/merida/wR.svg"
 import bishop from "../../../components/chessgroundboard/assets/images/pieces/merida/wB.svg"
 import knight from "../../../components/chessgroundboard/assets/images/pieces/merida/wN.svg"
-import ChessgroundBoard from '../../../components/chessgroundboard/ChessgroundBoard'
+import Chessgroundboard from '../../../components/chessgroundboard/Chessgroundboard'
 
 
 export const AnalysisBoardTest = () => {  
@@ -77,7 +77,7 @@ export const AnalysisBoardTest = () => {
     <div style={{ background: "#2b313c", height: "100vh" }}>
       <Col span={6} />
       <Col span={12} style={{ top: "10%" }}>
-        <ChessgroundBoard
+        <Chessgroundboard
           width="38vw"
           height="38vw"
           orientation=""

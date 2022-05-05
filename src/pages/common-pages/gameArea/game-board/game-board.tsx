@@ -221,7 +221,7 @@ const GameBoard = (props: Props)=>{
         {topPanel}
         {topTimer}
         <Spin spinning={syncedGameStore!.loading}>
-          <ChessgroundBoard
+          <Chessgroundboard
             onMove={onMove}
             fen={syncedGameStore!.fen}
             turnColor={syncedGameStore!.playerColor}
@@ -272,7 +272,7 @@ const GameBoard = (props: Props)=>{
 
 import { autorun } from 'mobx'
 import { formatTime } from '../../../../utils/utils'
-import ChessgroundBoard from '../../../../components/chessgroundboard/ChessgroundBoard'
+import Chessgroundboard from '../../../../components/chessgroundboard/Chessgroundboard'
 
 interface TimerProps {
   name: String

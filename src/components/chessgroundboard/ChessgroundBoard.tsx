@@ -60,7 +60,7 @@ interface State {
   }
 }
 
-const ChessgroundBoard = (props: Props) => {
+const Chessgroundboard = (props: Props) => {
   let boardContainer = useRef(null)
 
   const [state, setState] = useState<State>({
@@ -272,4 +272,4 @@ const ChessgroundBoard = (props: Props) => {
   )
 }
 
-export default ChessgroundBoard
+export default Chessgroundboard
