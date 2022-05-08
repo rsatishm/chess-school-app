@@ -128,7 +128,8 @@ export const AnalysisBoard = ()=>{
     analysisBoardStore!.loadFen(state.setupPositionFen)
     updateState({
       setupPositionModalVisible: false,
-      setupPositionFen: ''
+      setupPositionFen: '',
+      fen: analysisBoardStore!.fen
     })
   }
 

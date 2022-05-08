@@ -47,26 +47,31 @@ interface State {
     dragEvent?: DragEvent
 }
 
-export const Chessboard = (props: ChessboardProps = {
-    width: 300,
-    height: 300,
-    fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-    orientation: 'w',
-    coordinates: false,
-    lightSquareColor: '#f0d9b5',
-    darkSquareColor: '#b58863',
-    interactionMode: 'NONE',
-    squareHighlights: [],
-    arrows: [],
-    showSideToMove: false,
-    allowIllegal: false,
-    blindfold: false
-}) => {
+export const Chessboard = (props: ChessboardProps) => {
+    const {
+        width,
+        height,
+        fen,
+        onMove,
+        onArrowChange,
+        orientation= 'w',
+        coordinates= false,
+        lightSquareColor= '#f0d9b5',
+        darkSquareColor= '#b58863',
+        interactionMode= 'NONE',
+        squareHighlights= [],
+        arrows= [],
+        showSideToMove= false,
+        allowIllegal= false,
+        blindfold= false
+    } = props
+
+    console.log("default orientation " + orientation)
     const interactionLayerRef: RefObject<HTMLDivElement> = useRef(null)
     const HIGHLIGHT_COLOR = '#208530'
     const [state, setState] = useState<State>({ fromRank: -1, fromFile: -1 })
     const getSize = () => {
-        return Math.min(props.width, props.height)
+        return Math.min(width, height)
     }
     const size = getSize()
     const fullSize = size
@@ -93,28 +98,28 @@ export const Chessboard = (props: ChessboardProps = {
     }
 
     const getSquareFill = (rank: number, file: number): string => {
-        console.log("r: " + rank + ", f: " + file)
+        //console.log("r: " + rank + ", f: " + file)
         if (rank % 2 === 0 && file % 2 === 0) {
-            console.log("D")
-            return props.darkSquareColor!
+            //console.log("D")
+            return darkSquareColor!
         }
 
         if (rank % 2 === 0 && file % 2 !== 0) {
-            console.log("L")
-            return props.lightSquareColor!
+            //console.log("L")
+            return lightSquareColor!
         }
 
         if (rank % 2 !== 0 && file % 2 === 0) {
-            console.log("L")
-            return props.lightSquareColor!
+            //console.log("L")
+            return lightSquareColor!
         }
 
         if (rank % 2 !== 0 && file % 2 !== 0) {
-            console.log("D")
-            return props.darkSquareColor!
+            //console.log("D")
+            return darkSquareColor!
         }
 
-        console.log("M")
+        //console.log("M")
 
         return ''
     }
@@ -127,14 +132,14 @@ export const Chessboard = (props: ChessboardProps = {
         const squareSize = getSquareSize()
 
         if (svg) {
-            if (props.orientation === 'w') {
+            if (orientation === 'w') {
                 return [file * squareSize, (7 - rank) * squareSize]
             }
 
             return [(7 - file) * squareSize, rank * squareSize]
         }
 
-        if (props.orientation === 'w') {
+        if (orientation === 'w') {
             return [file * squareSize, rank * squareSize]
         }
 
@@ -183,7 +188,7 @@ export const Chessboard = (props: ChessboardProps = {
 
     const renderRankCoordinates = () => {
         const squareSize = getSquareSize()
-        const file = props.orientation === 'w' ? 0 : 7
+        const file = orientation === 'w' ? 0 : 7
 
         const texts = []
         for (let rank = 0; rank < 8; rank++) {
@@ -208,11 +213,11 @@ export const Chessboard = (props: ChessboardProps = {
 
     const renderFileCoordinates = () => {
         const squareSize = getSquareSize()
-        const rank = props.orientation === 'w' ? 0 : 7
-
+        const rank = orientation === 'w' ? 0 : 7
+console.log("orientation: " + orientation)
         const texts = []
         for (let file = 0; file < 8; file++) {
-            console.log("Label: " + getFileChar(file) + getRankChar(rank))
+            //console.log("Label: " + getFileChar(file) + getRankChar(rank))
             texts.push(
                 <text
                     x={
@@ -250,11 +255,11 @@ export const Chessboard = (props: ChessboardProps = {
 
     const renderSquareHighlights = () => {
         const squareSize = getSquareSize()
-        if (props.squareHighlights === undefined) {
+        if (squareHighlights === undefined) {
             return
         }
 
-        return props.squareHighlights!.map(a => {
+        return squareHighlights!.map(a => {
             const [file, rank] = getFileRank(a.square)
             return (
                 <rect
@@ -276,11 +281,11 @@ export const Chessboard = (props: ChessboardProps = {
         const halfSize = squareSize * 0.5
         const arrowSize = squareSize / 8
 
-        if (props.arrows === undefined) {
+        if (arrows === undefined) {
             return
         }
 
-        return props.arrows!.map(a => {
+        return arrows!.map(a => {
             const [fromFile, fromRank] = getFileRank(a.from)
             const [fromX, fromY] = getTopLeftCoordinates(fromRank, fromFile)
             const [toFile, toRank] = getFileRank(a.to)
@@ -307,20 +312,20 @@ export const Chessboard = (props: ChessboardProps = {
         const squareSize = getSquareSize()
 
         let piecePlacement = ''
-        console.log(!fen)
-        console.log("fen:" + fen)
-        console.log(fen.split(' '))
+        //console.log(!fen)
+        //console.log("fen:" + fen)
+        //console.log(fen.split(' '))
         if (!fen || fen.split(' ').length === 0) {
             piecePlacement = '8/8/8/8/8/8/8/8'
         } else {
             piecePlacement = fen.split(' ')[0]
-            console.log(piecePlacement.split('/'))
+            //console.log(piecePlacement.split('/'))
             if (piecePlacement.split('/').length < 8) {
                 piecePlacement = '8/8/8/8/8/8/8/8'
             }
         }
 
-        console.log(piecePlacement.replace(/8/gi, '44').replace(/4/gi, '22').replace(/2/gi, '11'))
+        //console.log(piecePlacement.replace(/8/gi, '44').replace(/4/gi, '22').replace(/2/gi, '11'))
 
         const pieces = []
         const ranks = piecePlacement
@@ -333,14 +338,14 @@ export const Chessboard = (props: ChessboardProps = {
             .replace(/2/gi, '11')
             .split('/')
 
-        console.log(ranks)
+        //console.log(ranks)
 
         for (let i = 7; i >= 0; i--) {
             const fenChars = ranks[i].split('')
             for (let j = 0; j < 8; j++) {
                 const src = getImageSourceForFenChar(fenChars[j])
                 if (src) {
-                    console.log("piece: " + `${i}${j}${fenChars[j]}`)
+                    //console.log("piece: " + `${i}${j}${fenChars[j]}`)
                     pieces.push(
                         <img
                             key={`${i}${j}${fenChars[j]}`}
@@ -399,16 +404,16 @@ export const Chessboard = (props: ChessboardProps = {
         const from = getSquareLabel(state.fromFile, state.fromRank)
         const to = getSquareLabel(file, rank)
 
-        if (props.onMove && !props.allowIllegal) {
+        if (onMove && !allowIllegal) {
             try {
-                //const g = new Chess(props.fen)
+                //const g = new Chess(fen)
                 const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
-                const g = new ChessJS(props.fen)
+                const g = new ChessJS(fen)
                 const side = g.turn()
                 const move = g.move({ from, to })
 
                 if (move) {
-                    props.onMove(move)
+                    onMove(move)
                 } else if (g.move({ from, to, promotion: 'q' })) {
                     // Look for promotion
                     setState((prevState) => {
@@ -421,10 +426,10 @@ export const Chessboard = (props: ChessboardProps = {
             }
         }
 
-        if (props.onMove && props.allowIllegal && from !== to) {
-            const piece = Util.getFenSquareOccupation(props.fen, from)
+        if (onMove && allowIllegal && from !== to) {
+            const piece = Util.getFenSquareOccupation(fen, from)
             if (piece) {
-                props.onMove({
+                onMove({
                     type: piece.type,
                     color: piece.color,
                     from,
@@ -444,7 +449,7 @@ export const Chessboard = (props: ChessboardProps = {
         const squareLabel = getSquareLabel(file, rank)
 
         // TODO: Find a solution for preview image
-        const piece = Util.getFenSquareOccupation(props.fen, squareLabel)
+        const piece = Util.getFenSquareOccupation(fen, squareLabel)
         if (piece) {
             const dragPreview = document.createElement('img')
             const pieceSrc = getImageSourceForFenChar(
@@ -492,12 +497,12 @@ export const Chessboard = (props: ChessboardProps = {
         boardOffsetX: number,
         boardOffsetY: number
     ): [number, number] => {
-        const squareSize = Math.min(props.width, props.height) / 8
+        const squareSize = Math.min(width, height) / 8
         const rank = Math.floor(boardOffsetY / squareSize)
         const file = Math.floor(boardOffsetX / squareSize)
 
         if (rank >= 0 && rank <= 7 && file >= 0 && file <= 7) {
-            return props.orientation === 'w'
+            return orientation === 'w'
                 ? [7 - rank, file]
                 : [rank, 7 - file]
         }
@@ -513,16 +518,16 @@ export const Chessboard = (props: ChessboardProps = {
             const from = getSquareLabel(state.fromFile, state.fromRank)
             const to = getSquareLabel(file, rank)
 
-            if (props.onMove && !props.allowIllegal) {
+            if (onMove && !allowIllegal) {
                 try {
-                    //const g = new Chess(props.fen)
+                    //const g = new Chess(fen)
                     const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
-                    const g = new ChessJS(props.fen)
+                    const g = new ChessJS(fen)
                     const side = g.turn()
                     const move = g.move({ from, to })
 
                     if (move) {
-                        props.onMove(move)
+                        onMove(move)
                     } else if (g.move({ from, to, promotion: 'q' })) {
                         // Look for promotion
                         setState((prevState) => {
@@ -535,10 +540,10 @@ export const Chessboard = (props: ChessboardProps = {
                 }
             }
 
-            if (props.onMove && props.allowIllegal && from !== to) {
-                const piece = Util.getFenSquareOccupation(props.fen, from)
+            if (onMove && allowIllegal && from !== to) {
+                const piece = Util.getFenSquareOccupation(fen, from)
                 if (piece) {
-                    props.onMove({
+                    onMove({
                         type: piece.type,
                         color: piece.color,
                         from,
@@ -551,7 +556,7 @@ export const Chessboard = (props: ChessboardProps = {
             })
         } else {
             const squareLabel = getSquareLabel(file, rank)
-            const piece = Util.getFenSquareOccupation(props.fen, squareLabel)
+            const piece = Util.getFenSquareOccupation(fen, squareLabel)
 
             if (piece) {
                 setState((prevState) => {
@@ -617,17 +622,17 @@ export const Chessboard = (props: ChessboardProps = {
                 )
                 const to = getSquareLabel(file, rank)
 
-                if (props.onMove) {
-                    //const g = new Chess(props.fen)
+                if (onMove) {
+                    //const g = new Chess(fen)
                     const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
-                    const g = new ChessJS(props.fen)
+                    const g = new ChessJS(fen)
                     const move = g.move({
                         from,
                         to,
                         promotion: piece.toLowerCase() as ChessTypes.ChessJSPromotionPiece
                     })
                     if (move) {
-                        props.onMove(move)
+                        onMove(move)
                     }
                 }
             }
@@ -732,25 +737,25 @@ export const Chessboard = (props: ChessboardProps = {
         const from = getSquareLabel(state.fromFile, state.fromRank)
         const to = getSquareLabel(file, rank)
         const color = getColorForMouseEvent(e)
-        if (props.onArrowChange) {
+        if (onArrowChange) {
             if (file >= 0 && file <= 7 && rank >= 0 && rank <= 7) {
-                const existingAnnotation = props.arrows!.filter(
+                const existingAnnotation = arrows!.filter(
                     a => a.from === from && a.to === to && a.color === color
                 )
 
                 const newAnnotations =
                     existingAnnotation.length > 0
-                        ? props.arrows!.filter(
+                        ? arrows!.filter(
                             a => !(a.from === from && a.to === to)
                         )
                         : [
-                            ...props.arrows!.filter(
+                            ...arrows!.filter(
                                 a => !(a.from === from && a.to === to)
                             ),
                             { type: 'ARROW', color, from, to }
                         ]
 
-                props.onArrowChange(newAnnotations as ChessTypes.ArrowAnnotation[])
+                onArrowChange(newAnnotations as ChessTypes.ArrowAnnotation[])
             }
         }
     }, [state.dragEvent])
@@ -789,14 +794,14 @@ export const Chessboard = (props: ChessboardProps = {
         return sources
     }
 
-    return <div className={`ChessboardContainer orientation-${props.orientation} interaction-mode-${props.interactionMode.toLowerCase()}`}
+    return <div className={`ChessboardContainer orientation-${orientation} interaction-mode-${interactionMode.toLowerCase()}`}
         style={{ width: fullSize, height: fullSize }}>
-        <div className={`Chessboard ${props.coordinates ? 'Coordinates' : ''}`}
+        <div className={`Chessboard ${coordinates ? 'Coordinates' : ''}`}
             style={{ width: size, height: size }}>
             <div className="Squares Layer">
                 <svg width={size} height={size}>
                     {renderSquares()}
-                    {props.interactionMode === 'MOVE' ? renderSelectedSquare() : null}
+                    {interactionMode === 'MOVE' ? renderSelectedSquare() : null}
                 </svg>
             </div>
             <div className="FileCoordinates Layer">
@@ -857,12 +862,12 @@ export const Chessboard = (props: ChessboardProps = {
                     {renderArrows()}
                 </svg>
             </div>
-            {!props.blindfold && (
+            {!blindfold && (
                 <div className="Pieces Layer">
-                    {renderPieces(props.fen)}
+                    {renderPieces(fen)}
                 </div>
             )}
-            {props.interactionMode === 'ARROW' ? (
+            {interactionMode === 'ARROW' ? (
                 <div
                     ref={interactionLayerRef}
                     className="Interaction Layer"
@@ -871,7 +876,7 @@ export const Chessboard = (props: ChessboardProps = {
                     {renderArrowInteractionEventSource()}
                 </div>
             ) : null}
-            {props.interactionMode === 'MOVE' ? (
+            {interactionMode === 'MOVE' ? (
                 <div
                     ref={interactionLayerRef}
                     className="Interaction Layer"
@@ -880,7 +885,7 @@ export const Chessboard = (props: ChessboardProps = {
                     {renderMoveInteractionEventSource()}
                 </div>
             ) : null}
-            {props.interactionMode === 'MOVE' &&
+            {interactionMode === 'MOVE' &&
                 state.promotionPrompt ? (
                 <div
                     className="PromotionPrompt Layer"

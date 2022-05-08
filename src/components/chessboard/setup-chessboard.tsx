@@ -35,15 +35,12 @@ interface State {
   selectedPieceFenChar: string | null
 }
 
-export const SetupChessboard = (props: Props = {
-  width: 30,
-  height: 30,
-  lightSquareColor: '#f0d9b5',
-  darkSquareColor: '#b58863',
-  initialFen: '8/8/8/8/8/8/8/8 w KQkq - 0 1'
-}) => {
+export const SetupChessboard = (props: Props) => {
+  const {
+    initialFen= '8/8/8/8/8/8/8/8 w KQkq - 0 1'
+  } = props
   const [state, setState] = useState<State>({
-    fen: props.initialFen!,
+    fen: initialFen!,
     selectedPieceFenChar: null
   })
   const interactionLayerRef: React.RefObject<HTMLDivElement> = useRef(null)
@@ -143,7 +140,10 @@ export const SetupChessboard = (props: Props = {
   const setStateFen = (fen: ChessTypes.FEN) => updateState({
     fen: cleanFenWithCastlingRights(fen)
   })
-
+  useEffect(() => {
+    backingGame.load(state.fen)
+    props.onChange && props.onChange(state.fen)
+  }, [state.fen])
 
   const renderSquareClicks = () => {
     const squareSize = getSquareSize()
@@ -412,7 +412,7 @@ export const SetupChessboard = (props: Props = {
   }
 
   const handleResetButton = () => {
-    backingGame.load(props.initialFen!)
+    backingGame.load(initialFen!)
     setStateFen(backingGame.fen())
   }
 
