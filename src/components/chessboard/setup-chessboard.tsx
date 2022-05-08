@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Input, Checkbox, Button, Select, message } from 'antd'
+import { Input, Checkbox, Button, Select, message, Row, Col } from 'antd'
 
 import clearPieceSvg from './pieces/1.svg'
 import bb from './pieces/bb.svg'
@@ -218,24 +218,37 @@ export const SetupChessboard = (props: Props) => {
     )
   }
 
-  const handleFenTextChange = (e: any) => {
+  const handleFenLoad = () => {
+    const fen = fenField.current!['input']['value']
+    if (fen) {
+      setFen(fen)
+    }
+  }
+
+  const handleFenTextChangeOnEnter = (e: any) => {
+    setFen(e.target.value)
+  }
+
+  const setFen = (fen: ChessTypes.FEN) => {
     //const chess = new Chess()
     const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
     const chess = new ChessJS()
-    const isValid = chess.validate_fen(e.target.value)
+    const isValid = chess.validate_fen(fen)
     if (isValid.valid == true) {
       if (
-        state.fen.indexOf(e.target.value) >= 0 ||
-        e.target.value.indexOf(state.fen) >= 0
+        state.fen.indexOf(fen) >= 0 ||
+        fen.indexOf(state.fen) >= 0
       ) {
         // If substring, dont do anything
       } else {
-        setStateFen(e.target.value)
+        setStateFen(fen)
       }
     } else {
       message.error('Invalid Fen')
     }
   }
+
+  const fenField = useRef(null)
 
   const handlePGNTextChange = (e: any) => {
     const pgn = e.target.value
@@ -590,14 +603,24 @@ export const SetupChessboard = (props: Props) => {
         </div>
         <div className="bottom-container" style={{ marginTop: -10 }}>
           <span className="label">FEN</span>
+          <Row>
+            <Col>
           <Input
-            style={{ width: 500, margin: '0 auto', display: 'block' }}
+            ref={fenField}
+            style={{ width: 500, margin: '0 auto', display: 'block' }}          
             defaultValue={state.fen}
-            onPressEnter={handleFenTextChange}
+            onPressEnter={handleFenTextChangeOnEnter}
           // onFocus={this.handleFenInputFocus}
           />
+          </Col>
+          <Col>
+          <Button onClick={handleFenLoad} type="primary">
+            Load
+          </Button>
+          </Col>
+          </Row>
+          </div>
           <p>Type or paste FEN and press 'Enter' </p>
-        </div>
         <div className="bottom-container" style={{ marginTop: -10 }}>
           <span className="label">PGN moves</span>
           <Input
