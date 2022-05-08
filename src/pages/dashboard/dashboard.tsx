@@ -1,7 +1,7 @@
 import { Layout, Tooltip, Modal } from 'antd'
 import { AppstoreOutlined, BarChartOutlined, DatabaseOutlined, EyeOutlined, 
   FireOutlined, FlagOutlined, HomeOutlined, InboxOutlined, LoadingOutlined, 
-  LogoutOutlined, PlaySquareOutlined, SettingOutlined, TableOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+  LogoutOutlined, PlaySquareOutlined, SettingOutlined, TableOutlined, UsergroupAddOutlined, CustomerServiceFilled } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom'
 import { observer } from 'mobx-react'
 
@@ -80,8 +80,18 @@ export const Dashboard = observer(() => {
           title="Manage your students, integrate and publish a customized website"
         >
           <div className="app" onClick={handleClick('/app/academy')}>
-            <HomeOutlined />
+            <HomeOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Academy</span>
+          </div>
+        </Tooltip>
+
+        <Tooltip
+          overlayClassName="big-tooltip"
+          title="Connect with your students"
+        >
+          <div className="app" onClick={handleClick('/app/classrooms')}>
+            <CustomerServiceFilled style={{ fontSize: '300%'}}/>
+            <span className="nav-text">Classroom</span>
           </div>
         </Tooltip>
 
@@ -90,14 +100,14 @@ export const Dashboard = observer(() => {
           title="Assign homework and track progress down every single move of your students"
         >
           <div className="app" onClick={handleClick('/app/assignment')}>
-            <FlagOutlined />
+            <FlagOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Assignment</span>
           </div>
         </Tooltip>
 
         <Tooltip overlayClassName="big-tooltip" title="Practice">
           <div className="app" onClick={handleClick('/app/practice')}>
-            <FireOutlined />
+            <FireOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Practice</span>
           </div>
         </Tooltip>
@@ -107,7 +117,7 @@ export const Dashboard = observer(() => {
           title="Chess Board for analysis"
         >
           <div className="app" onClick={handleClick('/app/board')}>
-            <AppstoreOutlined />
+            <AppstoreOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Board</span>
           </div>
         </Tooltip>
@@ -117,7 +127,7 @@ export const Dashboard = observer(() => {
           title="Collaboration with shared databases"
         >
           <div className="app" onClick={handleClick('/app/sharebox')}>
-            <InboxOutlined />
+            <InboxOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Sharebox</span>
           </div>
         </Tooltip>
@@ -127,7 +137,7 @@ export const Dashboard = observer(() => {
           title="Select from a huge range of problems, hand picked for beginners to advanced"
         >
           <div className="app" onClick={handleClick('/app/problembase')}>
-            <TableOutlined />
+            <TableOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Problembase</span>
           </div>
         </Tooltip>
@@ -137,7 +147,7 @@ export const Dashboard = observer(() => {
           title="Create and access games of your own or from our huge collection"
         >
           <div className="app" onClick={handleClick('/app/gamebase')}>
-            <DatabaseOutlined />
+            <DatabaseOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Gamebase</span>
           </div>
         </Tooltip>
@@ -147,14 +157,14 @@ export const Dashboard = observer(() => {
           title="Play games with members of your academy"
         >
           <div className="app" onClick={handleClick('/app/game-area')}>
-            <PlaySquareOutlined />
+            <PlaySquareOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Game Area</span>
           </div>
         </Tooltip>
 
         <Tooltip title="Improve your visualization skills by playing blindfold">
           <div className="app" onClick={handleClick('/app/blindbot')}>
-            <EyeOutlined />
+            <EyeOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Blindbot</span>
           </div>
         </Tooltip>
@@ -164,7 +174,7 @@ export const Dashboard = observer(() => {
           title="Student Reports"
         >
           <div className="app" onClick={handleClick('/app/reports')}>
-            <BarChartOutlined />
+            <BarChartOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Reports</span>
           </div>
         </Tooltip>
@@ -174,7 +184,7 @@ export const Dashboard = observer(() => {
           title="Enhance your experience by listing out your preference"
         >
           <div className="app" onClick={handleClick('/app/preferences')}>
-            <SettingOutlined />
+            <SettingOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Settings</span>
           </div>
         </Tooltip>
@@ -183,7 +193,7 @@ export const Dashboard = observer(() => {
           title="Tournaments"
         >
           <div className="app" onClick={handleClick('/app/tournaments')}>
-            <UsergroupAddOutlined />
+            <UsergroupAddOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Tournaments</span>
           </div>
         </Tooltip>
@@ -192,7 +202,7 @@ export const Dashboard = observer(() => {
           title="End the login session"
         >
           <div className="app" onClick={confirmLogout}>
-            <LogoutOutlined />
+            <LogoutOutlined style={{ fontSize: '300%'}}/>
             <span className="nav-text">Logout</span>
           </div>
         </Tooltip>
