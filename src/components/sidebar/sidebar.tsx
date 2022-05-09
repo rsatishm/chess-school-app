@@ -8,7 +8,7 @@ import Announcements from '../announcements/announcements'
 import { StudentAssignmentStore } from '../../stores/student-assignment'
 import { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import Icon, { AppstoreOutlined, BarChartOutlined, CustomerServiceOutlined, DashboardOutlined, DatabaseOutlined, DollarOutlined, EyeOutlined, FireOutlined, FlagOutlined, HomeOutlined, InboxOutlined, LogoutOutlined, PlaySquareOutlined, SettingFilled, TableOutlined, TeamOutlined, UsergroupAddOutlined } from '@ant-design/icons'
+import Icon, { AntDesignOutlined, AppstoreOutlined, BarChartOutlined, CustomerServiceOutlined, DashboardOutlined, DatabaseOutlined, DollarOutlined, EyeOutlined, FireOutlined, FlagOutlined, HomeOutlined, InboxOutlined, LogoutOutlined, PlaySquareOutlined, SettingFilled, TableOutlined, TeamOutlined, UsergroupAddOutlined } from '@ant-design/icons'
 
 const { Sider } = Layout
 
@@ -356,6 +356,14 @@ export const Sidebar = ()=>{
           >
             <LogoutOutlined style={iconStyle} />
             <span className="nav-text">Logout</span>
+          </Menu.Item>
+
+          <Menu.Item
+            key="antd"
+            onClick={handleClick('/app/antd')}
+          >
+            <AntDesignOutlined style={iconStyle} />
+            <span className="nav-text">Antd Examples</span>
           </Menu.Item>
         </Menu>
       </Sider>

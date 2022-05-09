@@ -1,4 +1,4 @@
-import { Layout, Button } from 'antd'
+import { Layout, Button, PageHeader } from 'antd'
 import { ExceptionOutlined } from '@ant-design/icons';
 import { Route, Routes } from 'react-router-dom'
 import { observer } from 'mobx-react'
@@ -12,6 +12,11 @@ import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
 import { ChessboardDemo } from '../../components/chessgroundboard/ChessboardDemo';
 import { Classrooms } from './classtooms/classrooms';
 import { CreateClassRoom } from './classtooms/create-classroom-form';
+import { AntdExamples } from '../antd-examples/antd-examples';
+import { AntdPageHeader } from '../antd-examples/page-header/page-header';
+import { AntdPageHeaderActions } from '../antd-examples/page-header/actions';
+import { AntdPageHeaderBasic } from '../antd-examples/page-header/basic';
+import { AntdRoute } from '../antd-examples/antd-route';
 
 interface Props {
   userStore?: UserStore
@@ -151,6 +156,9 @@ export const CoachApp = observer(() => {
           path="/tournaments"
           element={<TournamentListingWithRouter/>}
         />
+        <Route
+          path="/antd/*"
+          element={<AntdRoute/>}/>
         <Route
           path="/*"
           element={<Dashboard />}
