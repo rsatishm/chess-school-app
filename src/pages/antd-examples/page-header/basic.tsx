@@ -1,4 +1,5 @@
 import { PageHeader } from "antd"
+import './basic.css'
 
 export const AntdPageHeaderBasic = ()=>{
 return <PageHeader

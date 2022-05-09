@@ -4,6 +4,8 @@ import { AntdPageHeaderActions } from "./actions";
 import { AntdPageHeaderBasic } from "./basic";
 import { AntPageHeaderdBreadcrumb } from "./breadcrumb";
 import { AntdPageHeaderContent } from "./content";
+import { AntdPageHeaderGhost } from "./ghost";
+import { AntdPageHeaderResponsive } from "./responsive";
 
 export const AntdPageHeader = () => {
   const PageHeader = () => { return <>
@@ -32,6 +34,14 @@ export const AntdPageHeader = () => {
     {
       to: '/app/antd/pageheader/content',
       title: 'Content'
+    },
+    {
+      to: '/app/antd/pageheader/ghost',
+      title: 'Ghost'
+    },
+    {
+      to: '/app/antd/pageheader/responsive',
+      title: 'Responsive'
     }
   ];
   console.log("Page Header")
@@ -54,7 +64,15 @@ export const AntdPageHeader = () => {
         <Route
           path="/content"
           element={<AntdPageHeaderContent />}
-        />        
+        />
+       <Route
+          path="/ghost"
+          element={<AntdPageHeaderGhost />}
+        />    
+        <Route
+          path="/responsive"
+          element={<AntdPageHeaderResponsive />}
+        />     
       </Routes>
     </Layout>
 }

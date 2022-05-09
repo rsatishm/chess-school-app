@@ -1,6 +1,7 @@
 import { PageHeader, Menu, Dropdown, Button, Tag, Typography, Row } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import React, { ReactNode } from 'react';
+import './content.css';
 
 const { Paragraph } = Typography;
 

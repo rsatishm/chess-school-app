@@ -1,4 +1,5 @@
 import { Button, Col, Descriptions, Layout, PageHeader, Row, Statistic, Tag } from "antd"
+import './actions.css'
 
 export const AntdPageHeaderActions = () => {
   return <Layout.Content>
