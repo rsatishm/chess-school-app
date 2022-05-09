@@ -10,6 +10,8 @@ import { useState } from 'react';
 import { Chessboard } from '../../components/chessboard/Chessboard';
 import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
 import { ChessboardDemo } from '../../components/chessgroundboard/ChessboardDemo';
+import { Classrooms } from './classtooms/classrooms';
+import { CreateClassRoom } from './classtooms/create-classroom-form';
 
 interface Props {
   userStore?: UserStore
@@ -117,7 +119,7 @@ export const CoachApp = observer(() => {
           element={<User/>}
         />
         <Route path="/board" element={<AnalysisBoard/>} />
-
+        <Route path="/classrooms" element={<Classrooms/>} />
         <Route
           path="/blindbot"
           element={Blindbot}
@@ -133,6 +135,10 @@ export const CoachApp = observer(() => {
           path="/tournaments/create"
           element={<CreateTournamentForm/>}
         />
+        <Route
+            path="/classrooms/create"
+            element={<CreateClassRoom/>}
+          />        
         <Route
           path="/tournaments/:uuid/edit"
           element={<CreateTournamentForm/>}

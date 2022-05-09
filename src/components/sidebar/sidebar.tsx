@@ -8,7 +8,7 @@ import Announcements from '../announcements/announcements'
 import { StudentAssignmentStore } from '../../stores/student-assignment'
 import { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import Icon, { AppstoreOutlined, BarChartOutlined, DashboardOutlined, DatabaseOutlined, DollarOutlined, EyeOutlined, FireOutlined, FlagOutlined, HomeOutlined, InboxOutlined, LogoutOutlined, PlaySquareOutlined, SettingFilled, TableOutlined, TeamOutlined, UsergroupAddOutlined } from '@ant-design/icons'
+import Icon, { AppstoreOutlined, BarChartOutlined, CustomerServiceOutlined, DashboardOutlined, DatabaseOutlined, DollarOutlined, EyeOutlined, FireOutlined, FlagOutlined, HomeOutlined, InboxOutlined, LogoutOutlined, PlaySquareOutlined, SettingFilled, TableOutlined, TeamOutlined, UsergroupAddOutlined } from '@ant-design/icons'
 
 const { Sider } = Layout
 
@@ -185,6 +185,16 @@ export const Sidebar = ()=>{
             >
               <HomeOutlined style={iconStyle} />
               <span className="nav-text">Academy</span>
+            </Menu.Item>
+          )}
+          {renderForRoles(
+            ['coach'],
+            <Menu.Item
+              key="classrooms"
+              onClick={handleClick('/app/classrooms')}
+            >
+              <CustomerServiceOutlined style={iconStyle} />
+              <span className="nav-text">Classrooms</span>
             </Menu.Item>
           )}
           {renderForRoles(
