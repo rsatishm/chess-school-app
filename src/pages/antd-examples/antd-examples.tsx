@@ -10,6 +10,18 @@ export const AntdExamples = ()=>{
           to: '/app/antd/pageheader',
           title: 'Page Header'
         },
+        {
+            to: '/app/antd/afflix',
+            title: 'Afflix'
+          },
+          {
+            to: '/app/antd/alert',
+            title: 'Alert'
+          },
+          {
+            to: '/app/antd/anchor',
+            title: 'Anchor'
+          }
       ];
     return <>
     <Layout>

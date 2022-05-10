@@ -1,5 +1,7 @@
 import { Col, Layout, List, Row } from "antd"
+import { Components } from "antd/lib/date-picker/generatePicker";
 import { Link, Route, Routes } from "react-router-dom"
+import { AntdComponents } from "../antd-components";
 import { AntdPageHeaderActions } from "./actions";
 import { AntdPageHeaderBasic } from "./basic";
 import { AntPageHeaderdBreadcrumb } from "./breadcrumb";
@@ -7,7 +9,19 @@ import { AntdPageHeaderContent } from "./content";
 import { AntdPageHeaderGhost } from "./ghost";
 import { AntdPageHeaderResponsive } from "./responsive";
 
+const components = [{feature: "actions", component: <AntdPageHeaderActions/>},
+{feature: "basic", component: <AntdPageHeaderBasic/>},
+{feature: "breadcrumb", component: <AntPageHeaderdBreadcrumb/>},
+{feature: "content", component: <AntdPageHeaderContent/>},
+{feature: "ghost", component: <AntdPageHeaderGhost/>},
+{feature: "response", component: <AntdPageHeaderResponsive/>}]
+
 export const AntdPageHeader = () => {
+  console.log("Render Pageheader")
+  return <AntdComponents main="pageheader" components={components}/>
+}
+
+export const AntdPageHeader1 = () => {
   const PageHeader = () => { return <>
     <List
       itemLayout="vertical"
