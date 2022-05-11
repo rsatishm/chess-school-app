@@ -21,6 +21,22 @@ export const AntdExamples = ()=>{
           {
             to: '/app/antd/anchor',
             title: 'Anchor'
+          },
+          {
+            to: '/app/antd/autoComplete',
+            title: 'AutoComplete'
+          },
+          {
+            to: '/app/antd/avatar',
+            title: 'Avatar'
+          },
+          {
+            to: '/app/antd/backtop',
+            title: 'BackTop'
+          },
+          {
+            to: '/app/antd/badge',
+            title: 'Badge'
           }
       ];
     return <>

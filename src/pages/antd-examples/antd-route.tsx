@@ -4,6 +4,10 @@ import { AntdAfflix } from "./afflix/afflix";
 import { AntdAlert } from "./alert/alert";
 import { AntdAnchor } from "./anchor/anchor";
 import { AntdExamples } from "./antd-examples";
+import { AntdAutoComplete } from "./auto-complete/auto-complete";
+import { AntdAvatar } from "./avatar/avatar";
+import { AntdBackTop } from "./back-top/back-top";
+import { AntdBadge } from "./badge/badge";
 import { AntdPageHeaderActions } from "./page-header/actions";
 import { AntdPageHeaderBasic } from "./page-header/basic";
 import { AntdPageHeader } from "./page-header/page-header";
@@ -30,6 +34,22 @@ export const AntdRoute = () => {
     <Route
       path="/anchor/*"
       element={<AntdAnchor />}
+    />
+    <Route
+      path="/autoComplete/*"
+      element={<AntdAutoComplete />}
+    />
+    <Route
+      path="/avatar/*"
+      element={<AntdAvatar/>}
+    />
+    <Route
+      path="/backtop/*"
+      element={<AntdBackTop/>}
+    />
+    <Route
+      path="/badge/*"
+      element={<AntdBadge/>}
     />
   </Routes>
 
