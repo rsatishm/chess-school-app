@@ -6,15 +6,25 @@ export const AntdBadgeNoWrapper = () => {
   const [show, setShow] = React.useState(true);
 
   return (
+    <>
+    <Switch checked={show} onChange={() => setShow(!show)} />
+    <Badge count={show ? 25 : 0} />
+    <Badge count={show ? <ClockCircleOutlined style={{ color: '#f5222d' }} /> : 0} />
+    <Badge
+      className="site-badge-count-109"
+      count={show ? 109 : 0}
+      style={{ backgroundColor: '#52c41a' }}
+    />
     <Space>
-      <Switch checked={show} onChange={() => setShow(!show)} />
-      <Badge count={show ? 25 : 0} />
-      <Badge count={show ? <ClockCircleOutlined style={{ color: '#f5222d' }} /> : 0} />
-      <Badge
-        className="site-badge-count-109"
-        count={show ? 109 : 0}
-        style={{ backgroundColor: '#52c41a' }}
-      />
+    <Switch checked={show} onChange={() => setShow(!show)} />
+    <Badge count={show ? 25 : 0} />
+    <Badge count={show ? <ClockCircleOutlined style={{ color: '#f5222d' }} /> : 0} />
+    <Badge
+      className="site-badge-count-109"
+      count={show ? 109 : 0}
+      style={{ backgroundColor: '#52c41a' }}
+    />
     </Space>
+    </>
   );
 };

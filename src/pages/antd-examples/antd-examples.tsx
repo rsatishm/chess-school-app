@@ -1,8 +1,5 @@
 import { Col, Layout, List, Row } from "antd"
 import { Link, Route, Routes } from "react-router-dom"
-import { AntdPageHeaderActions } from "./page-header/actions";
-import { AntdPageHeaderBasic } from "./page-header/basic";
-import { AntdPageHeader } from "./page-header/page-header";
 
 export const AntdExamples = ()=>{
     const data = [
@@ -37,6 +34,26 @@ export const AntdExamples = ()=>{
           {
             to: '/app/antd/badge',
             title: 'Badge'
+          },
+          {
+            to: '/app/antd/breadcrumb',
+            title: 'Breadcrumb'
+          },
+          {
+            to: '/app/antd/button',
+            title: 'Button'
+          },
+          {
+            to: '/app/antd/calendar',
+            title: 'Calendar'
+          },
+          {
+            to: '/app/antd/upload',
+            title: 'Upload'
+          },
+          {
+            to: '/app/antd/tree',
+            title: 'Tree'
           }
       ];
     return <>

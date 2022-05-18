@@ -1,0 +1,35 @@
+"use strict";
+exports.__esModule = true;
+exports.AntdRoute = void 0;
+var react_router_dom_1 = require("react-router-dom");
+var afflix_1 = require("./afflix/afflix");
+var alert_1 = require("./alert/alert");
+var anchor_1 = require("./anchor/anchor");
+var antd_examples_1 = require("./antd-examples");
+var auto_complete_1 = require("./auto-complete/auto-complete");
+var avatar_1 = require("./avatar/avatar");
+var back_top_1 = require("./back-top/back-top");
+var badge_1 = require("./badge/badge");
+var breadcrumb_1 = require("./breadcrumb/breadcrumb");
+var button_1 = require("./button/button");
+var calendar_1 = require("./calendar/calendar");
+var page_header_1 = require("./page-header/page-header");
+var tree_1 = require("./tree/tree");
+var upload_1 = require("./upload/upload");
+exports.AntdRoute = function () {
+    return React.createElement(react_router_dom_1.Routes, null,
+        React.createElement(react_router_dom_1.Route, { path: "/*", element: React.createElement(antd_examples_1.AntdExamples, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/pageheader/*", element: React.createElement(page_header_1.AntdPageHeader, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/afflix/*", element: React.createElement(afflix_1.AntdAfflix, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/alert/*", element: React.createElement(alert_1.AntdAlert, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/anchor/*", element: React.createElement(anchor_1.AntdAnchor, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/autoComplete/*", element: React.createElement(auto_complete_1.AntdAutoComplete, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/avatar/*", element: React.createElement(avatar_1.AntdAvatar, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/backtop/*", element: React.createElement(back_top_1.AntdBackTop, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/badge/*", element: React.createElement(badge_1.AntdBadge, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/breadcrumb/*", element: React.createElement(breadcrumb_1.AntdBreadcrumb, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/button/*", element: React.createElement(button_1.AntdButton, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/calendar/*", element: React.createElement(calendar_1.AntdCalendar, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/upload/*", element: React.createElement(upload_1.AntdUpload, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/tree/*", element: React.createElement(tree_1.AntdTree, null) }));
+};

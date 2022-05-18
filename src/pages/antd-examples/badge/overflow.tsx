@@ -7,7 +7,7 @@ export const AntdBadgeOverflow = ()=><>
 <Badge count={100}>
   <Avatar shape="square" size="large" />
 </Badge>
-<Badge count={99} overflowCount={10}>
+<Badge count={99} overflowCount={100}>
   <Avatar shape="square" size="large" />
 </Badge>
 <Badge count={1000} overflowCount={999}>

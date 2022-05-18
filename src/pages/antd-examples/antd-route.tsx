@@ -1,5 +1,4 @@
-import { Col, Layout, List, Row } from "antd"
-import { Link, Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import { AntdAfflix } from "./afflix/afflix";
 import { AntdAlert } from "./alert/alert";
 import { AntdAnchor } from "./anchor/anchor";
@@ -8,9 +7,12 @@ import { AntdAutoComplete } from "./auto-complete/auto-complete";
 import { AntdAvatar } from "./avatar/avatar";
 import { AntdBackTop } from "./back-top/back-top";
 import { AntdBadge } from "./badge/badge";
-import { AntdPageHeaderActions } from "./page-header/actions";
-import { AntdPageHeaderBasic } from "./page-header/basic";
+import { AntdBreadcrumb } from "./breadcrumb/breadcrumb";
+import { AntdButton } from "./button/button";
+import { AntdCalendar } from "./calendar/calendar";
 import { AntdPageHeader } from "./page-header/page-header";
+import { AntdTree } from "./tree/tree";
+import { AntdUpload } from "./upload/upload";
 
 export const AntdRoute = () => {
 
@@ -50,6 +52,26 @@ export const AntdRoute = () => {
     <Route
       path="/badge/*"
       element={<AntdBadge/>}
+    />
+    <Route
+      path="/breadcrumb/*"
+      element={<AntdBreadcrumb/>}
+    />
+    <Route
+      path="/button/*"
+      element={<AntdButton/>}
+    />
+    <Route
+      path="/calendar/*"
+      element={<AntdCalendar/>}
+    />
+    <Route
+      path="/upload/*"
+      element={<AntdUpload/>}
+    />
+    <Route
+      path="/tree/*"
+      element={<AntdTree/>}
     />
   </Routes>
 

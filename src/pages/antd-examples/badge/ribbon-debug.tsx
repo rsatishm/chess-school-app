@@ -1,4 +1,5 @@
 import { Badge, Card, Space } from 'antd';
+import './ribbon.css'
 
 export const AntdBadgeRibbonDebug = ()=><Space direction="vertical" style={{ width: '100%' }}>
 <Badge.Ribbon text="啦啦啦啦">
