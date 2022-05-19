@@ -14,7 +14,15 @@ var breadcrumb_1 = require("./breadcrumb/breadcrumb");
 var button_1 = require("./button/button");
 var calendar_1 = require("./calendar/calendar");
 var page_header_1 = require("./page-header/page-header");
+var table_1 = require("./table/table");
+var tabs_1 = require("./tabs/tabs");
+var tag_1 = require("./tag/tag");
+var timepicker_1 = require("./time-picker/timepicker");
+var timeline_1 = require("./timeline/timeline");
+var transfer_1 = require("./transfer/transfer");
 var tree_1 = require("./tree/tree");
+var treeselect_1 = require("./treeselect/treeselect");
+var typography_1 = require("./typography/typography");
 var upload_1 = require("./upload/upload");
 exports.AntdRoute = function () {
     return React.createElement(react_router_dom_1.Routes, null,
@@ -31,5 +39,13 @@ exports.AntdRoute = function () {
         React.createElement(react_router_dom_1.Route, { path: "/button/*", element: React.createElement(button_1.AntdButton, null) }),
         React.createElement(react_router_dom_1.Route, { path: "/calendar/*", element: React.createElement(calendar_1.AntdCalendar, null) }),
         React.createElement(react_router_dom_1.Route, { path: "/upload/*", element: React.createElement(upload_1.AntdUpload, null) }),
-        React.createElement(react_router_dom_1.Route, { path: "/tree/*", element: React.createElement(tree_1.AntdTree, null) }));
+        React.createElement(react_router_dom_1.Route, { path: "/tree/*", element: React.createElement(tree_1.AntdTree, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/treeselect/*", element: React.createElement(treeselect_1.AntdTreeSelect, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/transfer/*", element: React.createElement(transfer_1.AntdTransfer, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/timeline/*", element: React.createElement(timeline_1.AntdTimeline, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/timepicker/*", element: React.createElement(timepicker_1.AntdTimePicker, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/typography/*", element: React.createElement(typography_1.AntdTypography, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/tag/*", element: React.createElement(tag_1.AntdTag, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/tabs/*", element: React.createElement(tabs_1.AntdTabs, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/table/*", element: React.createElement(table_1.AntdTable, null) }));
 };

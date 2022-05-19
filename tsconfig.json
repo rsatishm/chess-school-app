@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
     "strictFunctionTypes": false /* Enable strict checking of function types. */,
     "strictPropertyInitialization": false,
     "forceConsistentCasingInFileNames": true,
@@ -20,7 +20,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "checkJs": false
   },
   "include": [
     "src"

@@ -56,6 +56,38 @@ exports.AntdExamples = function () {
         {
             to: '/app/antd/tree',
             title: 'Tree'
+        },
+        {
+            to: '/app/antd/treeselect',
+            title: 'TreeSelect'
+        },
+        {
+            to: '/app/antd/transfer',
+            title: 'Transfer'
+        },
+        {
+            to: '/app/antd/timeline',
+            title: 'Timeline'
+        },
+        {
+            to: '/app/antd/timepicker',
+            title: 'TimePicker'
+        },
+        {
+            to: '/app/antd/typography',
+            title: 'Typography'
+        },
+        {
+            to: '/app/antd/tag',
+            title: 'Tag'
+        },
+        {
+            to: '/app/antd/tabs',
+            title: 'Tabs'
+        },
+        {
+            to: '/app/antd/table',
+            title: 'Table'
         }
     ];
     return React.createElement(React.Fragment, null,
