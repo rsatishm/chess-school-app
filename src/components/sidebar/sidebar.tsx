@@ -358,13 +358,6 @@ export const Sidebar = ()=>{
             <span className="nav-text">Logout</span>
           </Menu.Item>
 
-          <Menu.Item
-            key="antd"
-            onClick={handleClick('/app/antd')}
-          >
-            <AntDesignOutlined style={iconStyle} />
-            <span className="nav-text">Antd Examples</span>
-          </Menu.Item>
         </Menu>
       </Sider>
       <Icon

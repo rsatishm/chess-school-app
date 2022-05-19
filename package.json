@@ -24,6 +24,7 @@
     "ably": "^1.2.20",
     "accurate-interval": "^1.0.9",
     "antd": "^4.19.2",
+    "antd-img-crop": "^4.2.3",
     "axios": "^0.26.1",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",

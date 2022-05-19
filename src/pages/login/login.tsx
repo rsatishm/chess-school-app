@@ -212,7 +212,7 @@ const Login = observer(() => {
                         </Row>
                     </Col>
                     <Col md={12} xs={24}>
-                        <Form form={form} className="login-form" onFinish={handleSubmit}>
+                        <Form layout="vertical" form={form} className="login-form" onFinish={handleSubmit}>
 							{loginStore.error && (
                                 <p className="error-message">
                                     {loginStore.error}
