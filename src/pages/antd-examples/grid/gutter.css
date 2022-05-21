@@ -1,0 +1,7 @@
+.gutter-box {
+    padding: 8px 0;
+    background: #00a0e9;
+  }
+[data-theme="dark"] .gutter-box {
+    background: #028ac8;
+  }

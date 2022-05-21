@@ -110,6 +110,14 @@ export const AntdExamples = ()=>{
           {
             to: '/app/antd/datepicker',
             title: 'DatePicker'
+          },
+          {
+            to: '/app/antd/grid',
+            title: 'Grid'
+          } ,
+          {
+            to: '/app/antd/select',
+            title: 'Select'
           }            
       ];
     return <>

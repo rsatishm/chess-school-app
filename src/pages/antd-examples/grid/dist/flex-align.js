@@ -1,0 +1,36 @@
+"use strict";
+exports.__esModule = true;
+exports.AntdGridFlexAlign = void 0;
+var antd_1 = require("antd");
+var DemoBox = function (props) { return React.createElement("p", { className: "height-" + props.value }, props.children); };
+exports.AntdGridFlexAlign = function () { return React.createElement(React.Fragment, null,
+    React.createElement(antd_1.Divider, { orientation: "left" }, "Align Top"),
+    React.createElement(antd_1.Row, { justify: "center", align: "top" },
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 100 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 50 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 120 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 80 }, "col-4"))),
+    React.createElement(antd_1.Divider, { orientation: "left" }, "Align Middle"),
+    React.createElement(antd_1.Row, { justify: "space-around", align: "middle" },
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 100 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 50 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 120 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 80 }, "col-4"))),
+    React.createElement(antd_1.Divider, { orientation: "left" }, "Align Bottom"),
+    React.createElement(antd_1.Row, { justify: "space-between", align: "bottom" },
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 100 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 50 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 120 }, "col-4")),
+        React.createElement(antd_1.Col, { span: 4 },
+            React.createElement(DemoBox, { value: 80 }, "col-4")))); };

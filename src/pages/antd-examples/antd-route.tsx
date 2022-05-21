@@ -14,8 +14,10 @@ import { AntdCarousel } from "./carousel/carousel";
 import { AntdDatePicker } from "./date-picker/datepicker";
 import { AntdDescriptions } from "./descriptions/descriptions";
 import { AntdForm } from "./form/form";
+import { AntdGrid } from "./grid/grid";
 import { AntdLayout } from "./layout/layout";
 import { AntdPageHeader } from "./page-header/page-header";
+import { AntdSelect } from "./select/select";
 import { AntdSpace } from "./space/space";
 import { AntdTable } from "./table/table";
 import { AntdTabs } from "./tabs/tabs";
@@ -142,7 +144,15 @@ export const AntdRoute = () => {
     <Route
       path="/datepicker/*"
       element={<AntdDatePicker/>}
-    />            
+    />          
+    <Route
+      path="/grid/*"
+      element={<AntdGrid/>}
+    />      
+    <Route
+      path="/select/*"
+      element={<AntdSelect/>}
+    />          
   </Routes>
 
 }
