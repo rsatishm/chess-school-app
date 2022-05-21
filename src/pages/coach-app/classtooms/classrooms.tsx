@@ -1,9 +1,19 @@
-import { Button, Col, Descriptions, Layout, PageHeader, Row, Statistic } from "antd"
+import { Button, Card, Col, DatePicker, Descriptions, Layout, PageHeader, Row, Space, Statistic } from "antd"
 import { Header } from "antd/lib/layout/layout"
+import moment from "moment"
 import { Link } from "react-router-dom"
 import './classrooms.less'
 
 export const Classrooms = () => {
+
+  const { RangePicker } = DatePicker;
+  function onChange(dates: any, dateStrings: any) {
+    console.log('From: ', dates[0], ', to: ', dates[1]);
+    console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
+  }
+
+  const dateFormatList = ['DD-MMM-YYYY', 'DD-MMM-YYYY'];
+
   return <Layout.Content className="content classrooms">
 
     <PageHeader
@@ -15,7 +25,37 @@ export const Classrooms = () => {
           </Link>
         </Button>
       ]}>
-      </PageHeader>
+      <RangePicker
+      bordered={true}
+        ranges={{
+          Today: [moment(), moment()],
+          Yesterday: [moment().subtract(1, 'days'), moment()],
+          '7D': [moment().subtract(7, 'days'), moment()],
+          '1M': [moment().subtract(1, 'months'), moment()],
+          '3M': [moment().subtract(3, 'months'), moment()],
+          '6M': [moment().subtract(6, 'months'), moment()],
+          '12M': [moment().subtract(12, 'months'), moment()],
+          'This Year (Jan-Today)': [moment().startOf('year'), moment()],
+        }}
+        format={dateFormatList}
+        onChange={onChange}
+      />
+      <Space direction="horizontal">
+        <Card title="Total Classes" style={{ width: 300 }}>
+          <Descriptions size="small" column={3} layout="horizontal">
+            <Descriptions.Item label="Individual">1</Descriptions.Item>
+            <Descriptions.Item label="Group">0</Descriptions.Item>
+          </Descriptions>
+        </Card>
+        <Card title="Total Duration" style={{ width: 300 }}>
+          <Descriptions.Item label="Individual">2h 0m</Descriptions.Item>
+          <Descriptions.Item label="Group">0m 0m</Descriptions.Item>
+        </Card>
+        <Card title="Total Active Students" style={{ width: 300 }}>
+          <Descriptions.Item label="Individual">1</Descriptions.Item>
+        </Card>
+      </Space>
+    </PageHeader>
 
   </Layout.Content>
 }
