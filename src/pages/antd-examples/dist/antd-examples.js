@@ -88,6 +88,30 @@ exports.AntdExamples = function () {
         {
             to: '/app/antd/table',
             title: 'Table'
+        },
+        {
+            to: '/app/antd/carousel',
+            title: 'Carousel'
+        },
+        {
+            to: '/app/antd/form',
+            title: 'Form'
+        },
+        {
+            to: '/app/antd/layout',
+            title: 'Layout'
+        },
+        {
+            to: '/app/antd/space',
+            title: 'Space'
+        },
+        {
+            to: '/app/antd/descriptions',
+            title: 'Descriptions'
+        },
+        {
+            to: '/app/antd/datepicker',
+            title: 'DatePicker'
         }
     ];
     return React.createElement(React.Fragment, null,

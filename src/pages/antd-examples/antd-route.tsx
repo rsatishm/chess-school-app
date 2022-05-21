@@ -10,7 +10,13 @@ import { AntdBadge } from "./badge/badge";
 import { AntdBreadcrumb } from "./breadcrumb/breadcrumb";
 import { AntdButton } from "./button/button";
 import { AntdCalendar } from "./calendar/calendar";
+import { AntdCarousel } from "./carousel/carousel";
+import { AntdDatePicker } from "./date-picker/datepicker";
+import { AntdDescriptions } from "./descriptions/descriptions";
+import { AntdForm } from "./form/form";
+import { AntdLayout } from "./layout/layout";
 import { AntdPageHeader } from "./page-header/page-header";
+import { AntdSpace } from "./space/space";
 import { AntdTable } from "./table/table";
 import { AntdTabs } from "./tabs/tabs";
 import { AntdTag } from "./tag/tag";
@@ -113,6 +119,30 @@ export const AntdRoute = () => {
       path="/table/*"
       element={<AntdTable/>}
     />
+    <Route
+      path="/carousel/*"
+      element={<AntdCarousel/>}
+    />    
+    <Route
+      path="/form/*"
+      element={<AntdForm/>}
+    />       
+    <Route
+      path="/layout/*"
+      element={<AntdLayout/>}
+    />      
+    <Route
+      path="/space/*"
+      element={<AntdSpace/>}
+    />  
+    <Route
+      path="/descriptions/*"
+      element={<AntdDescriptions/>}
+    />     
+    <Route
+      path="/datepicker/*"
+      element={<AntdDatePicker/>}
+    />            
   </Routes>
 
 }

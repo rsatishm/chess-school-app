@@ -13,7 +13,13 @@ var badge_1 = require("./badge/badge");
 var breadcrumb_1 = require("./breadcrumb/breadcrumb");
 var button_1 = require("./button/button");
 var calendar_1 = require("./calendar/calendar");
+var carousel_1 = require("./carousel/carousel");
+var datepicker_1 = require("./date-picker/datepicker");
+var descriptions_1 = require("./descriptions/descriptions");
+var form_1 = require("./form/form");
+var layout_1 = require("./layout/layout");
 var page_header_1 = require("./page-header/page-header");
+var space_1 = require("./space/space");
 var table_1 = require("./table/table");
 var tabs_1 = require("./tabs/tabs");
 var tag_1 = require("./tag/tag");
@@ -47,5 +53,11 @@ exports.AntdRoute = function () {
         React.createElement(react_router_dom_1.Route, { path: "/typography/*", element: React.createElement(typography_1.AntdTypography, null) }),
         React.createElement(react_router_dom_1.Route, { path: "/tag/*", element: React.createElement(tag_1.AntdTag, null) }),
         React.createElement(react_router_dom_1.Route, { path: "/tabs/*", element: React.createElement(tabs_1.AntdTabs, null) }),
-        React.createElement(react_router_dom_1.Route, { path: "/table/*", element: React.createElement(table_1.AntdTable, null) }));
+        React.createElement(react_router_dom_1.Route, { path: "/table/*", element: React.createElement(table_1.AntdTable, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/carousel/*", element: React.createElement(carousel_1.AntdCarousel, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/form/*", element: React.createElement(form_1.AntdForm, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/layout/*", element: React.createElement(layout_1.AntdLayout, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/space/*", element: React.createElement(space_1.AntdSpace, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/descriptions/*", element: React.createElement(descriptions_1.AntdDescriptions, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/datepicker/*", element: React.createElement(datepicker_1.AntdDatePicker, null) }));
 };
