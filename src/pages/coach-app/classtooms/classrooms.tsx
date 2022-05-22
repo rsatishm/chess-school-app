@@ -19,6 +19,8 @@ export const Classrooms = () => {
   }
 
   const { Option, OptGroup } = Select;
+  const style: React.CSSProperties = { color: 'rgba(74, 85, 104, var(--text-opacity))' };
+
 
   return <Layout.Content className="content classrooms">
     <PageHeader
@@ -32,7 +34,7 @@ export const Classrooms = () => {
       ]}>
       <Row>
         <Col flex="auto">
-          <Select defaultValue="all" style={{ width: 200 }} onChange={handleChange}>
+          <Select defaultValue="all" style={{ width: 300 }} onChange={handleChange}>
             <OptGroup label="Filter By">
               <Option value="all">All</Option>
               <Option value="self">Self</Option>
@@ -60,28 +62,25 @@ export const Classrooms = () => {
         </Col>
       </Row>
 
-      <Row>
-          <Col span={8}>
-            <Card title="Total Classes" style={{ width: 300 }}>
-              <Descriptions size="small" column={3} layout="horizontal">
-                <Descriptions.Item label="Individual">1</Descriptions.Item>
-                <Descriptions.Item label="Group">0</Descriptions.Item>
-              </Descriptions>
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card title="Total Duration" style={{ width: 300 }}>
-              <Descriptions.Item label="Individual">2h 0m</Descriptions.Item>
-              <Descriptions.Item label="Group">0m 0m</Descriptions.Item>
-            </Card>
-          </Col>
-
-          <Col span={8}>
-            <Card title="Total Active Students" style={{ width: 300 }}>
-              <Descriptions.Item label="Individual">1</Descriptions.Item>
-            </Card>
-          </Col>
-        </Row>
+      <Row gutter={64}>
+        <Col span={8}>
+          <Card title="Total Classes">
+            <Descriptions.Item label="Individual">1</Descriptions.Item>
+            <Descriptions.Item label="Group">0</Descriptions.Item>
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card title="Total Duration">
+            <Descriptions.Item label="Individual">2h 0m</Descriptions.Item>
+            <Descriptions.Item label="Group">0m 0m</Descriptions.Item>
+          </Card>
+        </Col>
+        <Col span={8}>
+          <Card title="Total Active Students">
+            <Descriptions.Item label="Individual">1</Descriptions.Item>
+          </Card>
+        </Col>
+      </Row>
     </PageHeader>
 
   </Layout.Content>
