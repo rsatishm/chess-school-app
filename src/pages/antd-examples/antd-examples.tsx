@@ -118,6 +118,10 @@ export const AntdExamples = ()=>{
           {
             to: '/app/antd/select',
             title: 'Select'
+          } ,
+          {
+            to: '/app/antd/statistic',
+            title: 'Statistic'
           }            
       ];
     return <>

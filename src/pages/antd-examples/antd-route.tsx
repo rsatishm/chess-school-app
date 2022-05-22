@@ -19,6 +19,7 @@ import { AntdLayout } from "./layout/layout";
 import { AntdPageHeader } from "./page-header/page-header";
 import { AntdSelect } from "./select/select";
 import { AntdSpace } from "./space/space";
+import { AntdStatistic } from "./statistic/statistic";
 import { AntdTable } from "./table/table";
 import { AntdTabs } from "./tabs/tabs";
 import { AntdTag } from "./tag/tag";
@@ -152,7 +153,12 @@ export const AntdRoute = () => {
     <Route
       path="/select/*"
       element={<AntdSelect/>}
+    /> 
+    <Route
+      path="/statistic/*"
+      element={<AntdStatistic/>}
     />          
+
   </Routes>
 
 }

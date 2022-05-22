@@ -22,6 +22,7 @@ var layout_1 = require("./layout/layout");
 var page_header_1 = require("./page-header/page-header");
 var select_1 = require("./select/select");
 var space_1 = require("./space/space");
+var statistic_1 = require("./statistic/statistic");
 var table_1 = require("./table/table");
 var tabs_1 = require("./tabs/tabs");
 var tag_1 = require("./tag/tag");
@@ -63,5 +64,6 @@ exports.AntdRoute = function () {
         React.createElement(react_router_dom_1.Route, { path: "/descriptions/*", element: React.createElement(descriptions_1.AntdDescriptions, null) }),
         React.createElement(react_router_dom_1.Route, { path: "/datepicker/*", element: React.createElement(datepicker_1.AntdDatePicker, null) }),
         React.createElement(react_router_dom_1.Route, { path: "/grid/*", element: React.createElement(grid_1.AntdGrid, null) }),
-        React.createElement(react_router_dom_1.Route, { path: "/select/*", element: React.createElement(select_1.AntdSelect, null) }));
+        React.createElement(react_router_dom_1.Route, { path: "/select/*", element: React.createElement(select_1.AntdSelect, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/statistic/*", element: React.createElement(statistic_1.AntdStatistic, null) }));
 };

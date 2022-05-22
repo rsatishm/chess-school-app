@@ -120,6 +120,10 @@ exports.AntdExamples = function () {
         {
             to: '/app/antd/select',
             title: 'Select'
+        },
+        {
+            to: '/app/antd/statistic',
+            title: 'Statistic'
         }
     ];
     return React.createElement(React.Fragment, null,
