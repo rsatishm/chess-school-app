@@ -64,20 +64,29 @@ export const Classrooms = () => {
 
       <Row gutter={64}>
         <Col span={8}>
-          <Card title="Total Classes">
-            <Descriptions.Item label="Individual">1</Descriptions.Item>
-            <Descriptions.Item label="Group">0</Descriptions.Item>
+          <Card>
+            <Statistic title="Total Classes" value={1} />
+            <Descriptions>
+              <Descriptions.Item label="Individual">1</Descriptions.Item>
+              <Descriptions.Item label="Group">0</Descriptions.Item>
+            </Descriptions>
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="Total Duration">
-            <Descriptions.Item label="Individual">2h 0m</Descriptions.Item>
-            <Descriptions.Item label="Group">0m 0m</Descriptions.Item>
+          <Card>
+            <Statistic title="Total Duration" value={'2h 0m'} />
+            <Descriptions>
+              <Descriptions.Item label="Individual">2h 0m</Descriptions.Item>
+              <Descriptions.Item label="Group">0m 0m</Descriptions.Item>
+            </Descriptions>
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="Total Active Students">
-            <Descriptions.Item label="Individual">1</Descriptions.Item>
+          <Card>
+            <Statistic title="Total Active Students" value={1} />
+            <Descriptions>
+              <Descriptions.Item label="Individual">1</Descriptions.Item>
+            </Descriptions>
           </Card>
         </Col>
       </Row>
