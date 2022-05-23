@@ -153,6 +153,7 @@ export const Jitsi = () => {
             </div>
         </div>
     );
+    
 
     const renderLog = () => logItems.map(
         (item, index) => (
@@ -195,7 +196,6 @@ export const Jitsi = () => {
                 onApiReady = { externalApi => handleApiReady(externalApi) }
                 onReadyToClose = { handleReadyToClose }
                 getIFrameRef = { handleJitsiIFrameRef1 } />
-            {renderButtons()}
             {renderNewInstance()}
             {renderLog()}
         </>

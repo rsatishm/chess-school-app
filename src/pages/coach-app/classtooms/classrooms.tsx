@@ -1,5 +1,5 @@
 import { Button, Card, Col, DatePicker, Descriptions, Layout, PageHeader, Row, Select, Space, Statistic } from "antd"
-import { Header } from "antd/lib/layout/layout"
+import Title from "antd/lib/typography/Title"
 import moment from "moment"
 import { Link } from "react-router-dom"
 import './classrooms.less'
@@ -25,13 +25,14 @@ export const Classrooms = () => {
   return <Layout.Content className="content classrooms">
     <PageHeader
       className="site-page-header"
-      title="Classrooms" extra={[
+      title={<Title level={4}>Classrooms</Title>} extra={[
         <Button type="primary" block size="large">
           <Link to="/app/classrooms/create">
             Create
           </Link>
         </Button>
       ]}>
+        
       <Row>
         <Col flex="auto">
           <Select defaultValue="all" style={{ width: 300 }} onChange={handleChange}>

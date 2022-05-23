@@ -11,7 +11,8 @@ import { Chessboard } from '../../components/chessboard/Chessboard';
 import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
 import { ChessboardDemo } from '../../components/chessgroundboard/ChessboardDemo';
 import { Classrooms } from './classtooms/classrooms';
-import { CreateClassRoom } from './classtooms/create-classroom-form';
+import { CreateClassroom } from './classtooms/create-classroom-form';
+import { StartClassRoom } from './classtooms/start-classroom';
 
 interface Props {
   userStore?: UserStore
@@ -137,8 +138,12 @@ export const CoachApp = observer(() => {
         />
         <Route
             path="/classrooms/create"
-            element={<CreateClassRoom/>}
-          />        
+            element={<CreateClassroom/>}
+          />  
+        <Route
+            path="/classrooms/start"
+            element={<StartClassRoom/>}
+          />                      
         <Route
           path="/tournaments/:uuid/edit"
           element={<CreateTournamentForm/>}
