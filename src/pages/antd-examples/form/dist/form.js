@@ -23,6 +23,17 @@ var inline_login_1 = require("./inline-login");
 var label_debug_1 = require("./label-debug");
 var layout_can_wrap_1 = require("./layout-can-wrap");
 var layout_1 = require("./layout");
+var nest_messages_1 = require("./nest-messages");
+var normal_login_1 = require("./normal-login");
+var ref_item_1 = require("./ref-item");
+var register_1 = require("./register");
+var required_mark_1 = require("./required-mark");
+var size_1 = require("./size");
+var time_related_controls_1 = require("./time-related-controls");
+var validate_other_1 = require("./validate-other");
+var validate_static_1 = require("./validate-static");
+var warning_only_1 = require("./warning-only");
+var without_form_create_1 = require("./without-form-create");
 var components = [
     { feature: "advancedsearch", component: React.createElement(advanced_search_1.AntdFormAdavancedSearch, null) },
     { feature: "basic", component: React.createElement(basic_1.AntdFormBasic, null) },
@@ -45,6 +56,17 @@ var components = [
     { feature: "labeldebug", component: React.createElement(label_debug_1.AntdFormLabelDebug, null) },
     { feature: "layoutcanwrap", component: React.createElement(layout_can_wrap_1.AntdFormLayoutCanWrap, null) },
     { feature: "layout", component: React.createElement(layout_1.AntdFormLayout, null) },
+    { feature: "nestmessages", component: React.createElement(nest_messages_1.AntdFormNestMessages, null) },
+    { feature: "normallogin", component: React.createElement(normal_login_1.AntdFormNormalLogin, null) },
+    { feature: "refitem", component: React.createElement(ref_item_1.AntdFormRefItem, null) },
+    { feature: "register", component: React.createElement(register_1.AntdFormRegister, null) },
+    { feature: "requiredmark", component: React.createElement(required_mark_1.AntdFormRequiredMark, null) },
+    { feature: "size", component: React.createElement(size_1.AntdFormSize, null) },
+    { feature: "timerelatedcontrols", component: React.createElement(time_related_controls_1.AntdFormTimeRelatedControls, null) },
+    { feature: "validateother", component: React.createElement(validate_other_1.AntdFormValidateOther, null) },
+    { feature: "validatestatic", component: React.createElement(validate_static_1.AntdFormValidateStatic, null) },
+    { feature: "warningonly", component: React.createElement(warning_only_1.AntdFormWarningOnly, null) },
+    { feature: "withoutformcreate", component: React.createElement(without_form_create_1.AntdFormWithoutFormCreate, null) },
 ];
 exports.AntdForm = function () {
     return React.createElement(antd_components_1.AntdComponents, { main: "form", components: components });

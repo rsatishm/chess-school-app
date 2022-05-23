@@ -20,6 +20,17 @@ import { AntdFormInlineLogin } from "./inline-login"
 import { AntdFormLabelDebug } from "./label-debug"
 import { AntdFormLayoutCanWrap } from "./layout-can-wrap"
 import { AntdFormLayout } from "./layout"
+import { AntdFormNestMessages } from "./nest-messages"
+import { AntdFormNormalLogin } from "./normal-login"
+import { AntdFormRefItem } from "./ref-item"
+import { AntdFormRegister } from "./register"
+import { AntdFormRequiredMark } from "./required-mark"
+import { AntdFormSize } from "./size"
+import { AntdFormTimeRelatedControls } from "./time-related-controls"
+import { AntdFormValidateOther } from "./validate-other"
+import { AntdFormValidateStatic } from "./validate-static"
+import { AntdFormWarningOnly } from "./warning-only"
+import { AntdFormWithoutFormCreate } from "./without-form-create"
 
 
 const components = [
@@ -43,7 +54,18 @@ const components = [
 {feature: "inlinelogin", component: <AntdFormInlineLogin/>},
 {feature: "labeldebug", component: <AntdFormLabelDebug/>},
 {feature: "layoutcanwrap", component: <AntdFormLayoutCanWrap/>},
-{feature: "layout", component: <AntdFormLayout/>},]
+{feature: "layout", component: <AntdFormLayout/>},
+{feature: "nestmessages", component: <AntdFormNestMessages/>},
+{feature: "normallogin", component: <AntdFormNormalLogin/>},
+{feature: "refitem", component: <AntdFormRefItem/>},
+{feature: "register", component: <AntdFormRegister/>},
+{feature: "requiredmark", component: <AntdFormRequiredMark/>},
+{feature: "size", component: <AntdFormSize/>},
+{feature: "timerelatedcontrols", component: <AntdFormTimeRelatedControls/>},
+{feature: "validateother", component: <AntdFormValidateOther/>},
+{feature: "validatestatic", component: <AntdFormValidateStatic/>},
+{feature: "warningonly", component: <AntdFormWarningOnly/>},
+{feature: "withoutformcreate", component: <AntdFormWithoutFormCreate/>},]
 
 export const AntdForm = () => {
   return <AntdComponents main="form" components={components}/>

@@ -15,9 +15,12 @@ import { AntdDatePicker } from "./date-picker/datepicker";
 import { AntdDescriptions } from "./descriptions/descriptions";
 import { AntdForm } from "./form/form";
 import { AntdGrid } from "./grid/grid";
+import { AntdImage } from "./image/image";
 import { AntdLayout } from "./layout/layout";
+import { AntdModal } from "./modal/modal";
 import { AntdPageHeader } from "./page-header/page-header";
 import { AntdSelect } from "./select/select";
+import { AntdSkeleton } from "./skeleton/skeleton";
 import { AntdSpace } from "./space/space";
 import { AntdStatistic } from "./statistic/statistic";
 import { AntdTable } from "./table/table";
@@ -158,7 +161,18 @@ export const AntdRoute = () => {
       path="/statistic/*"
       element={<AntdStatistic/>}
     />          
-
+    <Route
+      path="/skeleton/*"
+      element={<AntdSkeleton/>}
+    />   
+    <Route
+      path="/modal/*"
+      element={<AntdModal/>}
+    /> 
+    <Route
+      path="/image/*"
+      element={<AntdImage/>}
+    />           
   </Routes>
 
 }

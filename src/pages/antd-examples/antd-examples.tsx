@@ -122,7 +122,19 @@ export const AntdExamples = ()=>{
           {
             to: '/app/antd/statistic',
             title: 'Statistic'
-          }            
+          } ,
+          {
+            to: '/app/antd/skeleton',
+            title: 'Skeleton'
+          } ,
+          {
+            to: '/app/antd/modal',
+            title: 'Modal'
+          } ,
+          {
+            to: '/app/antd/image',
+            title: 'Image'
+          }                
       ];
     return <>
     <Layout>

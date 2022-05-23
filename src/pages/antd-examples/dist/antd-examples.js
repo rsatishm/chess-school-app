@@ -124,6 +124,18 @@ exports.AntdExamples = function () {
         {
             to: '/app/antd/statistic',
             title: 'Statistic'
+        },
+        {
+            to: '/app/antd/skeleton',
+            title: 'Skeleton'
+        },
+        {
+            to: '/app/antd/modal',
+            title: 'Modal'
+        },
+        {
+            to: '/app/antd/image',
+            title: 'Image'
         }
     ];
     return React.createElement(React.Fragment, null,
