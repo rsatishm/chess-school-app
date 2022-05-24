@@ -179,10 +179,7 @@ export const StartClassRoom = () => {
                     md={{ span: 8, offset: 2 }}
                     sm={24}
                 >
-                    <h1 style={{ margin: '8px' }}>
-                        {analysisBoardStore.gameName}
-                    </h1>
-    
+
                     <Tabs type="card" defaultActiveKey="moves">
                         <TabPane tab="Moves" key="moves">
                             {/* <div className="analysis-board--moves">
@@ -202,6 +199,12 @@ export const StartClassRoom = () => {
                                 onHideMovesChange={() => { }}
                             />
                         </TabPane>
+                        <TabPane tab="Chat" key="chat"></TabPane>
+                        <TabPane tab="Leaderboard" key="leaderboard"></TabPane>
+                        <TabPane tab="Participants" key="participants"></TabPane>
+                        <TabPane tab="Response" key="response"></TabPane>
+                        <TabPane tab="Engine" key="engine"></TabPane>
+                        <TabPane tab="Notes" key="notes"></TabPane>
                         {/* <TabPane tab="Analysis" key="analysis">
                   <div className="analysis-board--analyse">
                     <p>Game analysis will show up here</p>

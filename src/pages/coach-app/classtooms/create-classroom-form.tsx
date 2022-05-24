@@ -1,22 +1,38 @@
 import { Button, Col, Divider, Form, Image, InputNumber, Layout, Row, Select, Space, Switch } from "antd"
 import Input from "antd/lib/input/Input"
 import Title from "antd/lib/typography/Title";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Jitsi } from "../../../components/jitsi/Jitsi"
+import { States } from "../../../components/states/states";
 import liveLessons from '../../../images/Live-lessons.png'
 
 const { Option, OptGroup } = Select;
 
+interface State {
+    opentoall: boolean
+}
+
 export const CreateClassroom = () => {
+    const [state, setState] = useState<State>({opentoall: false})
     const navigate = useNavigate()
     const onFinish = () => {
         console.log("Start classroom")
         navigate("/app/classrooms/start") 
     }
 
+    const updateState = (newState: Partial<State>) => {
+        setState((prevState) => {
+            return { ...prevState, ...newState }
+        })
+      }
+
+    const onOpenToAllChange = (show: boolean) => {
+        updateState({opentoall: show})
+      };
 
     return <>
-    <Layout className="student app page">
+    <Layout className="student app page" hasSider={true}>
     <Layout.Content className="content">
         <Row>
             <Col>
@@ -52,10 +68,10 @@ export const CreateClassroom = () => {
                         </Form.Item>
 
                         <Form.Item name="opentoall" label="Open to all">
-                            <Switch />
+                            <Switch onChange={onOpenToAllChange} />
                         </Form.Item>
-
-                        <Form.Item
+                        <div>
+                        {state.opentoall || (<><Form.Item
                             name="students_groups"
                             label="Students / Groups"
                             rules={[{ required: true, message: 'At least one student/group must be selected', type: 'array' }]}
@@ -72,11 +88,12 @@ export const CreateClassroom = () => {
                             </Select>
                         </Form.Item>
 
-                        <Form.Item name="opentoall" label="Notify via mail">
+                        <Form.Item name="notifyviamail" label="Notify via mail">
                             <Switch />
-                        </Form.Item>
+                        </Form.Item></>)}
+                        </div>
 
-                        <Form.Item name="opentoall" label="Scheduled">
+                        <Form.Item name="scheduled" label="Scheduled">
                             <Switch />
                         </Form.Item>
 
