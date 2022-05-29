@@ -21,6 +21,31 @@ import { analysisBoardStore } from './stores/analysis-board-store';
 import { gameboxDatabaseStore } from './stores/gamebox-database';
 import { gameboxDatabaseGameStore } from './stores/gamebox-database-game';
 import { gameHistoryStore } from './stores/game-history-store';
+import { tournamentViewStore } from './stores/tournament-view';
+import { studentTournamentStore } from './stores/student-tournaments';
+import { publicProblembaseStore } from './stores/public-problembase';
+import { publicGamebaseStore } from './stores/public-gamebase';
+import { problembaseContentStore } from './stores/problembase-content';
+import { problemSolveStore } from './stores/problem-solve';
+import { privateProblembaseStore } from './stores/private-problembase';
+import { analyticsStore } from './stores/analytics';
+import { analyzerStore } from './stores/analyzer';
+import { baseContentStore } from './stores/base-content';
+import { coachAssignmentStore } from './stores/coach-assignment';
+import { coachAssignmentCompletionDetailsStore } from './stores/coach-assignment-completion-details';
+import { coachNetworkStore } from './stores/coach-network';
+import { coachTournamentStore } from './stores/coach-tournaments';
+import { createTournamentFormStore } from './stores/create-tournament-form';
+import { engineStore } from './stores/engine';
+import { exerciseStore } from './stores/exercise';
+import { gamebaseContentStore } from './stores/gamebase-content';
+import { gameboxGamePreviewStore } from './stores/gamebox-game-preview';
+import { liveGamePreviewStore } from './stores/live-game-preview';
+import { mixpanelStore } from './stores/mixpanel';
+import { paymentPlanStore } from './stores/payment-plan';
+import { paymentSubscriptionStore } from './stores/payment-subscription';
+import { practiceStore } from './stores/practice';
+import { privateGamebaseStore } from './stores/private-gamebase';
 
 const stores = {
   signupStore,
@@ -38,14 +63,39 @@ const stores = {
   analysisBoardStore,
   gameboxDatabaseStore,
   gameboxDatabaseGameStore,
-  gameHistoryStore
+  gameHistoryStore,
+  tournamentViewStore,
+  studentTournamentStore,
+  publicProblembaseStore,
+  publicGamebaseStore,
+  problembaseContentStore,
+  problemSolveStore,
+  privateProblembaseStore,
+  privateGamebaseStore,
+  practiceStore,
+  paymentSubscriptionStore,
+  paymentPlanStore,
+  mixpanelStore,
+  liveGamePreviewStore,
+  gameboxGamePreviewStore,
+  gamebaseContentStore,
+  exerciseStore,
+  engineStore,
+  createTournamentFormStore,
+  coachTournamentStore,
+  coachNetworkStore,
+  coachAssignmentStore,
+  coachAssignmentCompletionDetailsStore,
+  baseContentStore,
+  analyzerStore,
+  analyticsStore
 }
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider {...stores}>
-    <BrowserRouter>
-      <App />
+      <BrowserRouter>
+        <App />
       </BrowserRouter>
     </Provider>
   </React.StrictMode>,

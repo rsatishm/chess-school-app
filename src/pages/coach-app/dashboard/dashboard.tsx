@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { observer } from 'mobx-react'
 
 import './dashboard.less'
-import { UserStore, useUserStore } from '../../stores/user'
+import { UserStore, useUserStore } from '../../../stores/user'
 import { useEffect } from 'react'
 
 const { Content } = Layout

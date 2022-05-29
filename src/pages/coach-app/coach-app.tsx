@@ -3,16 +3,22 @@ import { ExceptionOutlined } from '@ant-design/icons';
 import { Route, Routes } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { UserStore } from '../../stores/user'
-import { Dashboard } from '../dashboard/dashboard';
+import { Dashboard } from './dashboard/dashboard';
 import { Academy } from './academy/academy';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { useState } from 'react';
 import { Chessboard } from '../../components/chessboard/Chessboard';
 import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
 import { ChessboardDemo } from '../../components/chessgroundboard/ChessboardDemo';
-import { Classrooms } from './classtooms/classrooms';
-import { CreateClassroom } from './classtooms/create-classroom-form';
-import { StartClassRoom } from './classtooms/start-classroom';
+import { Classrooms } from './classrooms/classrooms';
+import { CreateClassroom } from './classrooms/create-classroom-form';
+import { StartClassRoom } from './classrooms/start-classroom';
+import { TournamentView } from '../../components/tournaments/tournament-view';
+import { Assignment } from '../student-app/assignment/assignment';
+import { Practice } from '../student-app/practice/practice';
+import { User } from '../user/user';
+import { Blindbot } from '../student-app/blindbot/blindbot';
+import { Gamebox } from '../student-app/gamebox/gamebox';
 
 interface Props {
   userStore?: UserStore
@@ -50,38 +56,6 @@ export const CoachApp = observer(() => {
     )
   }
 
-  function Assignment() {
-    return <h1>Assignment</h1>
-  }
-
-  function Practice() {
-    return <h1>Practice</h1>
-  }
-
-  function User() {
-    return <h1>User</h1>
-  }
-
-  function Blindbot() {
-    return <h1>Blindbot</h1>
-  }
-
-  function Gamebase() {
-    return <h1>Gamebase</h1>
-  }
-
-  function Gamebox() {
-    return <h1>Gamebox</h1>
-  }
-
-  function Problembase() {
-    return <h1>Problembase</h1>
-  }
-
-  function Analytics() {
-    return <h1>Analytics</h1>
-  }
-
   function GameArea() {
     //const fen = new Chess().fen()
     const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -89,18 +63,6 @@ export const CoachApp = observer(() => {
     <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="MOVE" /></td></tr>
     <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="ARROW" /></td></tr>
     <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="SQUARE_HIGHLIGHT" /></td></tr></table></>
-  }
-
-  function CreateTournamentForm() {
-    return <h1>CreateTournamentForm</h1>
-  }
-
-  function TournamentViewWithRouter() {
-    return <h1>TournamentViewWithRouter</h1>
-  }
-
-  function TournamentListingWithRouter() {
-    return <h1>TournamentListingWithRouter</h1>
   }
 
   function ChessboardExample()  {

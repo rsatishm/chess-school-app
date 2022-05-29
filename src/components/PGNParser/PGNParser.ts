@@ -1,9 +1,7 @@
-import { Chess } from 'chess.js'
 import { map, addIndex, last, dropLast, head, drop } from 'ramda'
 import { ChessTypes } from '../../types'
 import * as Util from '../../utils/Util'
 import * as _ChessJS from 'chess.js';
-import { ConsoleSqlOutlined } from '@ant-design/icons';
 
 //import { Chess, ChessTypes, Util } from '../'
 
