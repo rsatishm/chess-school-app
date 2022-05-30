@@ -19,6 +19,12 @@ import { Practice } from '../student-app/practice/practice';
 import { User } from '../user/user';
 import { Blindbot } from '../student-app/blindbot/blindbot';
 import { Gamebox } from '../student-app/gamebox/gamebox';
+import { Gamebase } from './gamebase/gamebase';
+import { Problembase } from './problembase/problembase';
+import Analytics from './analytics/analytics';
+import TournamentListingWithRouter from './tournaments/tournament-listing';
+import TournamentListing from './tournaments/tournament-listing';
+import { CreateTournamentForm } from './tournaments/create-tournament-form';
 
 interface Props {
   userStore?: UserStore
@@ -112,11 +118,11 @@ export const CoachApp = observer(() => {
         />
         <Route
           path="/tournaments/:uuid"
-          element={<TournamentViewWithRouter/>}
+          element={<TournamentView/>}
         />
         <Route
           path="/tournaments"
-          element={<TournamentListingWithRouter/>}
+          element={<TournamentListing/>}
         />
         <Route
           path="/*"

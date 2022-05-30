@@ -16,6 +16,7 @@ import './my-gamebases.less'
 
 import { GamebaseCreateDrawer } from '../gamebase-create-drawer/gamebase-create-drawer'
 import { States } from '../../../../components/states/states'
+import { DatabaseOutlined } from '@ant-design/icons'
 
 const { Option } = Select
 
@@ -94,7 +95,7 @@ export const MyGamebases = ()=>{
     if (gamebases.length === 0) {
       return (
         <div className="blank-state container">
-          <Icon type="database" />
+          <DatabaseOutlined/>
           <p className="exception-text">
             No gamebases found for the search criteria
           </p>
