@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { ChessTypes } from '@chesslang/chess'
+import { ChessTypes } from '../../../../types'
 
 import './scoresheet.less'
 
@@ -13,9 +12,8 @@ const getFullMoveNumber = (fen: ChessTypes.FEN) => {
   return fen ? fen.split(' ')[5] : ' '
 }
 
-// TODO: Generalize this component for coach/student
-export class Scoresheet extends React.Component<Props> {
-  renderVariation = (variation: ChessTypes.Variation, level: number): any => {
+export const Scoresheet = (props: Props)=>{
+  const renderVariation = (variation: ChessTypes.Variation, level: number): any => {
     if (!variation || variation.length === 0) return null
 
     return (
@@ -30,7 +28,7 @@ export class Scoresheet extends React.Component<Props> {
               <span
                 key={m.path.toString()}
                 className={`move ${((
-                  this.props.currentPath || ''
+                  props.currentPath || ''
                 ).toString() === m.path.toString() &&
                   'current') ||
                   ''}`}
@@ -51,14 +49,12 @@ export class Scoresheet extends React.Component<Props> {
     )
   }
 
-  render() {
-    return (
-      <div className="scoresheet">
-        {this.props.mainline.length === 0 && (
-          <span className="no-moves">No moves yet</span>
-        )}
-        {this.renderVariation(this.props.mainline, 0)}
-      </div>
-    )
-  }
+  return (
+    <div className="scoresheet">
+      {props.mainline.length === 0 && (
+        <span className="no-moves">No moves yet</span>
+      )}
+      {renderVariation(props.mainline, 0)}
+    </div>
+  )
 }

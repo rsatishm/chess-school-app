@@ -4,6 +4,7 @@ import { CoachApp } from './pages/coach-app/coach-app';
 import Login from './pages/login/login';
 import NotFound from './pages/not-found/not-found';
 import { Signup } from './pages/signup/signup';
+import { StudentApp } from './pages/student-app/student-app';
 import { useSignupStore } from './stores/signup';
 import { useUserStore } from './stores/user';
 
@@ -37,6 +38,9 @@ function App() {
     if (userStore!.role === 'coach') {
       console.log("Route to " + userStore!.role)
       return <CoachApp/>
+    }
+    if (userStore!.role === 'student') {
+      return <StudentApp/>
     }
   })()
   return (

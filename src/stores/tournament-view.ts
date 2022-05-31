@@ -2,8 +2,6 @@ import { observable, action, computed, makeObservable } from 'mobx'
 import { userStore } from './user'
 import {
   getFormattedName,
-  formattedResult2,
-  downloadPgn,
   getPgnWithMeta,
   downloadFile
 } from '../utils/utils'
@@ -11,7 +9,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import { Chess } from 'chess.js'
 import { GameResult, GameStatus } from '../types/game'
-const fileDownload = require('js-file-download')
+import  fileDownload from 'js-file-download'
 
 export enum DataStatus {
   LOADING,
@@ -46,7 +44,7 @@ export class TournamentViewStore {
       refresh: action.bound,
       latestRound: computed,
       latestPairings: computed,
-      updateStage: computed,
+      updateStage: action.bound,
       updatePairingResult: action.bound,
       replayGame: action.bound,
       joinTournament: action.bound,

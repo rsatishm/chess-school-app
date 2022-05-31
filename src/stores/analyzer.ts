@@ -59,12 +59,12 @@ export class AnalyzerStore {
       analysisData: observable,
       expandedRowKeys: observable,
       boardFen: observable,
-      pgn: observable,
-      setBoardFen: observable,
-      setPrevFen: observable,
-      setNextFen: observable,
-      setExpandedRowKeys: observable,
-      resetValues: observable,
+      pgn: computed,
+      setBoardFen: action.bound,
+      setPrevFen: action.bound,
+      setNextFen: action.bound,
+      setExpandedRowKeys: action.bound,
+      resetValues: action.bound,
       setParams: action.bound,
       fetchData: action.bound
     })

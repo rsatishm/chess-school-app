@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { inject, observer } from 'mobx-react'
+import { inject, MobXProviderContext, observer } from 'mobx-react'
 import {
   message,
-  Icon,
   Button,
   Divider,
   Select,
@@ -12,15 +11,13 @@ import {
 } from 'antd'
 
 import { GameboxDatabaseStore } from '../../../../stores/gamebox-database'
-import DBList from '../../../../components/gamebox/db-list/db-list'
-import PgnUploadModal from '../../../../components/gamebox/pgn-upload-modal/pgn-upload-modal'
-import GameList from '../../../../components/gamebox/game-list/game-list'
-import GamePreview from '../../../../components/gamebox/game-preview/game-preview'
-import ShareDatabaseModal from '../../../../components/gamebox/share-database-modal/share-database-modal'
-
-interface Props {
-  gameboxDatabaseStore?: GameboxDatabaseStore
-}
+import { useState } from 'react'
+import { DeleteOutlined, DownloadOutlined, ShareAltOutlined, UploadOutlined } from '@ant-design/icons'
+import { DBList } from '../../../../components/gamebox/db-list/db-list'
+import { GameList } from '../../../../components/gamebox/game-list/game-list'
+import { GamePreview } from '../../../../components/gamebox/game-preview/game-preview'
+import { PgnUploadModal } from '../../../../components/gamebox/pgn-upload-modal/pgn-upload-modal'
+import { ShareDatabaseModal } from '../../../../components/gamebox/share-database-modal/share-database-modal'
 
 interface State {
   uploadPgnVisible: boolean
@@ -33,10 +30,9 @@ interface State {
   search: string
 }
 
-@inject('gameboxDatabaseStore')
-@observer
-export class MyDatabases extends React.Component<Props, State> {
-  state = {
+export const MyDatabases = ()=>{
+  const {gameboxDatabaseStore} = React.useContext(MobXProviderContext)
+  const [state, setState] = useState<State>({
     uploadPgnVisible: false,
     selectedDatabaseUuid: undefined, // TODO: two-way bind to URL
     selectedGameUuid: undefined, // TODO: two-way bind to URL
@@ -45,223 +41,223 @@ export class MyDatabases extends React.Component<Props, State> {
     editDatabaseVisible: false,
     sortBy: 'name_asc',
     search: ''
+  })
+  const updateState = (newState: Partial<State>) => {
+    setState((prevState) => {
+      return { ...prevState, ...newState }
+    })
   }
-
-  toggleUploadPgnVisible = () => {
-    this.setState({
-      uploadPgnVisible: !this.state.uploadPgnVisible
+  const toggleUploadPgnVisible = () => {
+    updateState({
+      uploadPgnVisible: !state.uploadPgnVisible
     })
   }
 
-  toggleNewDatabaseVisible = () => {
-    this.setState({
-      newDatabaseVisible: !this.state.newDatabaseVisible
+  const toggleNewDatabaseVisible = () => {
+    updateState({
+      newDatabaseVisible: !state.newDatabaseVisible
     })
   }
 
-  toggleEditDatabaseVisible = () => {
-    this.setState({
-      editDatabaseVisible: !this.state.editDatabaseVisible
+  const toggleEditDatabaseVisible = () => {
+   updateState({
+      editDatabaseVisible: !state.editDatabaseVisible
     })
   }
 
-  toggleShareDatabaseVisible = () => {
-    this.setState({
-      shareDatabaseVisible: !this.state.shareDatabaseVisible
+  const toggleShareDatabaseVisible = () => {
+    updateState({
+      shareDatabaseVisible: !state.shareDatabaseVisible
     })
   }
 
-  handleDeleteDatabase = async () => {
-    const uuid = this.state.selectedDatabaseUuid!
+  const handleDeleteDatabase = async () => {
+    const uuid = state.selectedDatabaseUuid!
     try {
-      this.setState({ selectedDatabaseUuid: undefined })
-      const result = await this.props.gameboxDatabaseStore!.deleteDb({ uuid })
+      updateState({ selectedDatabaseUuid: undefined })
+      const result = await gameboxDatabaseStore!.deleteDb({ uuid })
       if (result) {
         message.success('Database deleted successfuly')
       } else {
-        this.setState({ selectedDatabaseUuid: uuid })
+        updateState({ selectedDatabaseUuid: uuid })
         message.error('Failed to delete database')
       }
     } catch (e) {
-      this.setState({ selectedDatabaseUuid: uuid })
+      updateState({ selectedDatabaseUuid: uuid })
       message.error('Failed to delete database')
     }
   }
 
-  handleDbListDatabaseSelect = (uuid: string) => {
-    this.setState({
+  const handleDbListDatabaseSelect = (uuid: string) => {
+    updateState({
       selectedDatabaseUuid: uuid,
       selectedGameUuid: undefined
     })
   }
 
-  handleGameListGameSelect = (uuid: string) => {
-    this.setState({ selectedGameUuid: uuid })
+  const handleGameListGameSelect = (uuid: string) => {
+    updateState({ selectedGameUuid: uuid })
   }
 
-  handleSortByChange = (value: any) => {
-    this.setState({ sortBy: value })
+  const handleSortByChange = (value: any) => {
+    updateState({ sortBy: value })
   }
 
-  handleSearchInputChange = (e: any) => {
-    this.setState({ search: e.currentTarget.value })
+  const handleSearchInputChange = (e: any) => {
+    updateState({ search: e.currentTarget.value })
   }
 
-  handleDownloadDatabase = (e: any) => {
-    this.props.gameboxDatabaseStore?.download(this.state.selectedDatabaseUuid!)
+  const handleDownloadDatabase = (e: any) => {
+    gameboxDatabaseStore?.download(state.selectedDatabaseUuid!)
   }
 
-  render() {
-    return (
-      <div className="gamebox inner">
-        <div className={'container'}>
-          <div className={'innerContainer'}>
-            <div className={'left'}>
-              <div className={'actionBar'}>
+  return (
+    <div className="gamebox inner">
+      <div className={'container'}>
+        <div className={'innerContainer'}>
+          <div className={'left'}>
+            <div className={'actionBar'}>
+              <Button
+                className={'uploadPgnButton'}
+                onClick={toggleUploadPgnVisible}
+                loading={gameboxDatabaseStore!.uploading}
+              >
+                <UploadOutlined
+                  style={{
+                    opacity: gameboxDatabaseStore!.uploading
+                      ? 0
+                      : 1
+                  }}
+                />{' '}
+                Upload PGN
+              </Button>
+              {/* <Button
+                className={styles.newDbButton}
+                onClick={this.toggleNewDatabaseVisible}
+                loading={this.props.gameboxDatabaseStore.creating}
+              >
+                <Icon
+                  style={{
+                    opacity: this.props.gameboxDatabaseStore.creating ? 0 : 1
+                  }}
+                  type="file-add"
+                />{' '}
+                New
+              </Button> */}
+              {state.selectedDatabaseUuid && (
                 <Button
-                  className={'uploadPgnButton'}
-                  onClick={this.toggleUploadPgnVisible}
-                  loading={this.props.gameboxDatabaseStore!.uploading}
+                  className={'shareDbButton'}
+                  onClick={toggleShareDatabaseVisible}
                 >
-                  <Icon
-                    style={{
-                      opacity: this.props.gameboxDatabaseStore!.uploading
-                        ? 0
-                        : 1
-                    }}
-                    type="upload"
-                  />{' '}
-                  Upload PGN
+                  <ShareAltOutlined /> Share
                 </Button>
-                {/* <Button
-                  className={styles.newDbButton}
-                  onClick={this.toggleNewDatabaseVisible}
-                  loading={this.props.gameboxDatabaseStore.creating}
+              )}
+              {state.selectedDatabaseUuid && (
+                <Button
+                  style={{ marginRight: '8px' }}
+                  onClick={handleDownloadDatabase}
+                >
+                  <DownloadOutlined /> Download
+                </Button>
+              )}
+
+              {/* {this.state.selectedDatabaseUuid && (
+                <Button
+                  className={styles.editDbButton}
+                  onClick={this.toggleEditDatabaseVisible}
+                  loading={this.props.gameboxDatabaseStore.updating}
                 >
                   <Icon
                     style={{
-                      opacity: this.props.gameboxDatabaseStore.creating ? 0 : 1
+                      opacity: this.props.gameboxDatabaseStore.updating ? 0 : 1
                     }}
-                    type="file-add"
+                    type="edit"
                   />{' '}
-                  New
-                </Button> */}
-                {this.state.selectedDatabaseUuid && (
-                  <Button
-                    className={'shareDbButton'}
-                    onClick={this.toggleShareDatabaseVisible}
-                  >
-                    <Icon type="share-alt" /> Share
-                  </Button>
-                )}
-                {this.state.selectedDatabaseUuid && (
-                  <Button
-                    style={{ marginRight: '8px' }}
-                    onClick={this.handleDownloadDatabase}
-                  >
-                    <Icon type="download" /> Download
-                  </Button>
-                )}
-
-                {/* {this.state.selectedDatabaseUuid && (
-                  <Button
-                    className={styles.editDbButton}
-                    onClick={this.toggleEditDatabaseVisible}
-                    loading={this.props.gameboxDatabaseStore.updating}
-                  >
-                    <Icon
-                      style={{
-                        opacity: this.props.gameboxDatabaseStore.updating ? 0 : 1
-                      }}
-                      type="edit"
-                    />{' '}
-                    Edit
-                  </Button>
-                )} */}
-                {this.state.selectedDatabaseUuid && (
-                  <Popconfirm
-                    title="Warning, this action cannot be undone"
-                    onConfirm={this.handleDeleteDatabase}
-                  >
-                    <Button
-                      className={'deleteDb'}
-                      loading={this.props.gameboxDatabaseStore!.deleting}
-                      type="danger"
-                    >
-                      <Icon
-                        style={{
-                          opacity: this.props.gameboxDatabaseStore!.deleting
-                            ? 0
-                            : 1
-                        }}
-                        type="delete"
-                      />
-                    </Button>
-                  </Popconfirm>
-                )}
-                <div className={'spacer'} />
-                <Input.Search
-                  style={{ width: 200 }}
-                  className={'searchInput'}
-                  placeholder="Search by name"
-                  onChange={this.handleSearchInputChange}
-                />
-                <Select
-                  style={{ width: 200 }}
-                  placeholder="Sort (↑ Name)"
-                  onChange={this.handleSortByChange}
+                  Edit
+                </Button>
+              )} */}
+              {state.selectedDatabaseUuid && (
+                <Popconfirm
+                  title="Warning, this action cannot be undone"
+                  onConfirm={handleDeleteDatabase}
                 >
-                  <Select.Option value="name_asc">↑ Name</Select.Option>
-                  <Select.Option value="name_desc">↓ Name</Select.Option>
-                  <Select.Option value="games_asc">↑ Games</Select.Option>
-                  <Select.Option value="games_desc">↓ Games</Select.Option>
-                </Select>
-              </div>
-              <Divider />
-              <div className={'dbList'}>
-                <DBList
-                  listSelector="myDatabases"
-                  sortBy={this.state.sortBy}
-                  search={this.state.search}
-                  onDatabaseSelect={this.handleDbListDatabaseSelect}
-                  selectedDatabaseUuid={this.state.selectedDatabaseUuid}
-                />
-              </div>
-              <div className={'gameList'}>
-                <GameList
-                  databaseUuid={this.state.selectedDatabaseUuid}
-                  onGameSelect={this.handleGameListGameSelect}
-                  selectedGameUuid={this.state.selectedGameUuid}
-                />
-              </div>
+                  <Button
+                    className={'deleteDb'}
+                    loading={gameboxDatabaseStore!.deleting}
+                    danger
+                  >
+                    <DeleteOutlined
+                      style={{
+                        opacity: gameboxDatabaseStore!.deleting
+                          ? 0
+                          : 1
+                      }}
+                    />
+                  </Button>
+                </Popconfirm>
+              )}
+              <div className={'spacer'} />
+              <Input.Search
+                style={{ width: 200 }}
+                className={'searchInput'}
+                placeholder="Search by name"
+                onChange={handleSearchInputChange}
+              />
+              <Select
+                style={{ width: 200 }}
+                placeholder="Sort (↑ Name)"
+                onChange={handleSortByChange}
+              >
+                <Select.Option value="name_asc">↑ Name</Select.Option>
+                <Select.Option value="name_desc">↓ Name</Select.Option>
+                <Select.Option value="games_asc">↑ Games</Select.Option>
+                <Select.Option value="games_desc">↓ Games</Select.Option>
+              </Select>
             </div>
-            <Divider style={{ height: '100%' }} type="vertical" />
-            <div className={'right'}>
-              <div className={'gamePreview'}>
-                <GamePreview
-                  gameUuid={this.state.selectedGameUuid}
-                  isAnalyzeFeatureOn={false}
-                />
-              </div>
+            <Divider />
+            <div className={'dbList'}>
+              <DBList
+                listSelector="myDatabases"
+                sortBy={state.sortBy}
+                search={state.search}
+                onDatabaseSelect={handleDbListDatabaseSelect}
+                selectedDatabaseUuid={state.selectedDatabaseUuid}
+              />
+            </div>
+            <div className={'gameList'}>
+              <GameList
+                databaseUuid={state.selectedDatabaseUuid}
+                onGameSelect={handleGameListGameSelect}
+                selectedGameUuid={state.selectedGameUuid}
+              />
+            </div>
+          </div>
+          <Divider style={{ height: '100%' }} type="vertical" />
+          <div className={'right'}>
+            <div className={'gamePreview'}>
+              <GamePreview
+                gameUuid={state.selectedGameUuid}
+                isAnalyzeFeatureOn={false}
+              />
             </div>
           </div>
         </div>
-        <PgnUploadModal
-          visible={this.state.uploadPgnVisible}
-          onClose={this.toggleUploadPgnVisible}
-        />
-        <ShareDatabaseModal
-          type="student"
-          databaseUuid={this.state.selectedDatabaseUuid!}
-          visible={this.state.shareDatabaseVisible}
-          onClose={this.toggleShareDatabaseVisible}
-        />
-        {/* <NewDatabaseModal
-          visible={this.state.newDatabaseVisible}
-          onClose={this.toggleNewDatabaseVisible}
-          databaseStore={{ creating: false }}
-        /> */}
       </div>
-    )
-  }
+      <PgnUploadModal
+        visible={state.uploadPgnVisible}
+        onClose={toggleUploadPgnVisible}
+      />
+      <ShareDatabaseModal
+        type="student"
+        databaseUuid={state.selectedDatabaseUuid!}
+        visible={state.shareDatabaseVisible}
+        onClose={toggleShareDatabaseVisible}
+      />
+      {/* <NewDatabaseModal
+        visible={this.state.newDatabaseVisible}
+        onClose={this.toggleNewDatabaseVisible}
+        databaseStore={{ creating: false }}
+      /> */}
+    </div>
+  )
 }

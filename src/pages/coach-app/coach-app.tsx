@@ -21,10 +21,9 @@ import { Blindbot } from '../student-app/blindbot/blindbot';
 import { Gamebox } from '../student-app/gamebox/gamebox';
 import { Gamebase } from './gamebase/gamebase';
 import { Problembase } from './problembase/problembase';
-import TournamentListingWithRouter from './tournaments/tournament-listing';
-import TournamentListing from './tournaments/tournament-listing';
 import { CreateTournamentForm } from './tournaments/create-tournament-form';
 import { Analytics } from './analytics/analytics';
+import { TournamentListing } from './tournaments/tournament-listing';
 
 interface Props {
   userStore?: UserStore

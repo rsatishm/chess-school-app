@@ -1,57 +1,52 @@
-import React, { Component } from 'react'
+import React, { Component, useContext, useEffect } from 'react'
 import { Layout, Row, Col, Button, Table, List, Skeleton, message } from 'antd'
 import { CoachTournamentStore } from '../../../stores/coach-tournaments'
-import { observer, inject } from 'mobx-react'
+import { observer, inject, MobXProviderContext } from 'mobx-react'
 import moment from 'moment-timezone'
 
 import './tournament-listing.less'
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
-import { Firebase } from '../../../firebaseInit'
+import { Link, useNavigate } from 'react-router-dom'
 
-interface Props extends RouteComponentProps<any> {
-  coachTournamentStore?: CoachTournamentStore
-}
-
-@inject('coachTournamentStore')
-@observer
-class TournamentListing extends Component<Props> {
-  componentDidMount() {
-    this.props.coachTournamentStore!.load()
+export const TournamentListing = ()=>{
+  const {coachTournamentStore} = useContext(MobXProviderContext)
+  const navigate = useNavigate()
+  useEffect(()=>{
+    coachTournamentStore!.load()
+  })
+  const handleView = (record: any) => {
+    navigate(`/app/tournaments/${record.uuid}`)
   }
 
-  handleView = (record: any) => {
-    this.props.history.push(`/app/tournaments/${record.uuid}`)
-  }
-
-  handleEdit = async (record: any) => {
+  const handleEdit = async (record: any) => {
     // TODO: complete
     if (record.status === 'UPCOMING') {
-      this.props.history.push(`/app/tournaments/${record.uuid}/edit`)
+      navigate(`/app/tournaments/${record.uuid}/edit`)
     } else {
-      const currentStage: any = (
+      const currentStage: any = []
+      /*(
         await Firebase.firestore()
           .collection('tournaments')
           .doc(record.uuid)
           .get()
-      ).data()
+      ).data()*/
       if (currentStage.player_status === 'INVITED') {
-        this.props.history.push(`/app/tournaments/${record.uuid}/edit`)
+        navigate(`/app/tournaments/${record.uuid}/edit`)
       } else {
         message.error('Cannot edit as the players have been finalized')
       }
     }
   }
 
-  handleDelete = (record: any) => {
-    this.props.coachTournamentStore!.delete(record.uuid)
+  const handleDelete = (record: any) => {
+    coachTournamentStore!.delete(record.uuid)
   }
 
-  renderTournament = (item: any) => {
+  const renderTournament = (item: any) => {
     let actions = [
       <Button
         type="primary"
         style={{ margin: 4 }}
-        onClick={() => this.handleView(item)}
+        onClick={() => handleView(item)}
       >
         View
       </Button>
@@ -59,16 +54,16 @@ class TournamentListing extends Component<Props> {
 
     if (item.status != 'PAST') {
       actions.push(
-        <Button style={{ margin: 4 }} onClick={() => this.handleEdit(item)}>
+        <Button style={{ margin: 4 }} onClick={() => handleEdit(item)}>
           Edit
         </Button>
       )
     }
     actions.push(
       <Button
-        type="danger"
+        danger
         style={{ margin: 4 }}
-        onClick={() => this.handleDelete(item)}
+        onClick={() => handleDelete(item)}
       >
         Delete
       </Button>
@@ -92,54 +87,48 @@ class TournamentListing extends Component<Props> {
     )
   }
 
-  render() {
-    return (
-      <Layout.Content className="content tournaments">
-        <div className="inner">
-          <h1>Tournaments</h1>
-          <Row>
-            <Col span={4}>
-              <Button>
-                <Link to="/app/tournaments/create">Create Tournament</Link>
-              </Button>
-            </Col>
-          </Row>
+  return (
+    <Layout.Content className="content tournaments">
+      <div className="inner">
+        <h1>Tournaments</h1>
+        <Row>
+          <Col span={4}>
+            <Button>
+              <Link to="/app/tournaments/create">Create Tournament</Link>
+            </Button>
+          </Col>
+        </Row>
 
-          <div className="tournaments-section">
-            <h2>Current Tournaments</h2>
-            <List
-              loading={false}
-              itemLayout="horizontal"
-              dataSource={this.props.coachTournamentStore!.currentTournaments}
-              renderItem={this.renderTournament}
-            />
-          </div>
-
-          <div className="tournaments-section">
-            <h2>Upcoming Tournaments</h2>
-            <List
-              loading={false}
-              itemLayout="horizontal"
-              dataSource={this.props.coachTournamentStore!.upcomingTournments}
-              renderItem={this.renderTournament}
-            />
-          </div>
-
-          <div className="tournaments-section">
-            <h2>Past Tournaments</h2>
-            <List
-              loading={false}
-              itemLayout="horizontal"
-              dataSource={this.props.coachTournamentStore!.pastTournaments}
-              renderItem={this.renderTournament}
-            />
-          </div>
+        <div className="tournaments-section">
+          <h2>Current Tournaments</h2>
+          <List
+            loading={false}
+            itemLayout="horizontal"
+            dataSource={coachTournamentStore!.currentTournaments}
+            renderItem={renderTournament}
+          />
         </div>
-      </Layout.Content>
-    )
-  }
+
+        <div className="tournaments-section">
+          <h2>Upcoming Tournaments</h2>
+          <List
+            loading={false}
+            itemLayout="horizontal"
+            dataSource={coachTournamentStore!.upcomingTournments}
+            renderItem={renderTournament}
+          />
+        </div>
+
+        <div className="tournaments-section">
+          <h2>Past Tournaments</h2>
+          <List
+            loading={false}
+            itemLayout="horizontal"
+            dataSource={coachTournamentStore!.pastTournaments}
+            renderItem={renderTournament}
+          />
+        </div>
+      </div>
+    </Layout.Content>
+  )
 }
-
-const TournamentListingWithRouter = withRouter(TournamentListing)
-
-export default TournamentListingWithRouter

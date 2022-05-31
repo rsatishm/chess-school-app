@@ -45,10 +45,10 @@ export class CreateTournamentFormStore {
       setBufferMinutes: action.bound,
       participants: computed,
       avgRoundDuration: computed,
-      setInitialFen: computed,
-      loadBookOpenings: computed,
+      setInitialFen: action.bound,
+      loadBookOpenings: action.bound,
       isEditing: computed,
-      isValidFen: computed
+      isValidFen: action.bound
     })
   }
 

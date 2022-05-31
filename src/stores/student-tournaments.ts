@@ -9,7 +9,7 @@ export class StudentTournamentStore {
       tournaments: observable,
       load: action.bound,
       activeTournaments: computed,
-      joinTournament: computed,
+      joinTournament: action.bound,
       exitTournament: action.bound,
       currentTournaments: computed,
       pastTournaments: computed,

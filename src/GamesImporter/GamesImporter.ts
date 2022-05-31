@@ -1,7 +1,7 @@
 import { bufferCount, concatMap, of } from 'rxjs'
 import { BehaviorSubject } from 'rxjs'
 import { forkJoin } from 'rxjs'
-import retryAxios from 'retry-axios'
+import * as retryAxios from 'retry-axios'
 import axios from 'axios'
 import * as PGNParser from '../components/PGNParser/PGNParser'
 

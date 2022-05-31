@@ -23,9 +23,6 @@ import { inject, MobXProviderContext, observer } from 'mobx-react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { SetupChessboard } from '../../../components/chessboard/setup-chessboard'
-
-const { TreeNode } = Tree
-
 import './create-tournament-form.less'
 import moment from 'moment-timezone'
 import { StudentsGroupsStore } from '../../../stores/students-groups'
@@ -37,6 +34,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'antd/es/form/Form'
 import { ChessTypes } from '../../../types'
 import { LoadingOutlined } from '@ant-design/icons'
+
+
+const { TreeNode } = Tree
+
 
 export const CreateTournamentForm = () => {
   const { uuid } = useParams()

@@ -31,11 +31,18 @@ export const GamebaseCreateDrawer = (props: Props)=>{
       return { ...prevState, ...newState }
     })
   }
+  React.useEffect(()=>{
+    
+    const shouldRefresh = state.importStatus.uploadedCount > 0
+
+    props.onClose()
+      if (shouldRefresh) {
+        privateGamebaseStore!.refresh()
+      }
+  }, [state.importStatus])
   let importer: GamesImporter.GamesImporter | null = null
 
   const handleCancelClick = () => {
-    const shouldRefresh = state.importStatus.uploadedCount > 0
-
     updateState(
       {
         file: null,
@@ -48,12 +55,6 @@ export const GamebaseCreateDrawer = (props: Props)=>{
       }
     )
 
-    React.useEffect(()=>{
-      props.onClose()
-        if (shouldRefresh) {
-          privateGamebaseStore!.refresh()
-        }
-    }, [state.importStatus])
   }
 
   const handleSubmit = () => {

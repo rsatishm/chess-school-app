@@ -345,6 +345,7 @@ export const TournamentView = () => {
     }
   }
 
+  /*
   const renderEditButton = () => {
     const stage: any = state.stage
     if (stage == null) {
@@ -364,7 +365,7 @@ export const TournamentView = () => {
         </Button>
       )
     }
-  }
+  }*/
 
   const renderLiveGamePreviewTab = () => {
     return (

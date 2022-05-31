@@ -22,12 +22,14 @@ import { TournamentView } from '../../components/tournaments/tournament-view'
 interface State {
   hasError: boolean
   showProfileEditModal: boolean
+  showPreferences: boolean
 }
 
-export const StudentApp = ()=>{
+export const StudentApp = () => {
   const [state, setState] = useState<State>({
     hasError: false,
-    showProfileEditModal: false
+    showProfileEditModal: false,
+    showPreferences: false
   })
 
   const location = useLocation()
@@ -37,34 +39,43 @@ export const StudentApp = ()=>{
   }
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (state.showPreferences) {
+    navigate('/app/preferences')
+    }
+  }, [state.showPreferences])
+
   const updateState = (newState: Partial<State>) => {
     setState((prevState) => {
-        return { ...prevState, ...newState }
+      return { ...prevState, ...newState }
     })
   }
-  const {mixpanelStore, userStore, liveGameStore} = useContext(MobXProviderContext)
-  useEffect(userStore!.loadProfile()
-  .then(() => {
-    const firstname = R.trim(
-      userStore!.profile.firstname.toLowerCase()
-    )
-    const lastname = R.trim(
-      userStore!.profile.lastname.toLowerCase()
-    )
+  const { mixpanelStore, userStore, liveGameStore } = useContext(MobXProviderContext)
 
-    if (firstname === 'firstname' || lastname === 'lastname') {
-      updateState({ showProfileEditModal: true })
-    }
+  useEffect(() => {
+    userStore!.loadProfile()
+      .then(() => {
+        const firstname = R.trim(
+          userStore!.profile.firstname.toLowerCase()
+        )
+        const lastname = R.trim(
+          userStore!.profile.lastname.toLowerCase()
+        )
+
+        if (firstname === 'firstname' || lastname === 'lastname') {
+          updateState({ showProfileEditModal: true })
+        }
+      })
+      .catch(() => { })
   })
-  .catch(() => {}))
 
   const handleProfileRedirect = () => {
     updateState({
-        showProfileEditModal: false
-      })
-    useEffect(()=>{
-      navigate('/app/preferences')
-    , [state.showProfileEditModal]})
+      showProfileEditModal: false,
+      showPreferences: true
+    })
+
   }
 
   const hideShowProfileEditModal = () => {
@@ -102,7 +113,7 @@ export const StudentApp = ()=>{
         <Layout.Content className="content" style={{ paddingLeft: 0 }}>
           <div className="inner">
             <div className="error-state container">
-              <ExceptionOutlined/>
+              <ExceptionOutlined />
               <p className="exception-text">
                 An unexpected error was encountered.
               </p>
@@ -116,36 +127,38 @@ export const StudentApp = ()=>{
     )
   }
 
+  console.log("showProfileEditModal?" + state.showProfileEditModal)
   return (
     <Layout className="student app page">
       {renderProfileModal()}
       <Sidebar />
+
       <Routes>
         <Route
-          path={location.pathname + '/assignment'}
-          element={Assignment}
+          path={'/assignment'}
+          element={<Assignment/>}
         />
-        <Route path={location.pathname + '/practice'} element={Practice} />
-        <Route          
-          path={location.pathname + '/blindbot'}
-          element={Blindbot}
-        />
-        <Route          
-          path={location.pathname + '/preferences'}
-          element={User}
-        />
-        <Route path={location.pathname + '/game-area'} element={GameArea} />
-        <Route path={location.pathname + '/sharebox'} element={Gamebox} />
-        <Route path={`${location.pathname}/board`} element={AnalysisBoard} />
+        <Route path={'/practice'} element={<Practice/>} />
         <Route
-          path={location.pathname + '/tournaments/:uuid'}
-          element={TournamentView}
+          path={'/blindbot'}
+          element={<Blindbot/>}
         />
         <Route
-          path={location.pathname + '/tournaments'}
-          element={StudentTournaments}
+          path={'/preferences'}
+          element={<User/>}
         />
-        <Route element={Dashboard} />
+        <Route path={'/game-area'} element={<GameArea/>} />
+        <Route path={'/sharebox'} element={<Gamebox/>} />
+        <Route path={'/board'} element={<AnalysisBoard/>} />
+        <Route
+          path={'/tournaments/:uuid'}
+          element={<TournamentView/>}
+        />
+        <Route
+          path={'/tournaments'}
+          element={<StudentTournaments/>}
+        />
+        <Route path="/*" element={<Dashboard/>} />
       </Routes>
     </Layout>
   )

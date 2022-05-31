@@ -49,6 +49,12 @@ export const ChangeName = () => {
       })
       .catch(() => { })
   })
+  useEffect(() => {
+    if (!state.modalVisible) {
+      form.resetFields()
+      userStore!.resetChangeNameErrors()
+    }
+  }, [state.modalVisible])
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
@@ -72,12 +78,6 @@ export const ChangeName = () => {
 
   const hideModal = () => {
     updateState({ modalVisible: false })
-    useEffect(() => {
-      if (!state.modalVisible) {
-        form.resetFields()
-        userStore!.resetChangeNameErrors()
-      }
-    }, [state.modalVisible])
   }
 
   return (

@@ -1,15 +1,19 @@
 import * as React from 'react'
 import * as R from 'ramda'
 import Measure from 'react-measure'
-import { inject, observer } from 'mobx-react'
-import { Chess, ChessTypes, ProblemReader, Util } from '@chesslang/chess'
-import { Button, Icon, Tag, Alert } from 'antd'
+import { inject, MobXProviderContext, observer } from 'mobx-react'
+import { Button, Tag, Alert } from 'antd'
 import { toJS } from 'mobx'
 import { BaseContentStore } from '../../../../stores/base-content'
 import { ProblemSolveStore } from '../../../../stores/problem-solve'
 import { ConfiguredChessboard } from '../../../../components/chessboard/configured-chessboard'
 import './problems-solve.less'
 import { StudentAssignmentStore } from '../../../../stores/student-assignment'
+import { CheckCircleOutlined, ClockCircleOutlined, DoubleLeftOutlined, DoubleRightOutlined, ExceptionOutlined, LoadingOutlined } from '@ant-design/icons'
+import { ChessTypes } from '../../../../types'
+import { Chess } from 'chess.js'
+import * as ProblemReader from '../../../../ProblemReader/ProblemReader'
+import * as Util from '../../../../utils/Util'
 
 const pad = (digit: number): string =>
   digit <= 9 ? '0' + digit : digit.toString()
@@ -30,9 +34,6 @@ const getSideToMove = (fen: ChessTypes.FEN) =>
 interface Props {
   assignment: any
   problemUuids: string[]
-  baseContentStore?: BaseContentStore
-  problemSolveStore?: ProblemSolveStore
-  studentAssignmentStore?: StudentAssignmentStore
 }
 
 interface State {
@@ -48,10 +49,9 @@ interface State {
   currentPbmIndex: number
 }
 
-@inject('baseContentStore', 'problemSolveStore', 'studentAssignmentStore')
-@observer
-export class ProblemsSolve extends React.Component<Props, State> {
-  state = {
+export const ProblemsSolve = (props: Props) => {
+  const { baseContentStore, problemSolveStore, studentAssignmentStore } = React.useContext(MobXProviderContext)
+  const [state, setState] = React.useState<State>({
     allSolved: false,
     showCongrats: true,
     boardSize: 0,
@@ -62,12 +62,12 @@ export class ProblemsSolve extends React.Component<Props, State> {
     status: '',
     moves: '',
     currentPbmIndex: 0
-  } as State
+  })
 
-  private interval: any | null = null
-  private problemReader: ProblemReader.ProblemReader | null = null
-  private chess: Chess = new Chess()
-  private attempt: any = {
+  let interval: any | null = null
+  let problemReader: ProblemReader.ProblemReader | null = null
+  let chess = new Chess()
+  let attempt: any = {
     problemId: '',
     exerciseId: '',
     status: '',
@@ -75,202 +75,208 @@ export class ProblemsSolve extends React.Component<Props, State> {
     timeTaken: ''
   }
 
-  tick() {
-    this.setState(state => ({ time: state.time + 1 }))
+  React.useEffect(() => {
+    setTimeout(() => {
+      console.log('Next unsolved')
+      loadNextUnsolvedProblem(
+        state.currentPbmIndex,
+        props.assignment
+      )
+    }, 2000)
+  }, [state.status])
+
+  React.useEffect(()=>{
+    props.problemUuids.forEach((uuid: string) => {
+      baseContentStore!.load(uuid)
+    })
+    problemSolveStore!.load(props.assignment.uuid)
+    loadNextUnsolvedProblem(0, props.assignment)
+    studentAssignmentStore!.loadCompletionDetails(
+      props.assignment.uuid
+    )
+    return ()=>stopTimer()
+  }
+  )
+
+  const updateState = (newState: Partial<State>) => {
+    setState((prevState) => {
+      return { ...prevState, ...newState }
+    })
+  }
+  
+  function tick() {
+    updateState({ time: state.time + 1 })
   }
 
-  startTimer() {
-    if (!this.interval) {
-      this.setState({ interactionMode: 'MOVE' })
-      this.interval = setInterval(() => this.tick(), 1000)
+  function startTimer() {
+    if (!interval) {
+      updateState({ interactionMode: 'MOVE' })
+      interval = setInterval(() => tick(), 1000)
     }
   }
 
-  stopTimer() {
-    if (this.interval) {
-      this.setState({ interactionMode: 'NONE' })
-      clearInterval(this.interval)
-      this.interval = null
+  function stopTimer() {
+    if (interval) {
+      updateState({ interactionMode: 'NONE' })
+      clearInterval(interval)
+      interval = null
     }
   }
 
-  readProblem(uuid: string) {
-    this.startTimer()
-    this.problemReader = this.props.problemSolveStore!.getProblemReader(uuid)
-    this.problemReader.getStatusStream().subscribe(status => {
+  function readProblem(uuid: string) {
+    startTimer()
+    problemReader = problemSolveStore!.getProblemReader(uuid)
+    problemReader!.getStatusStream().subscribe((status: any) => {
       if (status.nextMove) {
         setTimeout(() => {
-          this.chess.move(status.nextMove as string)
-          this.setState({
-            fen: this.chess.fen(),
+          chess.move(status.nextMove as string)
+          updateState({
+            fen: chess.fen(),
             status: 'correct',
-            moves: this.chess.pgn()
+            moves: chess.pgn()
           })
         }, 300)
       }
       if (status.solved) {
         setTimeout(() => {
-          this.stopTimer()
-          this.handleSubmit('solved', this.state.moves)
-          this.props.studentAssignmentStore!.setSolved(
-            this.props.assignment.uuid,
+          stopTimer()
+          handleSubmit('solved', state.moves)
+          studentAssignmentStore!.setSolved(
+            props.assignment.uuid,
             uuid
           )
 
           // check if all solved
-          const completionDetails = (this.props.studentAssignmentStore!
-            .completionDetails as any)[this.props.assignment.uuid]
+          const completionDetails = (studentAssignmentStore!
+            .completionDetails as any)[props.assignment.uuid]
           if (
             completionDetails.details.length ===
-              this.props.problemUuids.length &&
-            R.all(d => d.solved, completionDetails.details)
+            props.problemUuids.length &&
+            R.all((d: any) => d.solved, completionDetails.details)
           ) {
-            this.setState({ allSolved: true })
+            updateState({ allSolved: true })
           } else {
-            this.setState({ status: 'solved' }, () => {
-              setTimeout(() => {
-                console.log('Next unsolved')
-                this.loadNextUnsolvedProblem(
-                  this.state.currentPbmIndex,
-                  this.props.assignment
-                )
-              }, 2000)
-            })
+            updateState({ status: 'solved' })
           }
         }, 300)
       }
     })
   }
 
-  loadProblem(index: number, assignment: any) {
-    this.stopTimer()
-    this.setState({ currentPbmIndex: index, fen: '' })
-    this.attempt.exerciseId = assignment.exerciseId
-    this.attempt.problemId = this.props.problemUuids[index]
-    const completionDetails = this.props.studentAssignmentStore!
+  function loadProblem(index: number, assignment: any) {
+    stopTimer()
+    updateState({ currentPbmIndex: index, fen: '' })
+    attempt.exerciseId = assignment.exerciseId
+    attempt.problemId = props.problemUuids[index]
+    const completionDetails = studentAssignmentStore!
       .completionDetails[assignment.uuid]
     if (completionDetails.details.length > 0) {
       const solvedCompletionDetail = R.find(
-        (ad: any) => ad.problemId === this.attempt.problemId && ad.solved,
+        (ad: any) => ad.problemId === attempt.problemId && ad.solved,
         completionDetails.details
       )
 
       if (solvedCompletionDetail) {
-        this.setState({
+        updateState({
           status: 'solved',
           time: 0,
           moves: solvedCompletionDetail.moves
         })
       } else {
-        this.setState({ status: '', time: 0, moves: '' })
-        this.readProblem(this.attempt.problemId)
+        updateState({ status: '', time: 0, moves: '' })
+        readProblem(attempt.problemId)
       }
     } else {
-      this.setState({ status: '', time: 0, moves: '' })
-      this.readProblem(this.attempt.problemId)
+      updateState({ status: '', time: 0, moves: '' })
+      readProblem(attempt.problemId)
     }
   }
 
-  loadPrevUnsolvedProblem(index: number, assignment: any) {
+  function loadPrevUnsolvedProblem(index: number, assignment: any) {
     if (index < 0) {
       return
     }
 
-    const completionDetails = this.props.studentAssignmentStore!
+    const completionDetails = studentAssignmentStore!
       .completionDetails[assignment.uuid]
     for (let i = index; i >= 0; i--) {
-      const problemId = this.props.problemUuids[i]
+      const problemId = props.problemUuids[i]
       if (completionDetails.details.length > 0) {
         const solved = R.find(
           (ad: any) => ad.problemId === problemId && ad.solved,
           completionDetails.details
         )
         if (!solved) {
-          this.loadProblem(i, assignment)
+          loadProblem(i, assignment)
           return
         }
       } else {
-        this.loadProblem(i, assignment)
+        loadProblem(i, assignment)
         return
       }
     }
 
     // check if all solved
     if (
-      completionDetails.details.length === this.props.problemUuids.length &&
-      R.all(d => d.solved, completionDetails.details)
+      completionDetails.details.length === props.problemUuids.length &&
+      R.all((d: any) => d.solved, completionDetails.details)
     ) {
-      this.setState({ allSolved: true })
+      updateState({ allSolved: true })
     }
   }
 
-  loadNextUnsolvedProblem(index: number, assignment: any) {
-    if (index >= this.props.problemUuids.length) {
+  function loadNextUnsolvedProblem(index: number, assignment: any) {
+    if (index >= props.problemUuids.length) {
       return
     }
 
-    const completionDetails = this.props.studentAssignmentStore!
+    const completionDetails = studentAssignmentStore!
       .completionDetails[assignment.uuid]
-    for (let i = index; i < this.props.problemUuids.length; i++) {
-      const problemId = this.props.problemUuids[i]
+    for (let i = index; i < props.problemUuids.length; i++) {
+      const problemId = props.problemUuids[i]
       if (completionDetails.details.length > 0) {
         const solved = R.find(
           (ad: any) => ad.problemId === problemId && ad.solved,
           completionDetails.details
         )
         if (!solved) {
-          this.loadProblem(i, assignment)
+          loadProblem(i, assignment)
           return
         }
       } else {
-        this.loadProblem(i, assignment)
+        loadProblem(i, assignment)
         return
       }
     }
 
     // check if all solved
     if (
-      completionDetails.details.length === this.props.problemUuids.length &&
-      R.all(d => d.solved, completionDetails.details)
+      completionDetails.details.length === props.problemUuids.length &&
+      R.all((d: any) => d.solved, completionDetails.details)
     ) {
-      this.setState({ allSolved: true })
+      updateState({ allSolved: true })
     }
   }
 
-  componentDidMount() {
-    this.props.problemUuids.forEach((uuid: string) => {
-      this.props.baseContentStore!.load(uuid)
-    })
-    this.props.problemSolveStore!.load(this.props.assignment.uuid)
-    this.loadNextUnsolvedProblem(0, this.props.assignment)
-    this.props.studentAssignmentStore!.loadCompletionDetails(
-      this.props.assignment.uuid
+  async function handleSubmit(status: string, moves: string) {
+    attempt.status = status
+    attempt.moves = moves
+    attempt.timeTaken = state.time
+    await problemSolveStore!.submit(
+      props.assignment.uuid,
+      attempt
     )
   }
 
-  componentWillUnmount() {
-    this.stopTimer()
+  const  handleViewProblems = (e: any) => {
+    updateState({ showCongrats: false })
+    loadProblem(0, problemSolveStore!.assignment)
   }
 
-  async handleSubmit(status: string, moves: string) {
-    this.attempt.status = status
-    this.attempt.moves = moves
-    this.attempt.timeTaken = this.state.time
-    await this.props.problemSolveStore!.submit(
-      this.props.assignment.uuid,
-      this.attempt
-    )
-  }
-
-  handleViewProblems = (e: any) => {
-    this.setState({ showCongrats: false })
-    this.loadProblem(0, this.props.problemSolveStore!.assignment)
-  }
-
-  handleMove = (move: ChessTypes.ChessJSVerboseMove) => {
-    this.chess.move(move)
+  const handleMove = (move: ChessTypes.ChessJSVerboseMove) => {
+    chess.move(move)
     if (
-      this.problemReader!.move({
+      problemReader!.move({
         from: move.from,
         to: move.to,
         promotion: move.promotion
@@ -278,35 +284,35 @@ export class ProblemsSolve extends React.Component<Props, State> {
           : undefined
       })
     ) {
-      this.setState({
-        fen: this.chess.fen(),
+      updateState({
+        fen: chess.fen(),
         status: 'correct',
-        moves: this.chess.pgn()
+        moves: chess.pgn()
       })
     } else {
-      this.setState({ status: 'incorrect' })
-      this.handleSubmit('unsolved', this.chess.pgn())
-      this.chess.undo()
+      updateState({ status: 'incorrect' })
+      handleSubmit('unsolved', chess.pgn())
+      chess.undo()
       setTimeout(() => {
-        this.setState({ status: '' })
+        updateState({ status: '' })
       }, 2000)
     }
   }
 
-  renderErrorState = () => {
+  const renderErrorState = () => {
     return (
       <div className="problems-solve">
         <div className="inner">
           <div className="error-state container">
-            <Icon type="exception" />
+            <ExceptionOutlined />
             <p className="exception-text">
-              {this.props.problemSolveStore!.error}.
+              {problemSolveStore!.error}.
             </p>
             <span className="action-text">
               <Button
-                type="danger"
+                danger
                 onClick={() =>
-                  this.props.problemSolveStore!.load(this.props.assignment.uuid)
+                  problemSolveStore!.load(props.assignment.uuid)
                 }
               >
                 Retry
@@ -318,12 +324,12 @@ export class ProblemsSolve extends React.Component<Props, State> {
     )
   }
 
-  renderLoadingState = () => {
+  const renderLoadingState = () => {
     return (
       <div className="problems-solve">
         <div className="inner">
           <div className="loading-state container">
-            <Icon type="loading" spin={true} />
+            <LoadingOutlined spin={true} />
             <p className="exception-text">Loading</p>
           </div>
         </div>
@@ -331,143 +337,141 @@ export class ProblemsSolve extends React.Component<Props, State> {
     )
   }
 
-  render() {
-    if (this.state.allSolved && this.state.showCongrats) {
-      return (
-        <div className="problems-solve">
-          <div className="all-solved">
-            <h4>Congrats!</h4>
-            <Icon type="check-circle" />
-            <h4>You have solved all the problems!</h4>
-
-            <Button
-              size="large"
-              type="primary"
-              onClick={this.handleViewProblems}
-            >
-              View Problems
-            </Button>
-          </div>
-        </div>
-      )
-    }
-
-    const problem = this.props.baseContentStore!.content[
-      this.props.problemUuids[this.state.currentPbmIndex]
-    ]
-
-    if (this.props.problemSolveStore!.error) {
-      return this.renderErrorState()
-    }
-
-    if (
-      !problem ||
-      problem.loading ||
-      this.props.problemSolveStore!.loading ||
-      !this.props.studentAssignmentStore!.completionDetails[
-        this.props.assignment.uuid
-      ] ||
-      this.props.studentAssignmentStore!.completionDetails[
-        this.props.assignment.uuid
-      ].loading
-    ) {
-      return this.renderLoadingState()
-    }
-
-    if (this.state.fen === '') {
-      this.chess.load(problem.content!.startFen || Util.DEFAULT_START_FEN)
-      this.setState({
-        fen: problem.content!.startFen || Util.DEFAULT_START_FEN,
-        orientation: getSideToMove(
-          problem.content!.startFen || Util.DEFAULT_START_FEN
-        )
-      })
-    }
-
+  if (state.allSolved && state.showCongrats) {
     return (
       <div className="problems-solve">
-        <Measure
-          bounds={true}
-          onResize={contentRect =>
-            this.setState({ boardSize: contentRect.bounds!.width - 25 })
-          }
-        >
-          {({ measureRef }) => {
-            return (
-              <div ref={measureRef} className="left">
-                <div style={{ border: '2px solid #000' }}>
-                  <ConfiguredChessboard
-                    fen={
-                      this.state.fen ||
-                      problem.content!.startFen ||
-                      Util.DEFAULT_START_FEN
-                    }
-                    interactionMode={this.state.interactionMode}
-                    width={this.state.boardSize}
-                    height={this.state.boardSize}
-                    onMove={this.handleMove}
-                    orientation={this.state.orientation}
-                  />
-                </div>
-              </div>
-            )
-          }}
-        </Measure>
-        <div className="right">
-          <div className="problems">
-            <Button
-              disabled={this.state.currentPbmIndex === 0 && true}
-              onClick={() =>
-                this.loadProblem(
-                  this.state.currentPbmIndex - 1,
-                  this.props.problemSolveStore!.assignment
-                )
-              }
-            >
-              <Icon type="double-left" />
-            </Button>
-            <div>
-              <h4>{this.state.currentPbmIndex + 1}</h4>(
-              {this.state.currentPbmIndex + 1}/{this.props.problemUuids.length}){' '}
-              {this.state.orientation === 'w' ? 'White' : 'Black'} to Play
-            </div>
-            <Button
-              disabled={
-                this.state.currentPbmIndex ===
-                  this.props.problemUuids.length - 1 && true
-              }
-              onClick={() =>
-                this.loadProblem(
-                  this.state.currentPbmIndex + 1,
-                  this.props.problemSolveStore!.assignment
-                )
-              }
-            >
-              <Icon type="double-right" />
-            </Button>
-          </div>
-          <div className="timer">
-            <div className="clock">
-              <Icon type="clock-circle" /> {secondsToTime(this.state.time)}
-            </div>
-            {this.state.status !== '' && (
-              <Tag
-                style={{ cursor: 'not-allowed' }}
-                color={
-                  this.state.status === 'solved'
-                    ? '#52c41a'
-                    : this.state.status === 'incorrect'
-                    ? '#f5222d'
-                    : '#108ee9'
-                }
-              >
-                {this.state.status.toUpperCase()}
-              </Tag>
-            )}
-          </div>
-          <div className="moves">{extractMoves(this.state.moves)}</div>
+        <div className="all-solved">
+          <h4>Congrats!</h4>
+          <CheckCircleOutlined />
+          <h4>You have solved all the problems!</h4>
+
+          <Button
+            size="large"
+            type="primary"
+            onClick={handleViewProblems}
+          >
+            View Problems
+          </Button>
         </div>
       </div>
     )
   }
+
+  const problem = baseContentStore!.content[
+    props.problemUuids[state.currentPbmIndex]
+  ]
+
+  if (problemSolveStore!.error) {
+    return renderErrorState()
+  }
+
+  if (
+    !problem ||
+    problem.loading ||
+    problemSolveStore!.loading ||
+    !studentAssignmentStore!.completionDetails[
+    props.assignment.uuid
+    ] ||
+    studentAssignmentStore!.completionDetails[
+      props.assignment.uuid
+    ].loading
+  ) {
+    return renderLoadingState()
+  }
+
+  if (state.fen === '') {
+    chess.load(problem.content!.startFen || Util.DEFAULT_START_FEN)
+    updateState({
+      fen: problem.content!.startFen || Util.DEFAULT_START_FEN,
+      orientation: getSideToMove(
+        problem.content!.startFen || Util.DEFAULT_START_FEN
+      )
+    })
+  }
+
+  return (
+    <div className="problems-solve">
+      <Measure
+        bounds={true}
+        onResize={contentRect =>
+          updateState({ boardSize: contentRect.bounds!.width - 25 })
+        }
+      >
+        {({ measureRef }) => {
+          return (
+            <div ref={measureRef} className="left">
+              <div style={{ border: '2px solid #000' }}>
+                <ConfiguredChessboard
+                  fen={
+                    state.fen ||
+                    problem.content!.startFen ||
+                    Util.DEFAULT_START_FEN
+                  }
+                  interactionMode={state.interactionMode}
+                  width={state.boardSize}
+                  height={state.boardSize}
+                  onMove={handleMove}
+                  orientation={state.orientation}
+                />
+              </div>
+            </div>
+          )
+        }}
+      </Measure>
+      <div className="right">
+        <div className="problems">
+          <Button
+            disabled={state.currentPbmIndex === 0 && true}
+            onClick={() =>
+              loadProblem(
+                state.currentPbmIndex - 1,
+                problemSolveStore!.assignment
+              )
+            }
+          >
+            <DoubleLeftOutlined />
+          </Button>
+          <div>
+            <h4>{state.currentPbmIndex + 1}</h4>(
+            {state.currentPbmIndex + 1}/{props.problemUuids.length}){' '}
+            {state.orientation === 'w' ? 'White' : 'Black'} to Play
+          </div>
+          <Button
+            disabled={
+              state.currentPbmIndex ===
+              props.problemUuids.length - 1 && true
+            }
+            onClick={() =>
+              loadProblem(
+                state.currentPbmIndex + 1,
+                problemSolveStore!.assignment
+              )
+            }
+          >
+            <DoubleRightOutlined />
+          </Button>
+        </div>
+        <div className="timer">
+          <div className="clock">
+            <ClockCircleOutlined /> {secondsToTime(state.time)}
+          </div>
+          {state.status !== '' && (
+            <Tag
+              style={{ cursor: 'not-allowed' }}
+              color={
+                state.status === 'solved'
+                  ? '#52c41a'
+                  : state.status === 'incorrect'
+                    ? '#f5222d'
+                    : '#108ee9'
+              }
+            >
+              {state.status.toUpperCase()}
+            </Tag>
+          )}
+        </div>
+        <div className="moves">{extractMoves(state.moves)}</div>
+      </div>
+    </div>
+  )
 }

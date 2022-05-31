@@ -32,7 +32,12 @@ export const ChangePassword = ()=>{
         return { ...prevState, ...newState }
     })
 }
-
+useEffect(() => {
+  if (!state.modalVisible) {
+  form.resetFields()
+  userStore!.resetChangePasswordErrors()
+  }
+}, [state.modalVisible])
   const handleSubmit = (e: any) => {
     e.preventDefault()
     form.validateFields().then(async (values) => {
@@ -56,12 +61,6 @@ export const ChangePassword = ()=>{
 
   const hideModal = () => {
     updateState({ modalVisible: false })
-    useEffect(() => {
-      if (!state.modalVisible) {
-      form.resetFields()
-      userStore!.resetChangePasswordErrors()
-      }
-    }, [state.modalVisible])
   }
 
   const compareToFirstPassword = (_: any, value: string, callback: Function) => {

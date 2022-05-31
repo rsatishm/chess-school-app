@@ -1,11 +1,10 @@
 import * as React from 'react'
 import * as R from 'ramda'
 import moment from 'moment'
-import { inject, observer } from 'mobx-react'
+import { inject, MobXProviderContext, observer } from 'mobx-react'
 import {
   Layout,
   Input,
-  Icon,
   Button,
   Select,
   Divider,
@@ -19,15 +18,11 @@ import { StudentAssignmentStore } from '../../../stores/student-assignment'
 import { ProblemsSolve } from './problems-solve/problems-solve'
 
 import './assignment.less'
-import SolvedStatus from './solved-status/solved-status'
-import { toJS } from 'mobx'
+import { CaretDownOutlined, CaretUpOutlined, CloseOutlined, ExceptionOutlined, FlagOutlined, LoadingOutlined } from '@ant-design/icons'
+import { SolvedStatus } from './solved-status/solved-status'
 
 const { Content } = Layout
 const { Option } = Select
-
-interface Props {
-  studentAssignmentStore?: StudentAssignmentStore
-}
 
 interface State {
   sortBy: string
@@ -37,42 +32,42 @@ interface State {
   problemUuids: string[]
 }
 
-@inject('studentAssignmentStore')
-@observer
-export class Assignment extends React.Component<Props, State> {
-  state = {
+export const Assignment = ()=>{
+  const {studentAssignmentStore} = React.useContext(MobXProviderContext)
+  const [state, setState] = React.useState<State>({
     sortBy: 'assignedAt_desc',
     search: '',
     problemSolveModalVisible: false,
     assignmentToSolve: null,
     problemUuids: []
-  } as State
-
-  componentDidMount() {
-    this.props.studentAssignmentStore!.load()
+  })
+  const updateState = (newState: Partial<State>) => {
+    setState((prevState) => {
+      return { ...prevState, ...newState }
+    })
+  }
+  React.useEffect(()=>{
+    studentAssignmentStore!.load()
 
     document
       .querySelector('meta[name="viewport"]')!
       .setAttribute('content', 'width=device-width, initial-scale=1.0')
-  }
+      return ()=>document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
+  })
 
-  componentWillUnmount() {
-    document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
-  }
-
-  handleSolveAssignment = assignmentUuid => {
-    const assignment = R.find(
+  const handleSolveAssignment = (assignmentUuid: any) => {
+    const assignment: any = R.find(
       ({ uuid }) => uuid === assignmentUuid,
-      this.props.studentAssignmentStore!.assignments
+      studentAssignmentStore!.assignments
     )
-    this.setState({
+    updateState({
       assignmentToSolve: assignment,
       problemUuids: assignment.problemIds,
       problemSolveModalVisible: true
     })
   }
 
-  sortAssignments = (sortBy: string, assignments: any[]) => {
+  const sortAssignments = (sortBy: string, assignments: any[]) => {
     const [sortByKey, dir] = sortBy.split('_')
 
     const sortedList = (() => {
@@ -100,7 +95,7 @@ export class Assignment extends React.Component<Props, State> {
     return dir === 'desc' ? R.reverse(sortedList) : sortedList
   }
 
-  filterAssignments = (search: string, assignments: any[]) => {
+  const filterAssignments = (search: string, assignments: any[]) => {
     return R.filter(
       (a: any) =>
         a.exercise.name.toLowerCase().indexOf(search.toLowerCase()) >= 0,
@@ -108,17 +103,17 @@ export class Assignment extends React.Component<Props, State> {
     )
   }
 
-  renderErrorState = () => {
+  const renderErrorState = () => {
     return (
       <div className="error-state container">
-        <Icon type="exception" />
+        <ExceptionOutlined />
         <p className="exception-text">
-          {this.props.studentAssignmentStore!.error}.
+          {studentAssignmentStore!.error}.
         </p>
         <span className="action-text">
           <Button
-            type="danger"
-            onClick={this.props.studentAssignmentStore!.load}
+            danger
+            onClick={studentAssignmentStore!.load}
           >
             Retry
           </Button>
@@ -127,19 +122,19 @@ export class Assignment extends React.Component<Props, State> {
     )
   }
 
-  renderLoadingState = () => {
+  const renderLoadingState = () => {
     return (
       <div className="loading-state container">
-        <Icon type="loading" spin={true} />
+        <LoadingOutlined spin={true} />
         <p className="exception-text">Loading</p>
       </div>
     )
   }
 
-  renderBlankState = () => {
+  const renderBlankState = () => {
     return (
       <div className="blank-state container">
-        <Icon type="flag" />
+        <FlagOutlined />
         <p className="exception-text">
           You have not been assigned any exercises at the moment.
         </p>
@@ -147,7 +142,7 @@ export class Assignment extends React.Component<Props, State> {
     )
   }
 
-  renderLevelTag = (difficultyLevel: string) => {
+  const renderLevelTag = (difficultyLevel: string) => {
     if (difficultyLevel === 'easy') {
       return (
         <Tag className="difficulty-tag" color="green">
@@ -173,15 +168,15 @@ export class Assignment extends React.Component<Props, State> {
     }
   }
 
-  renderAssignedAt = (assignedAt: string) => {
+  const renderAssignedAt = (assignedAt: string) => {
     return moment.utc(assignedAt).format('DD-MM-YYYY')
   }
 
-  renderAssignments = (assignments: any[]) => {
+  const renderAssignments = (assignments: any[]) => {
     if (assignments.length === 0) {
       return (
         <div className="blank-state container">
-          <Icon type="flag" />
+          <FlagOutlined />
           <p className="exception-text">
             No assignments found for the search criteria
           </p>
@@ -209,13 +204,13 @@ export class Assignment extends React.Component<Props, State> {
                 <span className="description">{e.exercise.description}</span>
 
                 <span className="created">
-                  Deadline - {this.renderAssignedAt(e.deadline)}
+                  Deadline - {renderAssignedAt(e.deadline)}
                 </span>
               </Col>
               <Col md={4} sm={24}>
                 <SolvedStatus
                   assignmentUuid={e.uuid}
-                  onClick={this.handleSolveAssignment}
+                  onClick={handleSolveAssignment}
                   totalProblemCount={e.problemIds.length}
                 />
               </Col>
@@ -226,22 +221,22 @@ export class Assignment extends React.Component<Props, State> {
     )
   }
 
-  handleSortByChange = (sortBy: any) => {
-    this.setState({ sortBy } as State)
+  const handleSortByChange = (sortBy: any) => {
+    updateState({ sortBy } as State)
   }
 
-  handleSearchChange = (event: any) => {
-    this.setState({ search: event.target.value })
+  const handleSearchChange = (event: any) => {
+    updateState({ search: event.target.value })
   }
 
-  renderAssignmentPage() {
-    if (this.props.studentAssignmentStore!.error) {
-      return this.renderErrorState()
+  function renderAssignmentPage() {
+    if (studentAssignmentStore!.error) {
+      return renderErrorState()
     }
-    if (this.props.studentAssignmentStore!.loading) {
-      return this.renderLoadingState()
+    if (studentAssignmentStore!.loading) {
+      return renderLoadingState()
     }
-    const assignments = this.props.studentAssignmentStore!.assignments
+    const assignments = studentAssignmentStore!.assignments
     return (
       <>
         {assignments.length > 0 ? (
@@ -251,33 +246,33 @@ export class Assignment extends React.Component<Props, State> {
               <span>Sort by &nbsp;</span>
               <Select
                 className="select-sort-by"
-                defaultValue={this.state.sortBy}
-                value={this.state.sortBy}
+                defaultValue={state.sortBy}
+                value={state.sortBy}
                 size="small"
                 style={{ width: 160 }}
-                onChange={this.handleSortByChange}
+                onChange={handleSortByChange}
               >
                 <Option value="assignedAt">
-                  <Icon type="caret-up" style={{ fontSize: 10 }} /> Assigned
+                  <CaretUpOutlined style={{ fontSize: 10 }} /> Assigned
                   Date
                 </Option>
                 <Option value="assignedAt_desc">
-                  <Icon type="caret-down" style={{ fontSize: 10 }} /> Assigned
+                  <CaretDownOutlined style={{ fontSize: 10 }} /> Assigned
                   Date
                 </Option>
                 <Option value="deadline">
-                  <Icon type="caret-up" style={{ fontSize: 10 }} /> Deadline
+                  <CaretUpOutlined style={{ fontSize: 10 }} /> Deadline
                   Date
                 </Option>
                 <Option value="deadline_desc">
-                  <Icon type="caret-down" style={{ fontSize: 10 }} /> Deadline
+                  <CaretDownOutlined style={{ fontSize: 10 }} /> Deadline
                   Date
                 </Option>
                 <Option value="name">
-                  <Icon type="caret-up" style={{ fontSize: 10 }} /> Name
+                  <CaretUpOutlined style={{ fontSize: 10 }} /> Name
                 </Option>
                 <Option value="name_desc">
-                  <Icon type="caret-down" style={{ fontSize: 10 }} /> Name
+                  <CaretDownOutlined style={{ fontSize: 10 }} /> Name
                 </Option>
               </Select>
               <Input.Search
@@ -285,59 +280,57 @@ export class Assignment extends React.Component<Props, State> {
                 className="assignments-search"
                 style={{ width: 200 }}
                 size="small"
-                value={this.state.search}
-                onChange={this.handleSearchChange}
+                value={state.search}
+                onChange={handleSearchChange}
               />
             </div>
 
             <Divider className="below-action-bar" />
-            {this.renderAssignments(
-              this.sortAssignments(
-                this.state.sortBy,
-                this.filterAssignments(this.state.search, assignments)
+            {renderAssignments(
+              sortAssignments(
+                state.sortBy,
+                filterAssignments(state.search, assignments)
               )
             )}
           </>
         ) : (
-          this.renderBlankState()
+          renderBlankState()
         )}
       </>
     )
   }
 
-  handleproblemSolveModalCancel = () => {
-    this.setState({ problemSolveModalVisible: false })
-    if (this.state.assignmentToSolve) {
-      this.props.studentAssignmentStore!.loadCompletionDetails(
-        this.state.assignmentToSolve.uuid
+  const handleproblemSolveModalCancel = () => {
+    updateState({ problemSolveModalVisible: false })
+    if (state.assignmentToSolve) {
+      studentAssignmentStore!.loadCompletionDetails(
+        state.assignmentToSolve.uuid
       )
     }
   }
 
-  render() {
-    return (
-      <Content className="content">
-        <div className="assignment inner">{this.renderAssignmentPage()}</div>
-        <div
-          className={`modal ${
-            this.state.problemSolveModalVisible ? 'show' : 'hide'
-          }`}
-        >
-          <div className="modal-content modal-lg">
-            <Icon
-              className="close-btn"
-              type="close"
-              onClick={this.handleproblemSolveModalCancel}
+  return (
+    <Content className="content">
+      <div className="assignment inner">{renderAssignmentPage()}</div>
+      <div
+        className={`modal ${
+          state.problemSolveModalVisible ? 'show' : 'hide'
+        }`}
+      >
+        <div className="modal-content modal-lg">
+          <CloseOutlined
+            className="close-btn"
+            type="close"
+            onClick={handleproblemSolveModalCancel}
+          />
+          {state.problemSolveModalVisible && (
+            <ProblemsSolve
+              assignment={state.assignmentToSolve}
+              problemUuids={state.problemUuids}
             />
-            {this.state.problemSolveModalVisible && (
-              <ProblemsSolve
-                assignment={this.state.assignmentToSolve}
-                problemUuids={this.state.problemUuids}
-              />
-            )}
-          </div>
+          )}
         </div>
-      </Content>
-    )
-  }
+      </div>
+    </Content>
+  )
 }
