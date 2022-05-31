@@ -1,54 +1,47 @@
 import * as React from 'react'
 import * as R from 'ramda'
-import { inject, observer } from 'mobx-react'
+import { inject, MobXProviderContext, observer } from 'mobx-react'
 import { toJS } from 'mobx'
-import { Collapse, Icon, Button } from 'antd'
+import { Collapse, Button } from 'antd'
 
 import './assignment-details.less'
 
 import { StudentsGroupsStore } from '../../../../../stores/students-groups'
 import { CoachAssignmentCompletionDetailsStore } from '../../../../../stores/coach-assignment-completion-details'
 import { ProblemsList } from '../../exercise/problems-list/problems-list'
+import { ExceptionOutlined, LoadingOutlined } from '@ant-design/icons'
 
 interface Props {
   assignment: any
-  studentsGroupsStore?: StudentsGroupsStore
-  coachAssignmentCompletionDetailsStore?: CoachAssignmentCompletionDetailsStore
 }
 
-interface State {}
+interface State { }
 
-@inject('studentsGroupsStore', 'coachAssignmentCompletionDetailsStore')
-@observer
-export class AssignmentDetails extends React.Component<Props, State> {
-  componentDidMount() {
-    this.props.studentsGroupsStore!.load()
-    this.props.coachAssignmentCompletionDetailsStore!.load(
-      this.props.assignment.uuid
-    )
-  }
-
-  handleRetry = () => {
-    this.props.studentsGroupsStore!.load()
-    this.props.coachAssignmentCompletionDetailsStore!.load(
-      this.props.assignment.uuid
-    )
+export const AssignmentDetails = (props: Props) => {
+  const { studentsGroupsStore, coachAssignmentCompletionDetailsStore } = React.useContext(MobXProviderContext)
+  React.useEffect(() => {
+    studentsGroupsStore!.load()
+    coachAssignmentCompletionDetailsStore!.load(props.assignment.uuid)
+  })
+  const handleRetry = () => {
+    studentsGroupsStore!.load()
+    coachAssignmentCompletionDetailsStore!.load(props.assignment.uuid)
   }
 
   // Extract the list of unique students and groups
-  getStudents = (studentUuids: string[], groupUuids: string[]) => {
+  const getStudents = (studentUuids: string[], groupUuids: string[]) => {
     const studentUuidsInGroups = R.chain(
-      uuid => this.props.studentsGroupsStore!.groups[uuid].userIds,
+      uuid => studentsGroupsStore!.groups[uuid].userIds,
       groupUuids
     )
     const allStudentUuids = R.uniq(R.concat(studentUuids, studentUuidsInGroups))
     return R.map(
-      uuid => this.props.studentsGroupsStore!.students[uuid as string],
+      uuid => studentsGroupsStore!.students[uuid as string],
       allStudentUuids
     )
   }
 
-  getDetailsForStudent = (
+  const getDetailsForStudent = (
     studentUuid: string,
     completionDetails: any[],
     totalCount: number
@@ -77,8 +70,8 @@ export class AssignmentDetails extends React.Component<Props, State> {
             time === 0
               ? 'yet to start'
               : solvedCount === totalCount
-              ? 'complete'
-              : 'incomplete',
+                ? 'complete'
+                : 'incomplete',
           problemDetails: acc.problemDetails
         }
       },
@@ -94,7 +87,7 @@ export class AssignmentDetails extends React.Component<Props, State> {
     )
   }
 
-  renderCompletionDetails = (
+  const renderCompletionDetails = (
     assignment: any,
     completionDetails: any[],
     students: any[]
@@ -102,7 +95,7 @@ export class AssignmentDetails extends React.Component<Props, State> {
     return (
       <Collapse accordion={true}>
         {students.map(s => {
-          const details = this.getDetailsForStudent(
+          const details = getDetailsForStudent(
             s.uuid,
             completionDetails,
             assignment.problemIds.length
@@ -151,65 +144,63 @@ export class AssignmentDetails extends React.Component<Props, State> {
     )
   }
 
-  render() {
-    if (
-      this.props.studentsGroupsStore!.loading ||
-      !this.props.coachAssignmentCompletionDetailsStore!.content[
-        this.props.assignment.uuid
-      ] ||
-      this.props.coachAssignmentCompletionDetailsStore!.content[
-        this.props.assignment.uuid
-      ].loading
-    ) {
-      return (
-        <div className="assignment-details container">
-          <Icon type="loading" spin={true} />
-        </div>
-      )
-    }
-
-    if (
-      this.props.studentsGroupsStore!.error ||
-      this.props.coachAssignmentCompletionDetailsStore!.content[
-        this.props.assignment.uuid
-      ].error
-    ) {
-      return (
-        <div className="error-state container">
-          <Icon type="exception" />
-          <p className="exception-text">
-            {this.props.studentsGroupsStore!.error ||
-              this.props.coachAssignmentCompletionDetailsStore!.content[
-                this.props.assignment.uuid
-              ].error}
-          </p>
-          <span className="action-text">
-            <Button type="danger" size="small" onClick={this.handleRetry}>
-              Retry
-            </Button>
-          </span>
-        </div>
-      )
-    }
-
-    const students = R.sortBy(
-      s => s.firstname,
-      this.getStudents(
-        this.props.assignment.studentIds,
-        this.props.assignment.groupIds
-      )
-    )
-
+  if (
+    studentsGroupsStore!.loading ||
+    !coachAssignmentCompletionDetailsStore!.content[
+    props.assignment.uuid
+    ] ||
+    coachAssignmentCompletionDetailsStore!.content[
+      props.assignment.uuid
+    ].loading
+  ) {
     return (
-      <div className="assignment-details">
-        {this.renderCompletionDetails(
-          this.props.assignment,
-          this.props.coachAssignmentCompletionDetailsStore!.content[
-            this.props.assignment.uuid
-          ].data,
-          students
-        )}
+      <div className="assignment-details container">
+        <LoadingOutlined spin={true} />
       </div>
     )
   }
+
+  if (
+    studentsGroupsStore!.error ||
+    coachAssignmentCompletionDetailsStore!.content[
+      props.assignment.uuid
+    ].error
+  ) {
+    return (
+      <div className="error-state container">
+        <ExceptionOutlined />
+        <p className="exception-text">
+          {studentsGroupsStore!.error ||
+            coachAssignmentCompletionDetailsStore!.content[
+              props.assignment.uuid
+            ].error}
+        </p>
+        <span className="action-text">
+          <Button danger size="small" onClick={handleRetry}>
+            Retry
+          </Button>
+        </span>
+      </div>
+    )
+  }
+
+  const students = R.sortBy(
+    (s: any) => s.firstname,
+    getStudents(
+      props.assignment.studentIds,
+      props.assignment.groupIds
+    )
+  )
+
+  return (
+    <div className="assignment-details">
+      {renderCompletionDetails(
+        props.assignment,
+        coachAssignmentCompletionDetailsStore!.content[
+          props.assignment.uuid
+        ].data,
+        students
+      )}
+    </div>
+  )
 }

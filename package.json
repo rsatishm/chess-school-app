@@ -25,6 +25,7 @@
     "accurate-interval": "^1.0.9",
     "antd": "^4.19.2",
     "antd-img-crop": "^4.2.3",
+    "awesome-debounce-promise": "^2.1.0",
     "aws-sdk": "^2.1145.0",
     "axios": "^0.26.1",
     "babel-jest": "^27.4.2",

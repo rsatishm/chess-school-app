@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as R from 'ramda'
 import {
   message,
   Modal,
@@ -9,22 +8,16 @@ import {
   Form,
   Radio,
   Input,
-  Select,
-  DatePicker,
-  Checkbox,
-  Icon
+  Select
 } from 'antd'
-import { FormComponentProps } from 'antd/lib/form'
 import moment, { Moment } from 'moment'
 
 import './create-exercise-drawer.less'
 
-import { ExerciseStore } from '../../../../../stores/exercise'
-import { PublicProblembaseStore } from '../../../../../stores/public-problembase'
-import { PrivateProblembaseStore } from '../../../../../stores/private-problembase'
-import { ProblembaseContentStore } from '../../../../../stores/problembase-content'
-import ProblembaseDrawer from '../problembase-drawer/problembase-drawer'
-import { inject, observer } from 'mobx-react'
+import { MobXProviderContext } from 'mobx-react'
+import { useForm } from 'antd/es/form/Form'
+import { ExceptionOutlined, LoadingOutlined } from '@ant-design/icons'
+import { ProblembaseDrawer } from '../problembase-drawer/problembase-drawer'
 
 const TODAY_MOMENT = moment()
 
@@ -55,13 +48,9 @@ const EXERCISE_TAGS = [
   'mate in three'
 ]
 
-interface Props extends FormComponentProps {
+interface Props {
   visible: boolean
   onClose: () => any
-  publicProblembaseStore?: PublicProblembaseStore
-  privateProblembaseStore?: PrivateProblembaseStore
-  problembaseContentStore?: ProblembaseContentStore
-  exerciseStore?: ExerciseStore
 }
 
 interface State {
@@ -84,11 +73,10 @@ interface State {
   }
 }
 
-@inject('exerciseStore')
-@observer
-class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
-  MAX_BATCH_SIZE = 50
-  state = {
+export const CreateExerciseDrawer = (props: Props)=>{
+  const {exerciseStore} = React.useContext(MobXProviderContext)
+  const MAX_BATCH_SIZE = 50
+  const [state, setState] = React.useState<State>({
     showLimitExceededModal: false,
     batchSize: 20,
     confirmDirty: false,
@@ -106,113 +94,122 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
       scheduleDate: moment.utc(TODAY_MOMENT),
       deadlineDate: moment.utc(TODAY_MOMENT).add(10, 'days')
     }
+  })
+  const updateState = (newState: Partial<State>) => {
+    setState((prevState) => {
+      return { ...prevState, ...newState }
+    })
   }
+  const [form] = useForm()
+  React.useEffect(() => {
+    if (!state.problembaseDrawerVisible) {
+    form.resetFields()
+    props.onClose()
+    }
+  }, [state.problembaseDrawerVisible])
 
-  handleCleanupAndClose = () => {
-    this.setState(
+  const handleCleanupAndClose = () => {
+    updateState(
       {
         problembaseDrawerVisible: false,
         selectedProblembaseUuid: '',
         selectedProblemUuids: [],
         selectedProblemUuidsError: ''
-      },
-      () => {
-        this.props.form.resetFields()
-        this.props.onClose()
-      }
+      }      
     )
   }
 
-  handleProblembaseDrawerClose = () => {
-    this.setState({
+  const handleProblembaseDrawerClose = () => {
+    updateState({
       problembaseDrawerVisible: false
     })
   }
 
-  handleAddProblemsClick = () => {
-    this.setState({
+  const handleAddProblemsClick = () => {
+    updateState({
       problembaseDrawerVisible: true
     })
   }
 
-  handleSelectedProblemsChange = (uuids: string[]) => {
-    this.setState({
+  const handleSelectedProblemsChange = (uuids: string[]) => {
+    updateState({
       selectedProblemUuids: uuids
     })
   }
 
-  handleSubmit = (e: any) => {
+  React.useEffect(    () => {
+    if (state.selectedProblemUuidsError == '') {
+    form.validateFields().then(
+       (values: any) => {
+        submitExercise()
+      }
+    )
+    }
+  }, [state.selectedProblemUuidsError])
+
+  const submitExercise = async ()=>{
+    const data = {
+      name: form.getFieldValue('name'),
+      description: form.getFieldValue('description'),
+      tags: form.getFieldValue('tags'),
+      problemIds: state.selectedProblemUuids,
+      difficultyLevel: form.getFieldValue('level')
+    }
+
+    const success = await exerciseStore!.submit(data)
+    if (success) {
+      message.success('Created Exercise.')
+      handleCleanupAndClose()
+    } else {
+      message.error('Failed to create exercise.')
+    }
+  }
+
+  const handleSubmit = (e: any) => {
     e.preventDefault()
     if (
-      this.state.selectedProblemUuids.length > 0 &&
-      this.state.selectedProblemUuids.length <= this.MAX_BATCH_SIZE
+      state.selectedProblemUuids.length > 0 &&
+      state.selectedProblemUuids.length <= MAX_BATCH_SIZE
     ) {
-      this.setState(
+      updateState(
         {
           selectedProblemUuidsError: ''
-        },
-        () => {
-          this.props.form.validateFieldsAndScroll(
-            async (err: any, values: any) => {
-              if (!err) {
-                const data = {
-                  name: this.props.form.getFieldValue('name'),
-                  description: this.props.form.getFieldValue('description'),
-                  tags: this.props.form.getFieldValue('tags'),
-                  problemIds: this.state.selectedProblemUuids,
-                  difficultyLevel: this.props.form.getFieldValue('level')
-                }
-
-                const success = await this.props.exerciseStore!.submit(data)
-                if (success) {
-                  message.success('Created Exercise.')
-                  this.handleCleanupAndClose()
-                } else {
-                  message.error('Failed to create exercise.')
-                }
-              }
-            }
-          )
         }
       )
-    } else if (this.state.selectedProblemUuids.length > this.MAX_BATCH_SIZE) {
-      this.props.form.validateFieldsAndScroll((err: any, values: any) => {
-        if (err) {
-          return
-        }
-
-        this.setState({
+    } else if (state.selectedProblemUuids.length > MAX_BATCH_SIZE) {
+      form.validateFields().then((values: any) => {
+        updateState({
           selectedProblemUuidsError: '',
           showLimitExceededModal: true
         })
       })
     } else {
-      this.setState({ selectedProblemUuidsError: 'Add a few problems' })
+      updateState({ selectedProblemUuidsError: 'Add a few problems' })
     }
   }
 
-  handleLimitExceededOk = async (e: any) => {
-    this.setState({ showLimitExceededModal: false })
+  const handleLimitExceededOk = async (e: any) => {
+    updateState({ showLimitExceededModal: false })
 
-    const name = this.props.form.getFieldValue('name')
-    const description = this.props.form.getFieldValue('description')
-    const tags = this.props.form.getFieldValue('tags')
-    const difficultyLevel = this.props.form.getFieldValue('level')
+    const name = form.getFieldValue('name')
+    const description = form.getFieldValue('description')
+    const tags = form.getFieldValue('tags')
+    const difficultyLevel = form.getFieldValue('level')
 
-    let success = true
+    let success: any = true
 
     for (
       let i = 0;
-      i * this.state.batchSize < this.state.selectedProblemUuids.length;
+      i * state.batchSize < state.selectedProblemUuids.length;
       i++
     ) {
-      success &= await this.props.exerciseStore!.submit({
+      success &= await exerciseStore!.submit({
         name: `${name}-${i + 1}`,
         description,
         tags,
-        problemIds: this.state.selectedProblemUuids.slice(
-          this.state.batchSize * i,
-          this.state.batchSize * (i + 1)
+        problemIds: state.selectedProblemUuids.slice(
+          state.batchSize * i,
+          state.batchSize * (i + 1)
         ),
         difficultyLevel
       })
@@ -225,23 +222,23 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
       message.error('Failed to create exercise.')
     }
 
-    this.handleCleanupAndClose()
+    handleCleanupAndClose()
   }
 
-  handleLimitExceededCancel = (e: any) => {
-    this.setState({ showLimitExceededModal: false })
+  const handleLimitExceededCancel = (e: any) => {
+    updateState({ showLimitExceededModal: false })
   }
 
-  handleBatchSizeChange = (batchSize: number) => {
-    this.setState({ batchSize })
+  const handleBatchSizeChange = (batchSize: number) => {
+    updateState({ batchSize })
   }
 
-  handleConfirmBlur = (e: any) => {
+  const handleConfirmBlur = (e: any) => {
     const value = e.target.value
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value })
+    updateState({ confirmDirty: state.confirmDirty || !!value })
   }
 
-  renderSubmittingState = () => {
+  const renderSubmittingState = () => {
     return (
       <div className="drawer-inner">
         <div className="title">
@@ -249,12 +246,12 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
         </div>
         <div className="content">
           <div className="loading-state container">
-            <Icon type="loading" spin={true} />
+            <LoadingOutlined spin={true} />
             <p className="exception-text">Submitting</p>
           </div>
         </div>
         <div className="button-bar">
-          <Button className="cancel-button" onClick={this.props.onClose}>
+          <Button className="cancel-button" onClick={props.onClose}>
             Close
           </Button>
           <Button type="primary" disabled={true}>
@@ -265,7 +262,7 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
     )
   }
 
-  renderSubmitErrorState = () => {
+  const renderSubmitErrorState = () => {
     return (
       <div className="drawer-inner">
         <div className="title">
@@ -273,17 +270,17 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
         </div>
         <div className="content">
           <div className="error-state container">
-            <Icon type="exception" />
+            <ExceptionOutlined />
             <p className="exception-text">Error submitting exercise.</p>
             <span className="action-text">
-              <Button type="danger" onClick={this.handleSubmit}>
+              <Button danger onClick={handleSubmit}>
                 Retry
               </Button>
             </span>
           </div>
         </div>
         <div className="button-bar">
-          <Button className="cancel-button" onClick={this.props.onClose}>
+          <Button className="cancel-button" onClick={props.onClose}>
             Close
           </Button>
           <Button type="primary" disabled={true}>
@@ -294,16 +291,15 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
     )
   }
 
-  renderContent = () => {
-    if (this.props.exerciseStore!.submitting) {
-      return this.renderSubmittingState()
+  const renderContent = () => {
+    if (exerciseStore!.submitting) {
+      return renderSubmittingState()
     }
 
-    if (this.props.exerciseStore!.submitError) {
-      return this.renderSubmitErrorState()
+    if (exerciseStore!.submitError) {
+      return renderSubmitErrorState()
     }
 
-    const { getFieldDecorator } = this.props.form
     const exerciseTagOptions = EXERCISE_TAGS.map(t => (
       <Select.Option key={t} value={t}>
         {t}
@@ -314,22 +310,22 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
       <div className="drawer-inner">
         <Modal
           title="Split exercise"
-          visible={this.state.showLimitExceededModal}
-          onOk={this.handleLimitExceededOk}
-          onCancel={this.handleLimitExceededCancel}
+          visible={state.showLimitExceededModal}
+          onOk={handleLimitExceededOk}
+          onCancel={handleLimitExceededCancel}
         >
           {/* You have exceeded the max number of problems for an exercise (
           {this.MAX_BATCH_SIZE}). Would you like to split it into batches of */}
-          We recommend splitting the exercise to less than {this.MAX_BATCH_SIZE}{' '}
+          We recommend splitting the exercise to less than {MAX_BATCH_SIZE}{' '}
           per batch. Would you like to split it into batches of
           <InputNumber
             style={{ width: '60px' }}
             className="batch-size"
             min={1}
-            max={this.MAX_BATCH_SIZE}
+            max={MAX_BATCH_SIZE}
             defaultValue={20}
-            value={this.state.batchSize}
-            onChange={this.handleBatchSizeChange}
+            value={state.batchSize}
+            onChange={handleBatchSizeChange}
           />{' '}
           ?
         </Modal>
@@ -337,46 +333,43 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
           <h3>Create Exercise</h3>
         </div>
         <div className="content">
-          <Form className="create-exercise-form">
-            <Form.Item>
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Name is required'
-                  }
-                ]
-              })(<Input placeholder="Name" autoComplete="false" />)}
+          <Form form={form} className="create-exercise-form">
+            <Form.Item
+            name='name'
+            rules={ [
+              {
+                required: true,
+                message: 'Name is required'
+              }
+            ]}>
+              <Input placeholder="Name" autoComplete="false" />
             </Form.Item>
-            <Form.Item>
-              {getFieldDecorator('description')(
+            <Form.Item
+            name='description'>
                 <Input.TextArea
                   rows={3}
                   placeholder="Description"
                   autoComplete="false"
                 />
-              )}
             </Form.Item>
-            <Form.Item>
-              {getFieldDecorator('level', {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Level is required'
-                  }
-                ]
-              })(
+            <Form.Item
+            name='level'
+            rules= {[
+              {
+                required: true,
+                message: 'Level is required'
+              }
+            ]}>
                 <Radio.Group size="large">
                   <Radio value="easy">Beginner</Radio>
                   <Radio value="medium">Intermediate</Radio>
                   <Radio value="hard">Advanced</Radio>
                 </Radio.Group>
-              )}
             </Form.Item>
-            <Button onClick={this.handleAddProblemsClick}>
+            <Button onClick={handleAddProblemsClick}>
               Add Problems{' '}
-              {this.state.selectedProblemUuids.length > 0
-                ? `(${this.state.selectedProblemUuids.length} selected)`
+              {state.selectedProblemUuids.length > 0
+                ? `(${state.selectedProblemUuids.length} selected)`
                 : ''}
             </Button>
             <div
@@ -384,29 +377,29 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
               style={{ marginTop: 8 }}
             >
               <div className="ant-form-explain">
-                {this.state.selectedProblemUuidsError &&
-                this.state.selectedProblemUuids.length === 0
-                  ? this.state.selectedProblemUuidsError
+                {state.selectedProblemUuidsError &&
+               state.selectedProblemUuids.length === 0
+                  ? state.selectedProblemUuidsError
                   : ''}
               </div>
             </div>
-            <Form.Item className="tags-field">
-              {getFieldDecorator('tags')(
-                <Select mode="multiple" placeholder="Tags">
+            <Form.Item 
+            name="tags-field"
+            className="tags-field">
+<Select mode="multiple" placeholder="Tags">
                   {exerciseTagOptions}
                 </Select>
-              )}
             </Form.Item>
           </Form>
         </div>
         <div className="button-bar">
           <Button
             className="cancel-button"
-            onClick={this.handleCleanupAndClose}
+            onClick={handleCleanupAndClose}
           >
             Cancel
           </Button>
-          <Button type="primary" onClick={this.handleSubmit}>
+          <Button type="primary" onClick={handleSubmit}>
             Submit
           </Button>
         </div>
@@ -414,29 +407,24 @@ class WrappedCreateExerciseDrawer extends React.Component<Props, State> {
     )
   }
 
-  renderProblembaseViewDrawer = () => {}
-
-  render() {
-    return (
-      <Drawer
-        className="create-exercise-drawer"
-        width={450}
-        placement="right"
-        onClose={this.props.onClose}
-        maskClosable={false}
-        closable={false}
-        visible={this.props.visible}
-      >
-        <ProblembaseDrawer
-          onClose={this.handleProblembaseDrawerClose}
-          visible={this.state.problembaseDrawerVisible}
-          onSelectedProblemsChange={this.handleSelectedProblemsChange}
-          selectedProblemUuids={this.state.selectedProblemUuids}
-        />
-        {this.renderContent()}
-      </Drawer>
-    )
-  }
+  const renderProblembaseViewDrawer = () => {}
+  return (
+    <Drawer
+      className="create-exercise-drawer"
+      width={450}
+      placement="right"
+      onClose={props.onClose}
+      maskClosable={false}
+      closable={false}
+      visible={props.visible}
+    >
+      <ProblembaseDrawer
+        onClose={handleProblembaseDrawerClose}
+        visible={state.problembaseDrawerVisible}
+        onSelectedProblemsChange={handleSelectedProblemsChange}
+        selectedProblemUuids={state.selectedProblemUuids}
+      />
+      {renderContent()}
+    </Drawer>
+  )
 }
-
-export const CreateExerciseDrawer = Form.create()(WrappedCreateExerciseDrawer)

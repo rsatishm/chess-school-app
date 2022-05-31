@@ -2,7 +2,6 @@ import * as React from 'react'
 import * as R from 'ramda'
 import moment from 'moment'
 import {
-  Icon,
   Button,
   Select,
   Input,
@@ -11,7 +10,7 @@ import {
   Divider,
   Popconfirm
 } from 'antd'
-import { inject, observer } from 'mobx-react'
+import { inject, MobXProviderContext, observer } from 'mobx-react'
 import AwesomeDebouncePromise from 'awesome-debounce-promise'
 import InfiniteScroller from 'react-infinite-scroller'
 
@@ -24,10 +23,7 @@ import { CreateExerciseDrawer } from './create-exercise-drawer/create-exercise-d
 import { AssignExerciseDrawer } from './assign-exercise-drawer/assign-exercise-drawer'
 import { ProblemsList } from './problems-list/problems-list'
 import { States } from '../../../../components/states/states'
-
-interface Props {
-  exerciseStore?: ExerciseStore
-}
+import { CaretDownOutlined, CaretUpOutlined, FlagOutlined } from '@ant-design/icons'
 
 interface State {
   createExerciseDrawerVisible: boolean
@@ -36,80 +32,81 @@ interface State {
   exerciseUuidToAssign: string
 }
 
-@inject('exerciseStore')
-@observer
-export class Exercise extends React.Component<Props, State> {
-  state = {
+export const Exercise = ()=>{
+  const {exerciseStore} = React.useContext(MobXProviderContext)
+  const [state, setState] = React.useState<State>({
     createExerciseDrawerVisible: false,
     sortBy: 'createdAt_desc',
     search: '',
     exerciseUuidToAssign: ''
-  } as State
+  })
+  const updateState = (newState: Partial<State>) => {
+    setState((prevState) => {
+      return { ...prevState, ...newState }
+    })
+  }
+  let debouncedLoad = AwesomeDebouncePromise(exerciseStore!.load, 500)
+  React.useEffect(()=>{
+    exerciseStore!.load(state.search, state.sortBy)
+  })
 
-  debouncedLoad = AwesomeDebouncePromise(this.props.exerciseStore!.load, 500)
-
-  componentDidMount() {
-    this.props.exerciseStore!.load(this.state.search, this.state.sortBy)
+  const handleRetry = () => {
+    exerciseStore!.load(state.search, state.sortBy)
   }
 
-  handleRetry = () => {
-    this.props.exerciseStore!.load(this.state.search, this.state.sortBy)
+  const handleLoadMore = (page: number) => {
+    exerciseStore!.loadMore(page)
   }
 
-  handleLoadMore = (page: number) => {
-    this.props.exerciseStore!.loadMore(page)
-  }
-
-  handleCreateButtonClick = () => {
-    this.setState({
+  const handleCreateButtonClick = () => {
+    updateState({
       createExerciseDrawerVisible: true
     })
   }
 
-  handleCreateExerciseDrawerClose = () => {
-    this.setState({
+  const handleCreateExerciseDrawerClose = () => {
+    updateState({
       createExerciseDrawerVisible: false
     })
   }
 
-  handleAssignExerciseDrawerClose = () => {
-    this.setState({
+  const handleAssignExerciseDrawerClose = () => {
+    updateState({
       exerciseUuidToAssign: ''
     })
   }
 
-  handleSortByChange = (sortBy: any) => {
-    this.setState({ sortBy } as State, () => {
-      this.debouncedLoad(this.state.search, this.state.sortBy)
-    })
+  React.useEffect(() => {
+    debouncedLoad(state.search, state.sortBy)
+  }, [state.sortBy, state.search])
+  const handleSortByChange = (sortBy: any) => {
+    updateState({ sortBy } as State)
   }
 
-  handleSearchChange = (event: any) => {
-    this.setState({ search: event.target.value }, () => {
-      this.debouncedLoad(this.state.search, this.state.sortBy)
-    })
+  const handleSearchChange = (event: any) => {
+    updateState({ search: event.target.value })
   }
 
-  handleAssignExercise = (uuid: string) => () => {
-    this.setState({ exerciseUuidToAssign: uuid })
+  const handleAssignExercise = (uuid: string) => () => {
+    updateState({ exerciseUuidToAssign: uuid })
   }
 
-  handleDeleteExercise = (uuid: string) => () => {
-    this.props.exerciseStore!.delete(uuid)
+  const handleDeleteExercise = (uuid: string) => () => {
+    exerciseStore!.delete(uuid)
   }
 
-  renderBlankState = () => {
+  const renderBlankState = () => {
     return (
       <States
         type="blank"
         button="Create"
         exceptionText="You have not created any exercises so far"
-        onClick={this.handleCreateButtonClick}
+        onClick={handleCreateButtonClick}
       />
     )
   }
 
-  renderLevelTag = (difficultyLevel: string) => {
+  const renderLevelTag = (difficultyLevel: string) => {
     if (difficultyLevel === 'easy') {
       return <Tag color="green">Beginner</Tag>
     }
@@ -123,15 +120,15 @@ export class Exercise extends React.Component<Props, State> {
     }
   }
 
-  renderCreatedAt = (createdAt: string) => {
+  const renderCreatedAt = (createdAt: string) => {
     return moment.utc(createdAt).format('DD-MM-YYYY')
   }
 
-  renderExercises = (exercises: any[]) => {
+  const renderExercises = (exercises: any[]) => {
     if (exercises.length === 0) {
       return (
         <div className="blank-state container">
-          <Icon type="flag" />
+          <FlagOutlined />
           <p className="exception-text">
             No exercises found for the search criteria
           </p>
@@ -143,8 +140,8 @@ export class Exercise extends React.Component<Props, State> {
       <div className="exercises container">
         <InfiniteScroller
           pageStart={0}
-          loadMore={this.handleLoadMore}
-          hasMore={this.props.exerciseStore!.hasMore}
+          loadMore={handleLoadMore}
+          hasMore={exerciseStore!.hasMore}
           useWindow={false}
         >
           <Collapse className="exercise-collapse" bordered={false}>
@@ -157,12 +154,12 @@ export class Exercise extends React.Component<Props, State> {
                   </div>
                   <div className="submeta">
                     <span className="created">
-                      {this.renderCreatedAt(e.createdAt)}.
+                      {renderCreatedAt(e.createdAt)}.
                     </span>
                     <span className="description">{e.description}</span>
                   </div>
                   <div className="tags-container">
-                    {this.renderLevelTag(e.difficultyLevel)}
+                    {renderLevelTag(e.difficultyLevel)}
                     {e.tags.map((t: string) => (
                       <Tag key={t}>{t}</Tag>
                     ))}
@@ -175,12 +172,12 @@ export class Exercise extends React.Component<Props, State> {
                   <div className="action-buttons">
                     <Popconfirm
                       title="Are you sure you want to delete the exercise?"
-                      onConfirm={this.handleDeleteExercise(e.uuid)}
+                      onConfirm={handleDeleteExercise(e.uuid)}
                     >
-                      <Button type="danger">Delete</Button>
+                      <Button danger>Delete</Button>
                     </Popconfirm>
                     <Button
-                      onClick={this.handleAssignExercise(e.uuid)}
+                      onClick={handleAssignExercise(e.uuid)}
                       type="primary"
                     >
                       Assign
@@ -196,31 +193,31 @@ export class Exercise extends React.Component<Props, State> {
     )
   }
 
-  renderExercisePage = () => {
-    if (this.props.exerciseStore!.error) {
+  const renderExercisePage = () => {
+    if (exerciseStore!.error) {
       return (
         <States
           type="error"
-          exceptionText={this.props.exerciseStore!.error}
-          onClick={this.handleRetry}
+          exceptionText={exerciseStore!.error}
+          onClick={handleRetry}
         />
       )
     }
 
-    if (this.props.exerciseStore!.loading) {
+    if (exerciseStore!.loading) {
       return <States type="loading" />
     }
 
-    const exercises = this.props.exerciseStore!.exercises as any[]
+    const exercises = exerciseStore!.exercises as any[]
 
     return (
       <>
-        {(exercises.length > 0 || this.state.search.trim() !== '') && (
+        {(exercises.length > 0 || state.search.trim() !== '') && (
           <div className="action-bar">
             <div className="left">
               <Button
                 type="primary"
-                onClick={this.handleCreateButtonClick}
+                onClick={handleCreateButtonClick}
                 size="small"
               >
                 Create
@@ -230,29 +227,29 @@ export class Exercise extends React.Component<Props, State> {
               Sort by:&nbsp;
               <Select
                 className="select-sort-by"
-                defaultValue={this.state.sortBy}
-                value={this.state.sortBy}
+                defaultValue={state.sortBy}
+                value={state.sortBy}
                 size="small"
                 style={{ width: 120 }}
-                onChange={this.handleSortByChange}
+                onChange={handleSortByChange}
               >
                 <Option value="createdAt_asc">
-                  <Icon type="caret-up" style={{ fontSize: 10 }} /> Created
+                  <CaretUpOutlined style={{ fontSize: 10 }} /> Created
                 </Option>
                 <Option value="createdAt_desc">
-                  <Icon type="caret-down" style={{ fontSize: 10 }} /> Created
+                  <CaretDownOutlined style={{ fontSize: 10 }} /> Created
                 </Option>
                 <Option value="name_asc">
-                  <Icon type="caret-up" style={{ fontSize: 10 }} /> Name
+                  <CaretUpOutlined style={{ fontSize: 10 }} /> Name
                 </Option>
                 <Option value="name_desc">
-                  <Icon type="caret-down" style={{ fontSize: 10 }} /> Name
+                <CaretDownOutlined style={{ fontSize: 10 }} /> Name
                 </Option>
                 <Option value="difficultyLevel_asc">
-                  <Icon type="caret-up" style={{ fontSize: 10 }} /> Level
+                  <CaretUpOutlined style={{ fontSize: 10 }} /> Level
                 </Option>
                 <Option value="difficultyLevel_desc">
-                  <Icon type="caret-down" style={{ fontSize: 10 }} /> Level
+                  <CaretDownOutlined style={{ fontSize: 10 }} /> Level
                 </Option>
               </Select>
               &nbsp;&nbsp;
@@ -260,49 +257,46 @@ export class Exercise extends React.Component<Props, State> {
                 placeholder="Search"
                 style={{ width: 200 }}
                 size="small"
-                value={this.state.search}
-                onChange={this.handleSearchChange}
+                value={state.search}
+                onChange={handleSearchChange}
               />
             </div>
           </div>
         )}
-        {(exercises.length > 0 || this.state.search.trim() !== '') && (
+        {(exercises.length > 0 || state.search.trim() !== '') && (
           <Divider className="below-action-bar" />
         )}
-        {exercises.length === 0 && this.state.search.trim() === ''
-          ? this.renderBlankState()
-          : this.renderExercises(exercises)}
+        {exercises.length === 0 && state.search.trim() === ''
+          ? renderBlankState()
+          : renderExercises(exercises)}
       </>
     )
   }
+  const problemUuidsToAssign = (() => {
+    if (state.exerciseUuidToAssign) {
+      const exercise = R.find(
+        (e: any) => e.uuid === state.exerciseUuidToAssign,
+        exerciseStore!.exercises || []
+      )
+      return exercise ? exercise.problemIds : []
+    }
 
-  render() {
-    const problemUuidsToAssign = (() => {
-      if (this.state.exerciseUuidToAssign) {
-        const exercise = R.find(
-          e => e.uuid === this.state.exerciseUuidToAssign,
-          this.props.exerciseStore!.exercises || []
-        )
-        return exercise ? exercise.problemIds : []
-      }
+    return []
+  })()
 
-      return []
-    })()
-
-    return (
-      <div className="exercise inner">
-        <AssignExerciseDrawer
-          exerciseUuid={this.state.exerciseUuidToAssign}
-          problemUuids={problemUuidsToAssign}
-          visible={this.state.exerciseUuidToAssign !== ''}
-          onClose={this.handleAssignExerciseDrawerClose}
-        />
-        <CreateExerciseDrawer
-          visible={this.state.createExerciseDrawerVisible}
-          onClose={this.handleCreateExerciseDrawerClose}
-        />
-        {this.renderExercisePage()}
-      </div>
-    )
-  }
+  return (
+    <div className="exercise inner">
+      <AssignExerciseDrawer
+        exerciseUuid={state.exerciseUuidToAssign}
+        problemUuids={problemUuidsToAssign}
+        visible={state.exerciseUuidToAssign !== ''}
+        onClose={handleAssignExerciseDrawerClose}
+      />
+      <CreateExerciseDrawer
+        visible={state.createExerciseDrawerVisible}
+        onClose={handleCreateExerciseDrawerClose}
+      />
+      {renderExercisePage()}
+    </div>
+  )
 }

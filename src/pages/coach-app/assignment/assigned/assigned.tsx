@@ -1,8 +1,7 @@
 import * as React from 'react'
 import * as R from 'ramda'
-import { inject, observer } from 'mobx-react'
+import { inject, MobXProviderContext, observer } from 'mobx-react'
 import {
-  Icon,
   Input,
   Divider,
   Collapse,
@@ -12,7 +11,7 @@ import {
   Popconfirm,
   Button
 } from 'antd'
-import { Link, RouteComponentProps } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import * as moment from 'moment'
 
 import './assigned.less'
@@ -21,17 +20,14 @@ import { CoachAssignmentStore } from '../../../../stores/coach-assignment'
 import { AssignmentDetails } from './assignment-details/assignment-details'
 import { StudentsGroupsStore } from '../../../../stores/students-groups'
 import { States } from '../../../../components/states/states'
+import { useState } from 'react'
+import { DatabaseOutlined, FlagOutlined } from '@ant-design/icons'
 
 const { Option } = Select
 const LAST_WEEK_BEGIN_MILLIS = moment
   .utc()
   .subtract(1, 'week')
   .valueOf()
-
-interface Props extends RouteComponentProps<any> {
-  coachAssignmentStore?: CoachAssignmentStore
-  studentsGroupsStore?: StudentsGroupsStore
-}
 
 interface State {
   search: string
@@ -40,42 +36,45 @@ interface State {
   studentsGroupsFilterUuids: string[]
 }
 
-@inject('coachAssignmentStore', 'studentsGroupsStore')
-@observer
-export class Assigned extends React.Component<Props, State> {
-  state = {
+export const Assigned = ()=>{
+  const {coachAssignmentStore, studentsGroupsStore} = React.useContext(MobXProviderContext)
+  const [state, setState] = useState<State>( {
     search: '',
     sortBy: 'assignedAt_desc',
     hideOlderThanOneWeek: true,
     studentsGroupsFilterUuids: []
+  })
+  const location = useLocation()
+  const updateState = (newState: Partial<State>) => {
+    setState((prevState) => {
+      return { ...prevState, ...newState }
+    })
+  }
+  React.useEffect(()=>{
+    coachAssignmentStore!.load()
+    studentsGroupsStore!.load()
+  })
+  const handleSearchChange = (event: any) => {
+    updateState({ search: event.target.value })
   }
 
-  componentDidMount() {
-    this.props.coachAssignmentStore!.load()
-    this.props.studentsGroupsStore!.load()
+  const handleSortByChange = (sortBy: any) => {
+    updateState({ sortBy })
   }
 
-  handleSearchChange = (event: any) => {
-    this.setState({ search: event.target.value })
-  }
-
-  handleSortByChange = (sortBy: any) => {
-    this.setState({ sortBy })
-  }
-
-  handleOneWeekToggle = () => {
-    this.setState({
-      hideOlderThanOneWeek: !this.state.hideOlderThanOneWeek
+  const handleOneWeekToggle = () => {
+    updateState({
+      hideOlderThanOneWeek: !state.hideOlderThanOneWeek
     })
   }
 
-  handleStudentsGroupsFilterChange = (uuids: any) => {
-    this.setState({
+  const handleStudentsGroupsFilterChange = (uuids: any) => {
+    updateState({
       studentsGroupsFilterUuids: uuids as string[]
     })
   }
 
-  sortAssignments = (sortBy: string, assignments: any[]) => {
+  const sortAssignments = (sortBy: string, assignments: any[]) => {
     const [sortByKey, dir] = sortBy.split('_')
 
     const sortedList = (() => {
@@ -129,7 +128,7 @@ export class Assigned extends React.Component<Props, State> {
     return dir === 'desc' ? R.reverse(sortedList) : sortedList
   }
 
-  filterAssignments = (search: string, assignments: any[]) => {
+  const filterAssignments = (search: string, assignments: any[]) => {
     return R.filter(
       (a: any) =>
         a.exercise.name.toLowerCase().indexOf(search.toLowerCase()) >= 0,
@@ -137,7 +136,7 @@ export class Assigned extends React.Component<Props, State> {
     )
   }
 
-  filterAssignmentsByStudentsGroupsUuids = (
+  const filterAssignmentsByStudentsGroupsUuids = (
     studentsGroupsUuids: string[],
     assignments: any[]
   ) => {
@@ -155,7 +154,7 @@ export class Assigned extends React.Component<Props, State> {
   }
 
   // Retain if visible from, deadline or assigned at falls in this week.
-  filterAssingmentsOlderThanWeek = (assignments: any[]) => {
+  const filterAssingmentsOlderThanWeek = (assignments: any[]) => {
     return R.filter((a: any) => {
       const assignedAt = moment.utc(a.assignedAt).valueOf()
       const deadline = moment.utc(a.deadline).valueOf()
@@ -168,7 +167,7 @@ export class Assigned extends React.Component<Props, State> {
     }, assignments)
   }
 
-  studentSelectFilterOption = (inputValue: string, option: any) => {
+  const studentSelectFilterOption = (inputValue: string, option: any) => {
     return (
       option.props.children
         .toString()
@@ -177,19 +176,19 @@ export class Assigned extends React.Component<Props, State> {
     )
   }
 
-  renderDateString = (date: string | null) => {
+  const renderDateString = (date: string | null) => {
     return date ? moment.utc(date).format('DD-MM-YYYY') : ''
   }
 
-  renderBlankState = () => {
+  const renderBlankState = () => {
     return (
       <div className="blank-state container">
-        <Icon type="database" />
+        <DatabaseOutlined />
         <p className="exception-text">
           You have not assigned any exercises so far.
         </p>
         <span className="action-text">
-          <Link to={this.props.match.url.replace('/assigned', '/exercise')}>
+          <Link to={location.pathname.replace('/assigned', '/exercise')}>
             Assign Exercise
           </Link>{' '}
           now!
@@ -198,7 +197,7 @@ export class Assigned extends React.Component<Props, State> {
     )
   }
 
-  renderLevelTag = (difficultyLevel: string) => {
+  const renderLevelTag = (difficultyLevel: string) => {
     if (difficultyLevel === 'easy') {
       return <Tag color="green">Beginner</Tag>
     }
@@ -212,15 +211,15 @@ export class Assigned extends React.Component<Props, State> {
     }
   }
 
-  handleDeleteAssignment = (uuid: string) => () => {
-    this.props.coachAssignmentStore!.delete(uuid)
+  const handleDeleteAssignment = (uuid: string) => () => {
+    coachAssignmentStore!.delete(uuid)
   }
 
-  renderAssignments = (assignments: any[]) => {
+  const renderAssignments = (assignments: any[]) => {
     if (assignments.length === 0) {
       return (
         <div className="blank-state container">
-          <Icon type="flag" />
+          <FlagOutlined />
           <p className="exception-text">
             No assignments found for the search criteria
           </p>
@@ -228,14 +227,14 @@ export class Assigned extends React.Component<Props, State> {
       )
     }
 
-    const thisWeekAssignments = this.state.hideOlderThanOneWeek
-      ? this.filterAssingmentsOlderThanWeek(assignments)
+    const thisWeekAssignments = state.hideOlderThanOneWeek
+      ? filterAssingmentsOlderThanWeek(assignments)
       : assignments
 
     if (thisWeekAssignments.length === 0) {
       return (
         <div className="blank-state container">
-          <Icon type="flag" />
+          <FlagOutlined/>
           <p className="exception-text">
             No assignments found for this week or the search criteria
           </p>
@@ -256,7 +255,7 @@ export class Assigned extends React.Component<Props, State> {
                   <span className="count">({a.problemIds.length})</span>
                 </div>
                 <div className="tags-container">
-                  {this.renderLevelTag(a.exercise.difficultyLevel)}
+                  {renderLevelTag(a.exercise.difficultyLevel)}
                   {a.exercise.tags.map((t: string) => (
                     <Tag key={t}>{t}</Tag>
                   ))}
@@ -265,19 +264,19 @@ export class Assigned extends React.Component<Props, State> {
                   <span className="description">
                     Assigned to {studentIds.length} students and{' '}
                     {groupIds.length} groups on{' '}
-                    {this.renderDateString(a.assignedAt)}.
+                    {renderDateString(a.assignedAt)}.
                   </span>
                   <span className="timeline">
-                    Deadline: {this.renderDateString(a.deadline) || 'none'},
-                    visible from: {this.renderDateString(a.startDate)}
+                    Deadline: {renderDateString(a.deadline) || 'none'},
+                    visible from: {renderDateString(a.startDate)}
                   </span>
                 </div>
                 <div className="action-buttons">
                   <Popconfirm
                     title="Are you sure you want to delete the assignment?"
-                    onConfirm={this.handleDeleteAssignment(a.uuid)}
+                    onConfirm={handleDeleteAssignment(a.uuid)}
                   >
-                    <Button icon="delete" type="danger" size="small"></Button>
+                    <Button icon="delete" danger size="small"></Button>
                   </Popconfirm>
                 </div>
               </div>
@@ -290,149 +289,6 @@ export class Assigned extends React.Component<Props, State> {
             )
           })}
         </Collapse>
-      </div>
-    )
-  }
-
-  render() {
-    if (this.props.coachAssignmentStore!.loading) {
-      return (
-        <div className="assigned inner">
-          <States type="loading" />
-        </div>
-      )
-    }
-
-    if (this.props.coachAssignmentStore!.error) {
-      return (
-        <div className="assigned inner">
-          <States
-            type="error"
-            exceptionText={this.props.coachAssignmentStore!.error}
-            onClick={this.props.coachAssignmentStore!.load}
-          />
-        </div>
-      )
-    }
-
-    const assignments = this.sortAssignments(
-      this.state.sortBy,
-      this.filterAssignmentsByStudentsGroupsUuids(
-        this.state.studentsGroupsFilterUuids,
-        this.filterAssignments(
-          this.state.search,
-          this.props.coachAssignmentStore!.assignments || []
-        )
-      )
-    )
-
-    return (
-      <div className="assigned inner">
-        <div className="action-bar">
-          <div className="left">
-            <Checkbox
-              checked={this.state.hideOlderThanOneWeek}
-              onChange={this.handleOneWeekToggle}
-            >
-              Hide older than 1 week of relevance.
-            </Checkbox>
-          </div>
-          <div className="right">
-            Sort by:&nbsp;
-            <Select
-              className="select-sort-by"
-              defaultValue={this.state.sortBy}
-              value={this.state.sortBy}
-              size="small"
-              style={{ width: 160 }}
-              onChange={this.handleSortByChange}
-            >
-              <Option value="assignedAt">
-                <Icon type="caret-up" style={{ fontSize: 10 }} /> Assigned Date
-              </Option>
-              <Option value="assignedAt_desc">
-                <Icon type="caret-down" style={{ fontSize: 10 }} /> Assigned
-                Date
-              </Option>
-              <Option value="visibleFrom">
-                <Icon type="caret-up" style={{ fontSize: 10 }} /> Visible Date
-              </Option>
-              <Option value="visibleFrom_desc">
-                <Icon type="caret-down" style={{ fontSize: 10 }} /> Visible Date
-              </Option>
-              <Option value="deadline">
-                <Icon type="caret-up" style={{ fontSize: 10 }} /> Deadline Date
-              </Option>
-              <Option value="deadline_desc">
-                <Icon type="caret-down" style={{ fontSize: 10 }} /> Deadline
-                Date
-              </Option>
-              <Option value="name">
-                <Icon type="caret-up" style={{ fontSize: 10 }} /> Name
-              </Option>
-              <Option value="name_desc">
-                <Icon type="caret-down" style={{ fontSize: 10 }} /> Name
-              </Option>
-              <Option value="count">
-                <Icon type="caret-up" style={{ fontSize: 10 }} /> Count
-              </Option>
-              <Option value="count_desc">
-                <Icon type="caret-down" style={{ fontSize: 10 }} /> Count
-              </Option>
-              <Option value="level">
-                <Icon type="caret-up" style={{ fontSize: 10 }} /> Level
-              </Option>
-              <Option value="level_desc">
-                <Icon type="caret-down" style={{ fontSize: 10 }} /> Level
-              </Option>
-            </Select>
-            &nbsp;&nbsp;
-            <Input.Search
-              placeholder="Search"
-              style={{ width: 200 }}
-              size="small"
-              value={this.state.search}
-              onChange={this.handleSearchChange}
-            />
-          </div>
-        </div>
-        <div className="secondary-action-bar action-bar">
-          <Select
-            className="student-select-input"
-            allowClear={true}
-            mode="multiple"
-            maxTagCount={3}
-            placeholder="Filter by Students or Groups"
-            filterOption={this.studentSelectFilterOption}
-            disabled={
-              this.props.studentsGroupsStore!.loading ||
-              this.props.studentsGroupsStore!.error.length > 0
-            }
-            onChange={this.handleStudentsGroupsFilterChange}
-            value={this.state.studentsGroupsFilterUuids}
-          >
-            <Select.OptGroup key="students" label="Students">
-              {R.values(this.props.studentsGroupsStore!.students).map(
-                (s: any) => (
-                  <Select.Option key={s.uuid} value={s.uuid}>
-                    {s.firstname + ', ' + s.lastname} ({s.username})
-                  </Select.Option>
-                )
-              )}
-            </Select.OptGroup>
-            <Select.OptGroup key="groups" label="Groups">
-              {R.values(this.props.studentsGroupsStore!.groups).map(
-                (g: any) => (
-                  <Select.Option key={g.uuid} value={g.uuid}>
-                    {g.name}
-                  </Select.Option>
-                )
-              )}
-            </Select.OptGroup>
-          </Select>
-        </div>
-        <Divider className="below-action-bar" />
-        {this.renderAssignments(assignments)}
       </div>
     )
   }

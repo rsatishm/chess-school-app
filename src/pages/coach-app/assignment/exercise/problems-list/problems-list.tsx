@@ -1,13 +1,13 @@
 import * as React from 'react'
 import * as R from 'ramda'
-import { Icon } from 'antd'
-import { inject, observer } from 'mobx-react'
-import { ChessTypes } from '@chesslang/chess'
+import { inject, MobXProviderContext, observer } from 'mobx-react'
 
 import './problems-list.less'
 
 import { BaseContentStore } from '../../../../../stores/base-content'
 import { ConfiguredChessboard } from '../../../../../components/chessboard/configured-chessboard'
+import { ChessTypes } from '../../../../../types'
+import { LoadingOutlined } from '@ant-design/icons'
 
 const getSideToMove = (fen: ChessTypes.FEN) => {
   return fen.split(' ')[1] as ChessTypes.Side
@@ -20,23 +20,21 @@ const getFullMoveNumber = (fen: ChessTypes.FEN) => {
 interface Props {
   problemUuids: string[]
   problemDetails?: any[]
-  baseContentStore?: BaseContentStore
 }
 
-@inject('baseContentStore')
-@observer
-export class ProblemsList extends React.Component<Props> {
-  componentDidMount() {
-    this.props.problemUuids.forEach(uuid => {
-      this.props.baseContentStore!.load(uuid)
+export const ProblemsList = (props: Props)=>{
+  const {baseContentStore} = React.useContext(MobXProviderContext)
+  React.useEffect(()=>{
+  props.problemUuids.forEach(uuid => {
+      baseContentStore!.load(uuid)
     })
-  }
+  })
 
-  extractMoves = (attemptMovesPgn: string) => {
+  const extractMoves = (attemptMovesPgn: string) => {
     return attemptMovesPgn.split('\n\n')[1] || ''
   }
 
-  renderMainline = (mainline: ChessTypes.Variation): any => {
+  const renderMainline = (mainline: ChessTypes.Variation): any => {
     return (
       <div className="variation mainline">
         {mainline.map((m, i) => {
@@ -58,10 +56,10 @@ export class ProblemsList extends React.Component<Props> {
     )
   }
 
-  renderAttemptDetails = (uuid: string) => {
+  const renderAttemptDetails = (uuid: string) => {
     const problem = R.find(
-      ad => ad.problemId === uuid,
-      this.props.problemDetails!
+      (ad: any) => ad.problemId === uuid,
+      props.problemDetails!
     )
 
     if (
@@ -84,7 +82,7 @@ export class ProblemsList extends React.Component<Props> {
               return (
                 <tr className={`attempt ${ad.status}`}>
                   <td className="time">{ad.timeTaken}s</td>
-                  <td className="moves">{this.extractMoves(ad.moves)}</td>
+                  <td className="moves">{extractMoves(ad.moves)}</td>
                 </tr>
               )
             })}
@@ -94,11 +92,11 @@ export class ProblemsList extends React.Component<Props> {
     )
   }
 
-  renderProblem = (uuid: string) => {
-    const problem = this.props.baseContentStore!.content[uuid]
+  const renderProblem = (uuid: string) => {
+    const problem = baseContentStore!.content[uuid]
 
     if (!problem || problem.loading) {
-      return <Icon type="loading" spin={true} />
+      return <LoadingOutlined spin={true} />
     }
 
     return (
@@ -124,28 +122,26 @@ export class ProblemsList extends React.Component<Props> {
         </div>
         <div
           className={`moves-preview ${
-            this.props.problemDetails ? 'solution' : ''
+            props.problemDetails ? 'solution' : ''
           }`}
         >
-          {this.renderMainline(R.take(10, problem.content!.mainline))}
+          {renderMainline(R.take(10, problem.content!.mainline))}
           {problem.content!.mainline.length > 6 && ' ...'}
         </div>
-        {this.props.problemDetails ? this.renderAttemptDetails(uuid) : null}
+        {props.problemDetails ? renderAttemptDetails(uuid) : null}
       </>
     )
   }
 
-  render() {
-    return (
-      <div className="problems-list-hort">
-        {this.props.problemUuids.map((uuid, i) => (
-          <div key={uuid} className="problem">
-            <span>{i + 1}</span>
+  return (
+    <div className="problems-list-hort">
+      {props.problemUuids.map((uuid, i) => (
+        <div key={uuid} className="problem">
+          <span>{i + 1}</span>
 
-            {this.renderProblem(uuid)}
-          </div>
-        ))}
-      </div>
-    )
-  }
+          {renderProblem(uuid)}
+        </div>
+      ))}
+    </div>
+  )
 }
