@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Layout, Tooltip, Badge, Modal } from 'antd'
-import { UserStore } from '../../../stores/user'
+import { UserStore, useUserStore } from '../../../stores/user'
 import { inject, MobXProviderContext, observer } from 'mobx-react'
 
 import './dashboard.less'
@@ -9,17 +9,18 @@ import { MixpanelStore } from '../../../stores/mixpanel'
 import { getFormattedMessage } from '../../../utils/utils'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AppstoreOutlined, EyeOutlined, FireOutlined, FlagOutlined, InboxOutlined, LoadingOutlined, LogoutOutlined, PlaySquareOutlined, SettingOutlined, UsergroupAddOutlined } from '@ant-design/icons'
+import { useEffect } from 'react'
 
 const { Content } = Layout
 
-export const Dashboard = ()=>{
+export const Dashboard = observer(()=>{
   const {userStore, studentAssignmentStore, mixpanelStore} = React.useContext(MobXProviderContext)
   const navigate = useNavigate()
   const location = useLocation()
-  React.useEffect(()=>{
+  useEffect(()=>{
     userStore!.loadProfile()
 
-    (document.querySelector('.app-sidebar') as any)!.style!.display = 'none'
+   /* (document.querySelector('.app-sidebar') as any)!.style!.display = 'none'
 
     document
       .querySelector('meta[name="viewport"]')!
@@ -29,8 +30,8 @@ export const Dashboard = ()=>{
         (document.querySelector('.app-sidebar') as any)!.style!.display = 'block'
 
     document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
-      }
-  })
+      }*/
+  }, [userStore])
 
   const handleClick = (link: string) => (e: any) => {
     navigate(link)
@@ -72,16 +73,12 @@ export const Dashboard = ()=>{
   return (
     <Content className="content student dashboard">
       <div className="welcome-message">
-        {getFormattedMessage('studentapp.dashboard.welcome', 'Welcome')}{' '}
+        {'Welcome'}
         {profile.firstname}!
       </div>
       <div className="student-apps">
         <Tooltip
-          title={getFormattedMessage(
-            'studentapp.dashboard.assignment.description',
-            'Solve exercises and improve'
-          )}
-        >
+          title='Solve exercises and improve'>
           <div className="app" onClick={handleClick('/app/assignment')}>
             <span>
               <FlagOutlined />{' '}
@@ -97,10 +94,7 @@ export const Dashboard = ()=>{
               )}
             </span>
             <span className="nav-text">
-              {getFormattedMessage(
-                'studentapp.dashboard.assignment.title',
-                'Assignment'
-              )}
+              {'Assignment'}
             </span>
           </div>
         </Tooltip>
@@ -116,18 +110,12 @@ export const Dashboard = ()=>{
         </Tooltip>
         <Tooltip
           overlayClassName="big-tooltip"
-          title={getFormattedMessage(
-            'studentapp.dashboard.sharebox.description',
-            'Collaboration with shared databases'
-          )}
+          title={'Collaboration with shared databases'}
         >
           <div className="app" onClick={handleClick('/app/sharebox')}>
             <InboxOutlined />
             <span className="nav-text">
-              {getFormattedMessage(
-                'studentapp.dashboard.sharebox.title',
-                'Sharebox'
-              )}
+              {'Sharebox'}
             </span>
           </div>
         </Tooltip>
@@ -135,99 +123,66 @@ export const Dashboard = ()=>{
           <div className="app" onClick={handleClick('/app/practice')}>
             <FireOutlined/>
             <span className="nav-text">
-              {getFormattedMessage(
-                'studentapp.dashboard.practice.title',
-                'Practice'
-              )}
+              {'Practice'}
             </span>
           </div>
         </Tooltip>
         <Tooltip
           overlayClassName="big-tooltip"
-          title={getFormattedMessage(
-            'studentapp.dashboard.blindbot.description',
-            'Improve your visualization skills by playing blindfold'
-          )}
+          title={'Improve your visualization skills by playing blindfold'}
         >
           <div className="app" onClick={handleClick('/app/blindbot')}>
             <EyeOutlined />
             <span className="nav-text">
-              {getFormattedMessage(
-                'studentapp.dashboard.blindbot.title',
-                'Blindbot'
-              )}
+              {'Blindbot'}
             </span>
           </div>
         </Tooltip>
         <Tooltip
           overlayClassName="big-tooltip"
-          title={getFormattedMessage(
-            'studentapp.dashboard.game_area.description',
-            'Play games with members of your academy'
-          )}
+          title={'Play games with members of your academy'}
         >
           <div className="app" onClick={handleClick('/app/game-area')}>
             <PlaySquareOutlined />
             <span className="nav-text">
-              {getFormattedMessage(
-                'studentapp.dashboard.game_area.title',
-                'Game Area'
-              )}
+              {'Game Area'}
             </span>
           </div>
         </Tooltip>
 
         <Tooltip
-          title={getFormattedMessage(
-            'studentapp.dashboard.tournaments.description',
-            'Tournaments'
-          )}
+          title={'Tournaments'}
         >
           <div className="app" onClick={handleClick('/app/tournaments')}>
             <UsergroupAddOutlined />
             <span className="nav-text">
-              {getFormattedMessage(
-                'studentapp.dashboard.tournaments.title',
-                'Tournaments'
-              )}
+              {'Tournaments'}
             </span>
           </div>
         </Tooltip>
 
         <Tooltip
           overlayClassName="big-tooltip"
-          title={getFormattedMessage(
-            'studentapp.dashboard.settings.description',
-            'Enhance your experience by listing out your preferences'
-          )}
+          title={'Enhance your experience by listing out your preferences'}
         >
           <div className="app" onClick={handleClick('/app/preferences')}>
             <SettingOutlined/>
             <span className="nav-text">
-              {getFormattedMessage(
-                'studentapp.dashboard.settings.title',
-                'Settings'
-              )}
+              {'Settings'}
             </span>
           </div>
         </Tooltip>
         <Tooltip
-          title={getFormattedMessage(
-            'studentapp.dashboard.logout.description',
-            'End the login session'
-          )}
+          title={'End the login session'}
         >
           <div className="app" onClick={confirmLogout}>
             <LogoutOutlined />
             <span className="nav-text">
-              {getFormattedMessage(
-                'studentapp.dashboard.logout.title',
-                'Logout'
-              )}
+              {'Logout'}
             </span>
           </div>
         </Tooltip>
       </div>
     </Content>
   )
-}
+})
