@@ -17,6 +17,7 @@ import { useContext, useEffect, useState } from 'react'
 import { StudentTournaments } from './tournaments/tournaments'
 import { ExceptionOutlined } from '@ant-design/icons'
 import { TournamentView } from '../../components/tournaments/tournament-view'
+import { observer } from 'mobx-react-lite'
 
 
 interface State {
@@ -25,7 +26,7 @@ interface State {
   showPreferences: boolean
 }
 
-export const StudentApp = () => {
+export const StudentApp = observer(() => {
   const [state, setState] = useState<State>({
     hasError: false,
     showProfileEditModal: false,
@@ -162,4 +163,4 @@ export const StudentApp = () => {
       </Routes>
     </Layout>
   )
-}
+})

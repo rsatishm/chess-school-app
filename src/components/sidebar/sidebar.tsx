@@ -1,5 +1,5 @@
 import { Layout, Menu, Badge, Modal } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 
 import './sidebar.less'
 import { UserStore } from '../../stores/user'
@@ -22,7 +22,7 @@ interface State {
   visible: boolean
 }
 
-export const Sidebar = ()=>{
+export const Sidebar = observer(()=>{
 
   const {announcementStore, userStore, studentAssignmentStore} = useContext(MobXProviderContext)
   const [state, setState] = useState({
@@ -368,4 +368,4 @@ export const Sidebar = ()=>{
       />
     </div>
   )
-}
+})

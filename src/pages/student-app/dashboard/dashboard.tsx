@@ -70,10 +70,11 @@ export const Dashboard = observer(()=>{
     )
   }
   const profile = userStore!.profile!
+  console.log("unsolved: " + studentAssignmentStore!.unsolvedCount)
   return (
     <Content className="content student dashboard">
       <div className="welcome-message">
-        {'Welcome'}
+        {'Welcome'}{' '}
         {profile.firstname}!
       </div>
       <div className="student-apps">
@@ -82,7 +83,7 @@ export const Dashboard = observer(()=>{
           <div className="app" onClick={handleClick('/app/assignment')}>
             <span>
               <FlagOutlined />{' '}
-              {userStore!.role === 'student' && (
+              {userStore!.role === 'student' && (                
                 <Badge
                   count={studentAssignmentStore!.unsolvedCount}
                   style={{

@@ -87,7 +87,9 @@ export class UserStore {
       changePassword: action.bound,
       resetChangePasswordErrors: action.bound,
       logout: action.bound,
-      fullName: computed
+      fullName: computed,
+      setProfileLoading: action.bound,
+      setProfile: action.bound
     })
   }
 
@@ -214,23 +216,31 @@ export class UserStore {
 
   async loadProfile(reload = false) {
     if (!this.profile || reload) {
-      this.profileLoading = true
+      this.setProfileLoading(true)
       try {
         const profile = await this.getApiCoreAxiosClient()!.get(
           'identity/profile/me'
         )
-        this.profile = profile.data
+        this.setProfile(profile.data)
         console.log("Profile loaded " + this.profile.firstname)
-        this.profileLoading = false
+        this.setProfileLoading(false)
         preferencesStore!.load()
       } catch (e) {
-        this.profileLoading = false
+        this.setProfileLoading(false)
         this.profileError = 'Error loading profile'
         return false
       }
     }
 
     return true
+  }
+  
+  setProfileLoading(profileLoading: boolean) {
+    this.profileLoading = profileLoading
+  }
+
+  setProfile(profile: any) {
+    this.profile = profile
   }
 
   async changePassword(args: ChangePasswordArgs) {

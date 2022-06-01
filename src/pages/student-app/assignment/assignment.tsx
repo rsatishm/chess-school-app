@@ -32,7 +32,7 @@ interface State {
   problemUuids: string[]
 }
 
-export const Assignment = ()=>{
+export const Assignment = observer(()=>{
   const {studentAssignmentStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     sortBy: 'assignedAt_desc',
@@ -53,7 +53,7 @@ export const Assignment = ()=>{
       .querySelector('meta[name="viewport"]')!
       .setAttribute('content', 'width=device-width, initial-scale=1.0')
       return ()=>document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
-  })
+  }, [])
 
   const handleSolveAssignment = (assignmentUuid: any) => {
     const assignment: any = R.find(
@@ -333,4 +333,4 @@ export const Assignment = ()=>{
       </div>
     </Content>
   )
-}
+})
