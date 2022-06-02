@@ -30,7 +30,7 @@ export const StudentTournaments = (props: Props)=>{
   useEffect(()=>{
     console.log("Load tournaments")
     studentTournamentStore!.load()
-  }, [])
+  })
 
   const  renderTournament = (item: any) => {
     const actionButton = (
