@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { Divider, Breadcrumb } from 'antd'
 import { observer, inject, MobXProviderContext } from 'mobx-react'
 import InfiniteScroller from 'react-infinite-scroller'
@@ -9,6 +9,7 @@ import './problembase-view.less'
 import { ConfiguredChessboard } from '../../../../components/chessboard/configured-chessboard'
 import { States } from '../../../../components/states/states'
 import { ChessTypes } from '../../../../types'
+import { BarsOutlined, DatabaseOutlined } from '@ant-design/icons'
 
 // TODO: Move this method to Chess Lib FEN
 const getSideToMove = (fen: ChessTypes.FEN): ChessTypes.Side => {
@@ -24,7 +25,8 @@ export const ProblembaseView = ()=>{
   const [state, setState] = React.useState<State>({
     hasMore: true
   })
-  const {uuid} = useParams()
+  const {uuid} : any = useParams()
+  const location = useLocation()
   const updateState = (newState: Partial<State>) => {
     setState((prevState) => {
       return { ...prevState, ...newState }
@@ -91,4 +93,86 @@ export const ProblembaseView = ()=>{
       </InfiniteScroller>
     )
   }
+
+  const actionBar = (
+    <div className="action-bar">
+      <div className="left">
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link
+              to={location.pathname.replace(
+                '/' + uuid,
+                ''
+              )}
+            >
+              <DatabaseOutlined/>
+            </Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <BarsOutlined />
+          </Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
+      <div className="right" />
+    </div>
+  )
+
+  if (
+    !problembaseContentStore!.content[uuid] ||
+    problembaseContentStore!.content[uuid].loading
+  ) {
+    return (
+      <div className="problembase-view inner">
+        {actionBar}
+        <Divider className="below-action-bar" />
+        <div className="container">
+          <States type="loading" />
+        </div>
+      </div>
+    )
+  }
+
+  if (problembaseContentStore!.content[uuid].error) {
+    return (
+      <div className="problembase-view inner">
+        {actionBar}
+        <Divider className="below-action-bar" />
+        <div className="container">
+          <States
+            type="error"
+            exceptionText={
+              problembaseContentStore!.content[uuid].error
+            }
+            onClick={handleRetry}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  if (
+    problembaseContentStore!.content[uuid].problems.length === 0
+  ) {
+    return (
+      <div className="problembase-view inner">
+        {actionBar}
+        <Divider className="below-action-bar" />
+        <div className="container">
+          <States
+            type="blank"
+            icon="database"
+            exceptionText="This problembase does not contain any problems"
+          />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="problembase-view inner">
+      {actionBar}
+      <Divider className="below-action-bar" />
+      <div className="container">{renderProblems()}</div>
+    </div>
+  )
 }

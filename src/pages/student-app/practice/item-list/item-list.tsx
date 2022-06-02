@@ -53,6 +53,7 @@ export const ItemList = () => {
     })
   }
   React.useEffect(() => {
+    console.log("Load practise")
     practiceStore!.load()
   })
   const navigate = useNavigate()
@@ -323,6 +324,7 @@ const CreatePractiseProblemForm = (props: {
       fen
     })
   }
+  console.log("render item list")
   return (
     <div>
       <Form form={form} onFinish={handleSubmit} className="login-form">

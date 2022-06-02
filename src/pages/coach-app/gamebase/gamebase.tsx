@@ -50,28 +50,28 @@ return (
     </Menu>
     <Routes>
       <Route
-        path={location.pathname + '/my'}
-        element={MyGamebases}
+        path={'/my'}
+        element={<MyGamebases/>}
       />
       <Route
-        path={location.pathname + '/my/:uuid'}
-        element={GamebaseViewer}
+        path={'/my/:uuid'}
+        element={<GamebaseViewer/>}
       />
       <Route
-        path={location.pathname + '/my/:gamebaseUuid/:uuid'}
-        element={GameViewer}
+        path={'/my/:gamebaseUuid/:uuid'}
+        element={<GameViewer/>}
       />
       <Route
-        path={location.pathname + '/public'}
-        element={PublicGamebases}
+        path={'/public'}
+        element={<PublicGamebases/>}
       />
       <Route
-        path={location.pathname + '/public/:uuid'}
-        element={GamebaseViewer}
+        path={'/public/:uuid'}
+        element={<GamebaseViewer/>}
       />
       <Route
-        path={location.pathname+ '/public/:gamebaseUuid/:uuid'}
-        element={GameViewer}
+        path={'/public/:gamebaseUuid/:uuid'}
+        element={<GameViewer/>}
       />
     </Routes>
   </Content>

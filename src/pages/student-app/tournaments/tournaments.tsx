@@ -24,6 +24,7 @@ export const StudentTournaments = (props: Props)=>{
   }
 
   const handleView = (record: any) => {
+    console.log("open tournament " + record.uuid)
     navigate(`/app/tournaments/${record.uuid}`)
   }
 

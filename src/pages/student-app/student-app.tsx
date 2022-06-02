@@ -139,7 +139,7 @@ export const StudentApp = observer(() => {
           path={'/assignment'}
           element={<Assignment/>}
         />
-        <Route path={'/practice'} element={<Practice/>} />
+        <Route path={'/practice/*'} element={<Practice/>} />
         <Route
           path={'/blindbot'}
           element={<Blindbot/>}

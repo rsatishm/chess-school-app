@@ -46,11 +46,13 @@ import { paymentPlanStore } from './stores/payment-plan';
 import { paymentSubscriptionStore } from './stores/payment-subscription';
 import { practiceStore } from './stores/practice';
 import { privateGamebaseStore } from './stores/private-gamebase';
+import { localeStore } from './stores/locale';
 
 const stores = {
   signupStore,
   loginStore,
   userStore,
+  localeStore,
   studentsGroupsStore,
   academyStore,
   preferencesStore,

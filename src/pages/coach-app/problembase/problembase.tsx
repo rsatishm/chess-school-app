@@ -44,20 +44,20 @@ export const Problembase = ()=>{
       </Menu>
       <Routes>
         <Route
-          path={location.pathname + '/my'}
-          element={MyProblembases}
+          path={'/my'}
+          element={<MyProblembases/>}
         />
         <Route
-          path={location.pathname + '/my/:uuid'}
-          element={ProblembaseView}
+          path={'/my/:uuid'}
+          element={<ProblembaseView/>}
         />
         <Route
-          path={location.pathname + '/public'}
-          element={PublicProblembases}
+          path={'/public'}
+          element={<PublicProblembases/>}
         />
         <Route
-          path={location.pathname + '/public/:uuid'}
-          element={ProblembaseView}
+          path={'/public/:uuid'}
+          element={<ProblembaseView/>}
         />
       </Routes>
     </Content>

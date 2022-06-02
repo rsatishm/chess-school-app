@@ -23,7 +23,7 @@ import { Scoresheet } from './scoresheet/scoresheet'
 import { ChessTypes } from '../../../types'
 import * as Util from '../../../utils/Util'
 import * as GameEditor from '../../../components/game-editor'
-import { Chess } from 'chess.js'
+import * as Chess from 'chess.js';
 import { useNavigate } from 'react-router-dom'
 import { HourglassOutlined } from '@ant-design/icons'
 
@@ -61,6 +61,7 @@ interface State {
 
 export const Blindbot = ()=>{
   const {practiceStore, engineStore} = React.useContext(MobXProviderContext)
+  const ChessJS = typeof Chess === 'function' ? Chess : Chess.Chess
   const [state, setState] = React.useState<State>({
     playerSide: 'w' as ChessTypes.Side,
     boardSize: 0,
@@ -70,7 +71,7 @@ export const Blindbot = ()=>{
     gameEditor: new GameEditor.GameEditor(),
     revealPosition: false,
     showScoresheet: false,
-    startFen: new Chess().fen(), // TODO: change this based on position setup
+    startFen: new ChessJS().fen(), // TODO: change this based on position setup
     setup: true,
     result: '*' as ChessTypes.GameResult,
     maxDepth: 1
@@ -122,7 +123,7 @@ export const Blindbot = ()=>{
   }, [state.thinking])*/
 
   const makeEngineMove = async (fen: ChessTypes.FEN) => {
-    const g = new Chess(fen)
+    const g = new ChessJS(fen)
     try {
       const depth = Math.min(
         getPiecesCount(fen) > 6 ? 8 : 5,
@@ -168,7 +169,7 @@ export const Blindbot = ()=>{
       gameEditor: new GameEditor.GameEditor(),
       revealPosition: false,
       showScoresheet: false,
-      startFen: new Chess().fen(), // TODO: change this based on position setup
+      startFen: new ChessJS().fen(), // TODO: change this based on position setup
       setup: true,
       result: '*' as ChessTypes.GameResult
     })
@@ -211,7 +212,7 @@ export const Blindbot = ()=>{
   }
 
   const handleGameOver = (prevFen: ChessTypes.FEN, lastFen: ChessTypes.FEN) => {
-    const g = new Chess(lastFen)
+    const g = new ChessJS(lastFen)
     updateState({
       revealPosition: true,
       thinking: false,
@@ -235,7 +236,7 @@ export const Blindbot = ()=>{
 
   const handleMove = async (m: ChessTypes.ChessJSVerboseInputMove) => {
     const prevFen = getCurrentFen()
-    const g = new Chess(getCurrentFen())
+    const g = new ChessJS(getCurrentFen())
     if (g.move(m)) {
       state.gameEditor.addMove(m)
       updateState(

@@ -43,6 +43,7 @@ export const TournamentView = () => {
   })
   const navigate = useNavigate()
   const { uuid } = useParams();
+  console.log("uuid: " + uuid)
   const updateState = (newState: State) => {
     setState((prevState) => {
       return { ...prevState, ...newState }
@@ -58,7 +59,7 @@ export const TournamentView = () => {
     }
 
     tournamentViewStore!.loadTournament(id)
-    tournamentChatStore!.load(id)
+    //tournamentChatStore!.load(id)
 
     unsubFirestoreListener = ()=>{}
     
@@ -103,7 +104,7 @@ export const TournamentView = () => {
   useEffect(() => {
 
     init(uuid!)
-
+/*
     tournamentChatStore!.onNewMessage(
       (_: any, ownMessage: boolean) => {
         if (ownMessage || state.activeTab == 'chat') {
@@ -127,7 +128,7 @@ export const TournamentView = () => {
     
         (document.querySelector('.app-sidebar')! as any).style!.display = 'block'
         document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
-      }
+      }*/
   }
   )
 

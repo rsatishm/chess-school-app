@@ -9,16 +9,17 @@ const { Content } = Layout
 
 export const Practice = ()=>{
   const location = useLocation()
+  console.log("render practise")
   return (
     <Content className="practice content">
       <Routes>
         <Route
-          path={location.pathname + '/'}
-          element={ItemList}
+          path={'/*'}
+          element={<ItemList/>}
         />
         <Route
-          path={location.pathname + '/play/:uuid'}
-          element={Play}
+          path={'/play/:uuid'}
+          element={<Play/>}
         />
       </Routes>
     </Content>

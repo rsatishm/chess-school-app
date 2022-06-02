@@ -42,12 +42,12 @@ export const Gamebox = ()=>{
       </Menu>
       <Routes>
         <Route
-          path={location.pathname + '/my'}
-          element={MyDatabases}
+          path={'/my'}
+          element={<MyDatabases/>}
         />
         <Route
-          path={location.pathname + '/shared-with-me'}
-          element={SharedWithMe}
+          path={'/shared-with-me'}
+          element={<SharedWithMe/>}
         />
       </Routes>
     </Content>

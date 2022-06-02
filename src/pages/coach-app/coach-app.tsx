@@ -24,6 +24,7 @@ import { Problembase } from './problembase/problembase';
 import { CreateTournamentForm } from './tournaments/create-tournament-form';
 import { Analytics } from './analytics/analytics';
 import { TournamentListing } from './tournaments/tournament-listing';
+import { GameArea } from '../common-pages/gameArea/gameArea';
 
 interface Props {
   userStore?: UserStore
@@ -61,7 +62,7 @@ export const CoachApp = observer(() => {
     )
   }
 
-  function GameArea() {
+  function GameArea1() {
     //const fen = new Chess().fen()
     const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
     return <><table><tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="NONE" /></td></tr>
@@ -90,12 +91,12 @@ export const CoachApp = observer(() => {
         <Route path="/classrooms" element={<Classrooms/>} />
         <Route
           path="/blindbot"
-          element={Blindbot}
+          element={<Blindbot/>}
         />
 
-        <Route path="/gamebase" element={<Gamebase/>} />
-        <Route path="/sharebox" element={<Gamebox/>} />
-        <Route path="/problembase" element={<Problembase/>} />
+        <Route path="/gamebase/*" element={<Gamebase/>} />
+        <Route path="/sharebox/*" element={<Gamebox/>} />
+        <Route path="/problembase/*" element={<Problembase/>} />
         <Route path="/reports" element={<Analytics/>} />
         <Route path="/game-area" element={<GameArea/>} />
 
