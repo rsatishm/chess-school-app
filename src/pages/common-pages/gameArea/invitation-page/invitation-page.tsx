@@ -31,7 +31,7 @@ interface State {
   displayBoardForHistoryGame: boolean
 }
 
-const InvitationPageWrapper = ()=>{  
+const InvitationPageWrapper = observer(()=>{  
   const timeout: number = 30000
   const [state, setState] = useState<State>({
     isTimedOut: false,
@@ -276,6 +276,6 @@ const InvitationPageWrapper = ()=>{
       />
     </>
   )
-
 }
+)
 export const InvitationPage = withIdleTimer(InvitationPageWrapper)

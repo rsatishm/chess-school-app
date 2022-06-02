@@ -27,7 +27,7 @@ interface Props {
   onProblemUnselect: (uuid: string) => any
 }
 
-const ProblembaseViewerDrawer = (props: Props)=>{
+const ProblembaseViewerDrawer = observer((props: Props)=>{
   const {problembaseContentStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState({ hasMore: true })
   let ref : any = {}
@@ -188,5 +188,5 @@ const ProblembaseViewerDrawer = (props: Props)=>{
       </div>
     </Drawer>
   )
-}
+})
 export default ProblembaseViewerDrawer

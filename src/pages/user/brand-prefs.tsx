@@ -13,7 +13,7 @@ interface State {
   }
 }
 
-export const BrandPrefsComp = ()=>{
+export const BrandPrefsComp = observer(()=>{
   const {preferencesStore} = useContext(MobXProviderContext)
   const [form] = useForm()
   const [state, setState] = useState<State>({
@@ -136,5 +136,4 @@ export const BrandPrefsComp = ()=>{
         </div>
       </div>
     )
-
-}
+})

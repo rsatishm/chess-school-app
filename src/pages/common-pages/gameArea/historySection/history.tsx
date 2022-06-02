@@ -18,7 +18,7 @@ interface State {
   displayBoardForHistoryGame: boolean
 }
 
-export const HistoryPage = ()=>{
+export const HistoryPage = observer(()=>{
   const [state, setState] = useState<State>({
     displayBoardForHistoryGame: true
   })
@@ -99,4 +99,4 @@ export const HistoryPage = ()=>{
       </div>
     </>
   )
-}
+})

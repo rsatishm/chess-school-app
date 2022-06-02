@@ -1,5 +1,5 @@
 import { ChangeEvent, useContext, useState } from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import {
   Modal,
   Upload,
@@ -50,7 +50,7 @@ const INIT_STATE: State = {
   mergeDatabaseUuid: undefined
 }
 
-export const PgnUploadModal = (props: Props)=>{
+export const PgnUploadModal = observer((props: Props)=>{
   const {gameboxDatabaseStore} = useContext(MobXProviderContext)
   const [state, setState] = useState<State>(INIT_STATE)
 
@@ -260,4 +260,4 @@ export const PgnUploadModal = (props: Props)=>{
       )}
     </Modal>
   )
-}
+})

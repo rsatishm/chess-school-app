@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { useContext, useEffect, useState } from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { message, Modal, Select } from 'antd'
 import Form  from 'antd/lib/form'
 
@@ -33,7 +33,7 @@ const INIT_STATE: State = {
   }
 }
 
-const ShareModalForm = (props: Props)=>{
+const ShareModalForm = observer((props: Props)=>{
   const {studentsGroupsStore, coachNetworkStore, gameboxDatabaseStore} = useContext(MobXProviderContext)
   const [state, setState] = useState<State>(INIT_STATE)
   const [form] = useForm()
@@ -188,7 +188,7 @@ const ShareModalForm = (props: Props)=>{
   }
 
   return <Form form={form}/>
-}
+})
 
 interface OuterProps {
   type: 'student' | 'coach'

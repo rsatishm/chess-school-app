@@ -1,4 +1,4 @@
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { Form, Button, Input } from 'antd'
 
 import './create-academy-form.less'
@@ -16,7 +16,7 @@ interface State {
   }
 }
 
-export const CreateAcademyForm = ()=>{
+export const CreateAcademyForm = observer(()=>{
   const {academyStore, userStore} = useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     confirmDirty: false,
@@ -121,4 +121,4 @@ export const CreateAcademyForm = ()=>{
       </div>
     </Form>
   )
-}
+})

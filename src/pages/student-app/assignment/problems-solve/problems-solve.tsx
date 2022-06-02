@@ -49,7 +49,7 @@ interface State {
   currentPbmIndex: number
 }
 
-export const ProblemsSolve = (props: Props) => {
+export const ProblemsSolve = observer((props: Props) => {
   const { baseContentStore, problemSolveStore, studentAssignmentStore } = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     allSolved: false,
@@ -478,4 +478,4 @@ export const ProblemsSolve = (props: Props) => {
       </div>
     </div>
   )
-}
+})

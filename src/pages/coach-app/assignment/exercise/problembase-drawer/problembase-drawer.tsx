@@ -25,7 +25,7 @@ interface State {
   listPublic: boolean
 }
 
-export const ProblembaseDrawer = (props: Props) => {
+export const ProblembaseDrawer = observer((props: Props) => {
   const { privateProblembaseStore, publicProblembaseStore, problembaseContentStore } =
     React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
@@ -268,4 +268,4 @@ export const ProblembaseDrawer = (props: Props) => {
       </div>
     </Drawer>
   )
-}
+})

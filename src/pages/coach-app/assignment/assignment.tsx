@@ -10,7 +10,7 @@ export const Assignment = ()=>{
   const navigate = useNavigate()
   const location = useLocation()
   const handleMenuClick = (link: string) => () => {
-    navigate(location.pathname + link)
+    navigate(link)
   }
 
   const getSelectedItem = () => {
@@ -27,21 +27,21 @@ export const Assignment = ()=>{
   return (
     <Content className="assignment content">
       <Menu mode="horizontal" selectedKeys={[getSelectedItem()]}>
-        <Menu.Item key="exercise" onClick={handleMenuClick('/exercise')}>
+        <Menu.Item key="exercise" onClick={handleMenuClick('exercise')}>
           Exercise
         </Menu.Item>
-        <Menu.Item key="assigned" onClick={handleMenuClick('/assigned')}>
+        <Menu.Item key="assigned" onClick={handleMenuClick('assigned')}>
           Assigned
         </Menu.Item>
       </Menu>
       <Routes>
         <Route
-          path={location.pathname+ '/exercise'}
-          element={Exercise}
+          path={'exercise'}
+          element={<Exercise/>}
         />
         <Route
-          path={location.pathname + '/assigned'}
-          element={Assigned}
+          path={'assigned'}
+          element={<Assigned/>}
         />
       </Routes>
     </Content>

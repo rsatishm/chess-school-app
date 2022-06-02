@@ -22,7 +22,7 @@ interface Props {
   problemDetails?: any[]
 }
 
-export const ProblemsList = (props: Props)=>{
+export const ProblemsList = observer((props: Props)=>{
   const {baseContentStore} = React.useContext(MobXProviderContext)
   React.useEffect(()=>{
   props.problemUuids.forEach(uuid => {
@@ -144,4 +144,4 @@ export const ProblemsList = (props: Props)=>{
       ))}
     </div>
   )
-}
+})

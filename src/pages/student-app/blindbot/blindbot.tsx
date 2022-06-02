@@ -59,7 +59,7 @@ interface State {
   maxDepth: number
 }
 
-export const Blindbot = ()=>{
+export const Blindbot = observer(()=>{
   const {practiceStore, engineStore} = React.useContext(MobXProviderContext)
   const ChessJS = typeof Chess === 'function' ? Chess : Chess.Chess
   const [state, setState] = React.useState<State>({
@@ -484,4 +484,4 @@ export const Blindbot = ()=>{
       </div>
     </Content>
   )
-}
+})

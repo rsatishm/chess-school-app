@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { useContext, useEffect, useState } from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 
 import { Button, Tabs } from 'antd'
 
@@ -279,7 +279,7 @@ interface Props {
   isAnalyzeFeatureOn: boolean
 }
 
-export const GamePreview = (props: Props)=>{
+export const GamePreview = observer((props: Props)=>{
   const {gameboxGamePreviewStore} = useContext(MobXProviderContext)
   useEffect(()=>{
     gameboxGamePreviewStore!.load({
@@ -310,4 +310,4 @@ export const GamePreview = (props: Props)=>{
       }
     />
   )
-}
+})

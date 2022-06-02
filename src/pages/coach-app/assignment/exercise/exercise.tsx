@@ -32,7 +32,7 @@ interface State {
   exerciseUuidToAssign: string
 }
 
-export const Exercise = ()=>{
+export const Exercise = observer(()=>{
   const {exerciseStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     createExerciseDrawerVisible: false,
@@ -299,4 +299,4 @@ export const Exercise = ()=>{
       {renderExercisePage()}
     </div>
   )
-}
+})

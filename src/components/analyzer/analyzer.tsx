@@ -2,7 +2,7 @@ import React, { Component, useContext, useEffect } from 'react'
 import { Button, Spin, Table } from 'antd'
 import { AnalyzerStore } from '../../stores/analyzer'
 import './analyzer.less'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { integer } from 'aws-sdk/clients/storagegateway'
 import { ApiOutlined, LoadingOutlined } from '@ant-design/icons'
 
@@ -13,7 +13,7 @@ interface Props {
   onAnalyzeMoveClick: Function
 }
 
-export const Analyzer = (props: Props)=>{
+export const Analyzer = observer((props: Props)=>{
   const {analyzerStore} = useContext(MobXProviderContext)
   useEffect(()=>{
     analyzerStore.resetValues()
@@ -185,4 +185,4 @@ export const Analyzer = (props: Props)=>{
       {analyzerStore.errorPresent && errorDisplay()}
     </div>
   )
-}
+})

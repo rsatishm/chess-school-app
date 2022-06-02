@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Form, Input, Button, Alert } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { Link } from 'react-router-dom'
 
 import './website.less'
@@ -25,7 +25,7 @@ interface State {
   }
 }
 
-export const Website = ()=>{
+export const Website = observer(()=>{
   const {academyStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState({
     confirmDirty: false,
@@ -175,4 +175,4 @@ export const Website = ()=>{
       </div>
     </div>
   )
-}
+})

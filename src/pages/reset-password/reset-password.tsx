@@ -20,7 +20,7 @@ interface ResetPasswordState {
   }
 }
 
-export const ResetPassword = () => {
+export const ResetPassword = observer(() => {
   const { resetPasswordStore, mixpanelStore } = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<ResetPasswordState>({
     confirmDirty: false,
@@ -152,4 +152,4 @@ export const ResetPassword = () => {
       <Footer />
     </Layout>
   )
-}
+})

@@ -17,7 +17,7 @@ interface Props {
 
 interface State { }
 
-export const AssignmentDetails = (props: Props) => {
+export const AssignmentDetails = observer((props: Props) => {
   const { studentsGroupsStore, coachAssignmentCompletionDetailsStore } = React.useContext(MobXProviderContext)
   React.useEffect(() => {
     studentsGroupsStore!.load()
@@ -203,4 +203,4 @@ export const AssignmentDetails = (props: Props) => {
       )}
     </div>
   )
-}
+})

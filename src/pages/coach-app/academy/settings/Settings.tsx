@@ -1,14 +1,14 @@
 import { useContext, useEffect } from 'react'
 import { Col, Row, Checkbox } from 'antd'
 import { UserStore } from '../../../../stores/user'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { AcademyStore } from '../../../../stores/academy'
 import _ from 'lodash'
 import { RatingSystemStore } from '../../../../stores/rating-system'
 import RatingSystem from '../../../../types/RatingSystem'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
-export const Settings = () => {
+export const Settings = observer(() => {
   const { ratingSystemStore } = useContext(MobXProviderContext)
   useEffect(() => {
     ratingSystemStore.load()
@@ -51,4 +51,4 @@ export const Settings = () => {
       </div>
     </div>
   )
-}
+})

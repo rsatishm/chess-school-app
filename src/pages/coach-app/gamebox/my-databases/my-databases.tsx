@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import {
   message,
   Button,
@@ -27,7 +27,7 @@ interface State {
   search: string
 }
 
-export const MyDatabases = () => {
+export const MyDatabases = observer(() => {
   const { gameboxDatabaseStore, gameboxDatabaseGameStore } = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     uploadPgnVisible: false,
@@ -259,4 +259,4 @@ export const MyDatabases = () => {
       /> */}
     </div>
   )
-}
+})

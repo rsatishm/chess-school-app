@@ -39,7 +39,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 const { TreeNode } = Tree
 
 
-export const CreateTournamentForm = () => {
+export const CreateTournamentForm = observer(() => {
   const { uuid } = useParams()
   const { createTournamentFormStore } = useContext(MobXProviderContext)
   useEffect(() => {
@@ -97,7 +97,7 @@ export const CreateTournamentForm = () => {
       </Spin>
     </Layout.Content>
   )
-}
+})
 
 interface TournamentDetailsStepState {
   // moves: String
@@ -109,7 +109,7 @@ interface TournamentDetailsStepState {
   gameType: string
 }
 
-export const TournamentDetailsStep = () => {
+const TournamentDetailsStep = observer(() => {
   const { createTournamentFormStore, ratingSystemStore, academyStore } = useContext(MobXProviderContext)
   const [state, setState] = useState<TournamentDetailsStepState>({
     modalState: 'HIDDEN',
@@ -504,7 +504,7 @@ export const TournamentDetailsStep = () => {
       </Form.Item>
     </Form>
   )
-}
+})
 
 const EditableContext = React.createContext({})
 
@@ -512,7 +512,7 @@ interface EditableCellProps {
   inputType: string
 }
 
-export const EditableCell = (props: EditableCellProps) => {
+const EditableCell = (props: EditableCellProps) => {
   const getInput = () => {
     if (props.inputType === 'datepicker') {
       return <DatePicker />
@@ -565,7 +565,7 @@ interface EditableTableState {
   editingKey: string
 }
 
-export const EditableTable = () => {
+const EditableTable = observer(() => {
   const { createTournamentFormStore } = useContext(MobXProviderContext)
   const [state, setState] = useState<EditableTableState>({
     editingKey: ''
@@ -682,9 +682,9 @@ export const EditableTable = () => {
       columns={columns}
     />
   )
-}
+})
 
-export const ScheduleStep = () => {
+const ScheduleStep = observer(() => {
   const { createTournamentFormStore } = useContext(MobXProviderContext)
 
   const handleBufferMinutesChange = (ev: any) => {
@@ -752,9 +752,9 @@ export const ScheduleStep = () => {
       </Row>
     </div>
   )
-}
+})
 
-export const PartipantsStep = () => {
+const PartipantsStep = observer(() => {
   const { createTournamentFormStore, studentsGroupsStore } = useContext(MobXProviderContext)
   useEffect(() => {
     studentsGroupsStore.load()
@@ -859,4 +859,4 @@ export const PartipantsStep = () => {
       )}
     </div>
   )
-}
+})

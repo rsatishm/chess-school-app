@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Drawer, Button, Form, Progress, message } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 
 import './gamebase-create-drawer.less'
 import * as GamesImporter from '../../../../GamesImporter/GamesImporter'
@@ -15,7 +15,7 @@ interface State {
   importStatus: GamesImporter.Status
 }
 
-export const GamebaseCreateDrawer = (props: Props)=>{
+export const GamebaseCreateDrawer = observer((props: Props)=>{
   const {userStore, privateGamebaseStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     file: null,
@@ -213,4 +213,4 @@ export const GamebaseCreateDrawer = (props: Props)=>{
       </div>
     </Drawer>
   )
-}
+})

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { Button } from 'antd'
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   onClick: (assignmentUuid: any) => any
 }
 
-export const SolvedStatus = (props: Props)=>{
+export const SolvedStatus = observer((props: Props)=>{
   const {studentAssignmentStore} = React.useContext(MobXProviderContext)
   React.useEffect(()=>{
     studentAssignmentStore!.loadCompletionDetails(
@@ -73,4 +73,4 @@ return (
     Solve
   </Button>
 )
-}
+})

@@ -28,7 +28,7 @@ function fix(x: any) {
   return x
 }
 
-export const Analytics = ()=>{
+export const Analytics = observer(()=>{
   const {analyticsStore} = useContext(MobXProviderContext)
   let sampledata: { key: string; name: string; age: number; address: string }[] = []
   let columns: any = [
@@ -382,5 +382,4 @@ export const Analytics = ()=>{
       </Content>
     )
   }
-}
-
+})

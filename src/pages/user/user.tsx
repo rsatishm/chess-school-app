@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Select } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 
 import './user.less'
 import { BoardPrefs } from './board-prefs/board-prefs'
@@ -9,7 +9,7 @@ import { ChangePassword } from './change-password/change-password'
 
 const { Option } = Select
 
-export const User = ()=>{
+export const User = observer(()=>{
   const {userStore, localeStore} = React.useContext(MobXProviderContext)
   React.useEffect(()=>{
     userStore!.loadProfile()
@@ -78,4 +78,4 @@ export const User = ()=>{
       </div>
     </div>
   )
-}
+})

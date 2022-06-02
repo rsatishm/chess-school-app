@@ -30,7 +30,7 @@ interface State {
   search: string
 }
 
-export const MyDatabases = ()=>{
+export const MyDatabases = observer(()=>{
   const {gameboxDatabaseStore} = React.useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     uploadPgnVisible: false,
@@ -260,4 +260,4 @@ export const MyDatabases = ()=>{
       /> */}
     </div>
   )
-}
+})

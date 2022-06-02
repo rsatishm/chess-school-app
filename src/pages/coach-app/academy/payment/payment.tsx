@@ -10,7 +10,7 @@ import {
   Col,
   Modal
 } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import StripeCheckout from 'react-stripe-checkout'
 
 import './payment.less'
@@ -30,7 +30,7 @@ interface State {
   showInfoPopup: boolean
 }
 
-export const Payment = ()=>{
+export const Payment = observer(()=>{
   const {paymentPlanStore,
   paymentSubscriptionStore,
   studentsGroupsStore,
@@ -486,4 +486,4 @@ export const Payment = ()=>{
       </div>
     </div>
   )
-}
+})

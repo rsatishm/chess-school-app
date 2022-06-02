@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { message, Modal, Form, Input } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 
 import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'antd/lib/form/Form'
@@ -16,7 +16,7 @@ interface State {
   }
 }
 
-export const ChangeName = () => {
+export const ChangeName = observer(() => {
   const { userStore } = useContext(MobXProviderContext)
   const [form] = useForm()
   const [state, setState] = useState<State>({
@@ -128,4 +128,4 @@ export const ChangeName = () => {
       />
     </>
   )
-}
+})

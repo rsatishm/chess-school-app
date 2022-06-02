@@ -21,7 +21,7 @@ import { AssignmentDetails } from './assignment-details/assignment-details'
 import { StudentsGroupsStore } from '../../../../stores/students-groups'
 import { States } from '../../../../components/states/states'
 import { useState } from 'react'
-import { DatabaseOutlined, FlagOutlined } from '@ant-design/icons'
+import { CaretDownOutlined, CaretUpOutlined, DatabaseOutlined, FlagOutlined } from '@ant-design/icons'
 
 const { Option } = Select
 const LAST_WEEK_BEGIN_MILLIS = moment
@@ -36,7 +36,7 @@ interface State {
   studentsGroupsFilterUuids: string[]
 }
 
-export const Assigned = ()=>{
+export const Assigned = observer(()=>{
   const {coachAssignmentStore, studentsGroupsStore} = React.useContext(MobXProviderContext)
   const [state, setState] = useState<State>( {
     search: '',
@@ -292,4 +292,145 @@ export const Assigned = ()=>{
       </div>
     )
   }
-}
+
+  if (coachAssignmentStore!.loading) {
+    return (
+      <div className="assigned inner">
+        <States type="loading" />
+      </div>
+    )
+  }
+
+  if (coachAssignmentStore!.error) {
+    return (
+      <div className="assigned inner">
+        <States
+          type="error"
+          exceptionText={coachAssignmentStore!.error}
+          onClick={coachAssignmentStore!.load}
+        />
+      </div>
+    )
+  }
+
+  const assignments = sortAssignments(
+    state.sortBy,
+    filterAssignmentsByStudentsGroupsUuids(
+      state.studentsGroupsFilterUuids,
+      filterAssignments(
+        state.search,
+        coachAssignmentStore!.assignments || []
+      )
+    )
+  )
+
+  return (
+    <div className="assigned inner">
+      <div className="action-bar">
+        <div className="left">
+          <Checkbox
+            checked={state.hideOlderThanOneWeek}
+            onChange={handleOneWeekToggle}
+          >
+            Hide older than 1 week of relevance.
+          </Checkbox>
+        </div>
+        <div className="right">
+          Sort by:&nbsp;
+          <Select
+            className="select-sort-by"
+            defaultValue={state.sortBy}
+            value={state.sortBy}
+            size="small"
+            style={{ width: 160 }}
+            onChange={handleSortByChange}
+          >
+            <Option value="assignedAt">
+              <CaretUpOutlined style={{ fontSize: 10 }} /> Assigned Date
+            </Option>
+            <Option value="assignedAt_desc">
+              <CaretDownOutlined style={{ fontSize: 10 }} /> Assigned
+              Date
+            </Option>
+            <Option value="visibleFrom">
+              <CaretUpOutlined style={{ fontSize: 10 }} /> Visible Date
+            </Option>
+            <Option value="visibleFrom_desc">
+              <CaretDownOutlined style={{ fontSize: 10 }} /> Visible Date
+            </Option>
+            <Option value="deadline">
+              <CaretUpOutlined style={{ fontSize: 10 }} /> Deadline Date
+            </Option>
+            <Option value="deadline_desc">
+              <CaretDownOutlined style={{ fontSize: 10 }} /> Deadline
+              Date
+            </Option>
+            <Option value="name">
+              <CaretUpOutlined style={{ fontSize: 10 }} /> Name
+            </Option>
+            <Option value="name_desc">
+              <CaretDownOutlined style={{ fontSize: 10 }} /> Name
+            </Option>
+            <Option value="count">
+              <CaretUpOutlined style={{ fontSize: 10 }} /> Count
+            </Option>
+            <Option value="count_desc">
+              <CaretDownOutlined style={{ fontSize: 10 }} /> Count
+            </Option>
+            <Option value="level">
+              <CaretUpOutlined style={{ fontSize: 10 }} /> Level
+            </Option>
+            <Option value="level_desc">
+              <CaretDownOutlined style={{ fontSize: 10 }} /> Level
+            </Option>
+          </Select>
+          &nbsp;&nbsp;
+          <Input.Search
+            placeholder="Search"
+            style={{ width: 200 }}
+            size="small"
+            value={state.search}
+            onChange={handleSearchChange}
+          />
+        </div>
+      </div>
+      <div className="secondary-action-bar action-bar">
+        <Select
+          className="student-select-input"
+          allowClear={true}
+          mode="multiple"
+          maxTagCount={3}
+          placeholder="Filter by Students or Groups"
+          filterOption={studentSelectFilterOption}
+          disabled={
+            studentsGroupsStore!.loading ||
+            studentsGroupsStore!.error.length > 0
+          }
+          onChange={handleStudentsGroupsFilterChange}
+          value={state.studentsGroupsFilterUuids}
+        >
+          <Select.OptGroup key="students" label="Students">
+            {R.values(studentsGroupsStore!.students).map(
+              (s: any) => (
+                <Select.Option key={s.uuid} value={s.uuid}>
+                  {s.firstname + ', ' + s.lastname} ({s.username})
+                </Select.Option>
+              )
+            )}
+          </Select.OptGroup>
+          <Select.OptGroup key="groups" label="Groups">
+            {R.values(studentsGroupsStore!.groups).map(
+              (g: any) => (
+                <Select.Option key={g.uuid} value={g.uuid}>
+                  {g.name}
+                </Select.Option>
+              )
+            )}
+          </Select.OptGroup>
+        </Select>
+      </div>
+      <Divider className="below-action-bar" />
+      {renderAssignments(assignments)}
+    </div>
+  )
+})

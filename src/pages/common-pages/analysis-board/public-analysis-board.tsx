@@ -36,7 +36,7 @@ interface State {
   selectedDatabase?: any
 }
 
-export const PublicAnalysisBoard = () => {
+export const PublicAnalysisBoard = observer(() => {
   const { analysisBoardStore, gameboxDatabaseStore } = useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     gameNotFound: false
@@ -315,5 +315,4 @@ export const PublicAnalysisBoard = () => {
       </Layout.Content>
     </Layout>
   )
-}
-
+})

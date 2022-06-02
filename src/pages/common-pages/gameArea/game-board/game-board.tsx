@@ -23,7 +23,7 @@ interface Props {
   gameId: any
 }
 
-const GameBoard = (props: Props)=>{
+const GameBoard = observer((props: Props)=>{
   const {syncedGameStore, userStore} = useContext(MobXProviderContext)
 
   const handleAcceptDraw = () => {
@@ -272,7 +272,7 @@ const GameBoard = (props: Props)=>{
     </div>
   )
 
-}
+})
 
 interface TimerProps {
   name: String

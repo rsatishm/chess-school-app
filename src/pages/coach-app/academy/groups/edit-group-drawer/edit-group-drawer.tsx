@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as R from 'ramda'
 import { Button, Form, Select, Input, message, Drawer } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import './edit-group-drawer.less'
 import { useContext, useState } from 'react'
 import { useForm } from 'antd/es/form/Form'
@@ -27,7 +27,7 @@ interface State {
   }
 }
 
-export const EditGroupDrawer = (props: Props) => {
+export const EditGroupDrawer = observer((props: Props) => {
   const [state, setState] = useState<State>({
     confirmDirty: false,
     formFields: {
@@ -230,4 +230,4 @@ export const EditGroupDrawer = (props: Props) => {
       {renderContent()}
     </Drawer>
   )
-}
+})

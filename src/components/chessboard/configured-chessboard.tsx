@@ -1,8 +1,9 @@
+import { observer } from 'mobx-react'
 import * as R from 'ramda'
 import { PreferencesStore, usePreferenceStore } from '../../stores/preferences'
 import { Chessboard, ChessboardProps } from './Chessboard'
 
-export const ConfiguredChessboard = (props: ChessboardProps) => {
+export const ConfiguredChessboard = observer((props: ChessboardProps) => {
   const preferencesStore = usePreferenceStore()
   const getColors = (theme: string) => {
     const themeTuple = R.find(
@@ -31,4 +32,4 @@ export const ConfiguredChessboard = (props: ChessboardProps) => {
       {...props}
     />
   )
-}
+})

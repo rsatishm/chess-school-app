@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Drawer, Button, Form, Progress, message } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 
 import './problembase-create-drawer.less'
 import { useState } from 'react'
@@ -16,7 +16,7 @@ interface State {
   importStatus: ProblemsImporter.Status
 }
 
-export const ProblembaseCreateDrawer = (props: Props) => {
+export const ProblembaseCreateDrawer = observer((props: Props) => {
   const [state, setState] = useState<State>({
     file: null,
     importStatus: {
@@ -209,4 +209,4 @@ export const ProblembaseCreateDrawer = (props: Props) => {
       </div>
     </div>
   </Drawer>
-}
+})

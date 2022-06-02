@@ -27,7 +27,7 @@ interface State {
   }
 }
 
-export const AssignExerciseDrawer = (props: Props) => {
+export const AssignExerciseDrawer = observer((props: Props) => {
   const { studentsGroupsStore, coachAssignmentStore } = React.useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     confirmDirty: false,
@@ -312,4 +312,4 @@ export const AssignExerciseDrawer = (props: Props) => {
       {renderContent()}
     </Drawer>
   )
-}
+})

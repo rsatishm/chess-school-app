@@ -1,12 +1,12 @@
 import { useContext, useEffect, useRef } from 'react'
 import { Row, Col, Table, Spin } from 'antd'
 import { DataStatus, TournamentViewStore } from '../../stores/tournament-view'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import moment from 'moment'
 import { AcademyStore } from '../../stores/academy'
 
 
-export const Details = ()=>{
+export const Details = observer(()=>{
   const tournamentDecription: any = useRef()
   const {tournamentViewStore, academyStore} = useContext(MobXProviderContext)
   
@@ -122,4 +122,4 @@ export const Details = ()=>{
     ) : (
       renderContent()
     )
-}
+})

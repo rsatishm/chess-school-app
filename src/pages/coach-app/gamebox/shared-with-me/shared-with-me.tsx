@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import {
   Button,
   Divider,
@@ -19,7 +19,7 @@ interface State {
   search: string
 }
 
-export const SharedWithMe = () => {
+export const SharedWithMe = observer(() => {
   const { gameboxDatabaseStore } = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     selectedDatabaseUuid: undefined, // TODO: two-way bind to URL
@@ -120,4 +120,4 @@ export const SharedWithMe = () => {
       </div>
     </div>
   )
-}
+})

@@ -7,7 +7,7 @@ import { PreferencesStore } from '../../../stores/preferences'
 import { useContext, useEffect } from 'react'
 import { LoadingOutlined } from '@ant-design/icons'
 
-export const BoardPrefs = ()=>{
+export const BoardPrefs = observer(()=>{
   const {preferencesStore} = useContext(MobXProviderContext)
   useEffect(()=>{
     preferencesStore!.load()
@@ -78,4 +78,4 @@ export const BoardPrefs = ()=>{
       <div className="loading-overlay" />
     </div>
   )
-}
+})

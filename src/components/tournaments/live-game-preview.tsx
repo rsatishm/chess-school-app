@@ -15,7 +15,7 @@ interface LiveGamePreviewProps {
   round: number
 }
 
-export const LiveGamePreview = (props: LiveGamePreviewProps)=>{
+export const LiveGamePreview = observer((props: LiveGamePreviewProps)=>{
   const {liveGamePreviewStore} = useContext(MobXProviderContext)
   useEffect(()=>{
     liveGamePreviewStore!.unsub()
@@ -35,7 +35,7 @@ export const LiveGamePreview = (props: LiveGamePreviewProps)=>{
   }
 
   return <div className="live-game-preview">{renderGames()}</div>
-}
+})
 
 interface GamePreviewProps {
   game: any

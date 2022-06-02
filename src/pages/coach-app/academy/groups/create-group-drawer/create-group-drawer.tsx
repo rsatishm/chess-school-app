@@ -25,7 +25,7 @@ interface State {
   }
 }
 
-export const CreateGroupDrawer = (props: Props) => {
+export const CreateGroupDrawer = observer((props: Props) => {
   const [state, setState] = useState<State>({
     confirmDirty: false,
     formFields: {
@@ -204,4 +204,4 @@ export const CreateGroupDrawer = (props: Props) => {
       {renderContent()}
     </Drawer>
   )
-}
+})

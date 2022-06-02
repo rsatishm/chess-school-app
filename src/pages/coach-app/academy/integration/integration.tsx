@@ -19,7 +19,7 @@ interface State {
   }
 }
 
-export const Integration = () => {
+export const Integration = observer(() => {
   const { academyStore, studentsGroupsStore } = React.useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     useSubdomain: (academyStore!.academy.subdomain || '').length > 0,
@@ -224,4 +224,4 @@ export const Integration = () => {
       </div>
     </div>
   )
-}
+})

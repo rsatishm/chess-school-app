@@ -14,7 +14,7 @@ export const Gamebox = ()=>{
   const location = useLocation()
 
   const handleMenuClick = (link: string) => () => {
-    navigate(location.pathname + link)
+    navigate(link)
   }
 
   const getSelectedItem = () => {
@@ -31,23 +31,23 @@ export const Gamebox = ()=>{
   return (
     <Content className="gamebox content">
       <Menu mode="horizontal" selectedKeys={[getSelectedItem()]}>
-        <Menu.Item key="my" onClick={handleMenuClick('/my')}>
+        <Menu.Item key="my" onClick={handleMenuClick('my')}>
           My Databases
         </Menu.Item>
         <Menu.Item
           key="shared-with-me"
-          onClick={handleMenuClick('/shared-with-me')}
+          onClick={handleMenuClick('shared-with-me')}
         >
           Shared With Me
         </Menu.Item>
       </Menu>
       <Routes>
         <Route
-          path={location.pathname + '/my'}
+          path={'my'}
           element={MyDatabases}
         />
         <Route
-          path={location.pathname + '/shared-with-me'}
+          path={'shared-with-me'}
           element={SharedWithMe}
         />
       </Routes>

@@ -8,7 +8,7 @@ import { ChangeName } from '../change-name/change-name'
 import { useContext, useEffect } from 'react'
 import { LoadingOutlined } from '@ant-design/icons'
 
-export const Profile = ()=>{
+export const Profile = observer(()=>{
   const {userStore} = useContext(MobXProviderContext)
   useEffect(()=>userStore!.loadProfile())
 
@@ -42,4 +42,4 @@ export const Profile = ()=>{
       </div> */}
     </div>
   )
-}
+})

@@ -14,7 +14,7 @@ import moment, { Moment } from 'moment'
 
 import './create-exercise-drawer.less'
 
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { useForm } from 'antd/es/form/Form'
 import { ExceptionOutlined, LoadingOutlined } from '@ant-design/icons'
 import { ProblembaseDrawer } from '../problembase-drawer/problembase-drawer'
@@ -73,7 +73,7 @@ interface State {
   }
 }
 
-export const CreateExerciseDrawer = (props: Props)=>{
+export const CreateExerciseDrawer = observer((props: Props)=>{
   const {exerciseStore} = React.useContext(MobXProviderContext)
   const MAX_BATCH_SIZE = 50
   const [state, setState] = React.useState<State>({
@@ -427,4 +427,4 @@ export const CreateExerciseDrawer = (props: Props)=>{
       {renderContent()}
     </Drawer>
   )
-}
+})

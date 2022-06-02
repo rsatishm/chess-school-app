@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import { useContext, useEffect } from 'react'
 import { Button } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import QueueAnim from 'rc-queue-anim'
 
 import './db-list.less'
@@ -115,13 +115,12 @@ const WrappedDbList = (props: Props)=>{
 interface WrapperProps {
   sortBy: string
   search: string
-  gameboxDatabaseStore?: GameboxDatabaseStore
   selectedDatabaseUuid?: string
   listSelector: 'databases' | 'myDatabases' | 'sharedWithMeDatabases'
   onDatabaseSelect: (uuid: string) => any
 }
 
-export const DBList = (props: WrapperProps)=>{
+export const DBList = observer((props: WrapperProps)=>{
   const {gameboxDatabaseStore} = useContext(MobXProviderContext)
   useEffect(()=>{
     gameboxDatabaseStore!.load()
@@ -183,4 +182,4 @@ export const DBList = (props: WrapperProps)=>{
         onDatabaseSelect={props.onDatabaseSelect}
       />
     )
-}
+})

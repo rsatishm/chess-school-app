@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { Layout, Button, List, Skeleton } from 'antd'
 import { StudentTournamentStore } from '../../../stores/student-tournaments'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import moment from 'moment-timezone'
 
 import './tournaments.less'
@@ -11,7 +11,7 @@ interface Props {
   studentTournamentStore?: StudentTournamentStore
 }
 
-export const StudentTournaments = (props: Props)=>{
+export const StudentTournaments = observer((props: Props)=>{
   const navigate = useNavigate()
   const {studentTournamentStore} = useContext(MobXProviderContext)
   
@@ -115,4 +115,4 @@ export const StudentTournaments = (props: Props)=>{
       </div>
     </Layout.Content>
   )
-}
+})
