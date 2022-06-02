@@ -77,7 +77,8 @@ export class ProblemSolveStore {
 
   getProblemReader(uuid: string) {
     return new ProblemReader({
-      baseUrl: process.env.API_CORE_URL as string,
+      //baseUrl: process.env.API_CORE_URL as string,
+      baseUrl: "https://api-core.chesslang.com/api/v2/",
       jwtProvider: () => userStore.getAccessToken() as string,
       uuid: uuid
     })

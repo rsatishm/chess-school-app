@@ -167,6 +167,7 @@ export class UserStore {
       //   timeout: 30 * 1000,
       //   headers: { Authorization: `Bearer ${this.accessToken}` }
       // })
+      //process.env.API_CORE_URL
 
       this.shortcastleAxiosClient = axios.create({
         baseURL: 'https://api.shortcastle.com/',

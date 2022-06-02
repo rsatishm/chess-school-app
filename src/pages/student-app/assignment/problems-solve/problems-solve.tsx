@@ -11,7 +11,7 @@ import './problems-solve.less'
 import { StudentAssignmentStore } from '../../../../stores/student-assignment'
 import { CheckCircleOutlined, ClockCircleOutlined, DoubleLeftOutlined, DoubleRightOutlined, ExceptionOutlined, LoadingOutlined } from '@ant-design/icons'
 import { ChessTypes } from '../../../../types'
-import { Chess } from 'chess.js'
+import * as Chess from 'chess.js'
 import * as ProblemReader from '../../../../ProblemReader/ProblemReader'
 import * as Util from '../../../../utils/Util'
 
@@ -66,7 +66,11 @@ export const ProblemsSolve = (props: Props) => {
 
   let interval: any | null = null
   let problemReader: ProblemReader.ProblemReader | null = null
-  let chess = new Chess()
+  //let chess = new Chess()
+
+  const ChessJS = typeof Chess === 'function' ? Chess : Chess.Chess
+  const chess = new ChessJS()
+
   let attempt: any = {
     problemId: '',
     exerciseId: '',
@@ -95,7 +99,7 @@ export const ProblemsSolve = (props: Props) => {
       props.assignment.uuid
     )
     return ()=>stopTimer()
-  }
+  }, []
   )
 
   const updateState = (newState: Partial<State>) => {

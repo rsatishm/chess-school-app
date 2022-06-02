@@ -1,4 +1,4 @@
-import { observable, computed, action, makeObservable } from 'mobx'
+import { observable, computed, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 export class StudentTournamentStore {
@@ -19,12 +19,14 @@ export class StudentTournamentStore {
 
   async load() {
     try {
+      console.log("Fetch tournaments")
       const response = await userStore
         .getApiCoreAxiosClient()!
         .get('/student-tournaments')
-
-      this.tournaments = response.data.records.map((r: any) => {
-        return { ...r, key: r.uuid }
+      runInAction(()=>{
+        this.tournaments = response.data.records.map((r: any) => {
+          return { ...r, key: r.uuid }
+        })
       })
     } catch (e) {
       console.error(e)

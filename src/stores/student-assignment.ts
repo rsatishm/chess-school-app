@@ -120,6 +120,9 @@ export class StudentAssignmentStore {
     }
     this.assignments.forEach(e => {
       console.log("Assignment: \n" + JSON.stringify(e))
+      if (!e.solved) {
+        unsolved++
+      }
       var details = this.completionDetails[e.uuid]
 
       if (details === undefined) {

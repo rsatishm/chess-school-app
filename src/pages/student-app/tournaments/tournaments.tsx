@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { Layout, Button, List, Skeleton } from 'antd'
 import { StudentTournamentStore } from '../../../stores/student-tournaments'
 import { MobXProviderContext } from 'mobx-react'
@@ -26,6 +26,11 @@ export const StudentTournaments = (props: Props)=>{
   const handleView = (record: any) => {
     navigate(`/app/tournaments/${record.uuid}`)
   }
+
+  useEffect(()=>{
+    console.log("Load tournaments")
+    studentTournamentStore!.load()
+  }, [])
 
   const  renderTournament = (item: any) => {
     const actionButton = (
@@ -70,7 +75,8 @@ export const StudentTournaments = (props: Props)=>{
       </List.Item>
     )
   }
-
+  console.log("render tournaments")
+  console.log("tournaments: " + studentTournamentStore!.pastTournaments)
   return (
     <Layout.Content className="content tournaments">
       <div className="inner">
