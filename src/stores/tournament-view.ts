@@ -1,4 +1,4 @@
-import { observable, action, computed, makeObservable } from 'mobx'
+import { observable, action, computed, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import {
   getFormattedName,
@@ -92,23 +92,25 @@ export class TournamentViewStore {
     if (this.detailStatus != DataStatus.STALE) {
       return
     }
-
+    runInAction(()=>{
     this.detailStatus = DataStatus.LOADING
-
+  })
     try {
       const response = await userStore
         .getApiCoreAxiosClient()!
         .get(`/tournaments/${this.uuid}`)
 
+        runInAction(()=>{  
       this.tournament = {
         ...this.tournament,
         ...response.data
-      }
+      }})
     } catch (e) {
       console.error(e)
       return false
     } finally {
-      this.detailStatus = DataStatus.LOADED
+      runInAction(()=>{
+      this.detailStatus = DataStatus.LOADED})
     }
   }
 
@@ -117,21 +119,24 @@ export class TournamentViewStore {
       return
     }
 
-    this.pairingStatus = showLoader ? DataStatus.LOADING : this.pairingStatus
+    runInAction(()=>{
+    this.pairingStatus = showLoader ? DataStatus.LOADING : this.pairingStatus})
     try {
       const response = await userStore
         .getApiCoreAxiosClient()!
         .get(`/tournaments/${this.uuid}/pairings`)
 
+        runInAction(()=>{
       this.tournament = {
         ...this.tournament,
         pairings: response.data.records
-      }
+      }})
     } catch (e) {
       console.error(e)
       return false
     } finally {
-      this.pairingStatus = DataStatus.LOADED
+      runInAction(()=>{
+      this.pairingStatus = DataStatus.LOADED})
     }
   }
 
@@ -140,21 +145,25 @@ export class TournamentViewStore {
       return
     }
 
+    runInAction(()=>{
     this.rankingStatus = DataStatus.LOADING
+    })
     try {
       const response = await userStore
         .getApiCoreAxiosClient()!
         .get(`/tournaments/${this.uuid}/rankings`)
 
+        runInAction(()=>{
       this.tournament = {
         ...this.tournament,
         rankings: response.data.records
-      }
+      }})
     } catch (e) {
       console.error(e)
       return false
     } finally {
-      this.rankingStatus = DataStatus.LOADED
+      runInAction(()=>{
+      this.rankingStatus = DataStatus.LOADED})
     }
   }
 
@@ -169,7 +178,8 @@ export class TournamentViewStore {
       return
     }
     try {
-      this.detailStatus = DataStatus.LOADING
+      runInAction(()=>{
+      this.detailStatus = DataStatus.LOADING})
       const response = await userStore
         .getApiCoreAxiosClient()!
         .post(`/pgn/download-tournament/${this.uuid}`)
@@ -181,7 +191,8 @@ export class TournamentViewStore {
       console.error(e)
       return false
     } finally {
-      this.detailStatus = DataStatus.LOADED
+      runInAction(()=>{
+      this.detailStatus = DataStatus.LOADED})
     }
   }
 

@@ -16,13 +16,13 @@ export class StudentTournamentStore {
       upcomingTournments: computed
     })
   }
-
+  
   async load() {
     try {
       console.log("Fetch tournaments")
       const response = await userStore
         .getApiCoreAxiosClient()!
-        .get('/student-tournaments')
+        .get('/student-tournaments')  
       runInAction(()=>{
         this.tournaments = response.data.records.map((r: any) => {
           return { ...r, key: r.uuid }
@@ -33,7 +33,7 @@ export class StudentTournamentStore {
       return false
     }
   }
-
+  
   get activeTournaments() {
     return this.tournaments.filter(
       t => t.status == 'CURRENT' || t.status == 'UPCOMING'

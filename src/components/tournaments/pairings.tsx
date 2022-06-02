@@ -25,7 +25,7 @@ interface State {
   restartGameFen: ChessTypes.FEN
 }
 
-export const Pairings = () => {
+export const Pairings = observer(() => {
   const [state, setState] = useState<State>({
     selectedGameId: '',
     resultModalVisible: false,
@@ -187,7 +187,7 @@ export const Pairings = () => {
     )}`
 
     return (
-      <List.Item actions={actions}>
+      <List.Item actions={actions}key={item.uuid}>
         <Skeleton title={false} loading={false}>
           <List.Item.Meta
             avatar={
@@ -256,4 +256,4 @@ export const Pairings = () => {
   ) : (
     renderContent()
   )
-}
+})

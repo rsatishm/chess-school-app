@@ -13,7 +13,7 @@ import {
 } from 'antd'
 
 import './tournament-view.less'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { LiveGamePreview } from './live-game-preview'
 import { Rankings } from './rankings'
 import { Pairings } from './pairings'
@@ -31,7 +31,7 @@ interface State {
   showInstructionModal?: boolean
 }
 
-export const TournamentView = () => {
+export const TournamentView = observer(() => {
   const { tournamentViewStore, tournamentChatStore, liveGamePreviewStore } = useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     stage: null,
@@ -129,8 +129,7 @@ export const TournamentView = () => {
         (document.querySelector('.app-sidebar')! as any).style!.display = 'block'
         document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
       }*/
-  }
-  )
+  }, [] )
 
   const handleTabChange = (tab: string) => {
     updateState({ activeTab: tab })
@@ -440,4 +439,4 @@ export const TournamentView = () => {
           </div>
         </Layout.Content>
       )
-}
+})

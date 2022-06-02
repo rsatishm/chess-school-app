@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as R from 'ramda'
 import { Input, Button, Divider, Popconfirm } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { CreateGroupDrawer } from './create-group-drawer/create-group-drawer'
 
 import './groups.less'
@@ -15,7 +15,7 @@ interface State {
   groupDetail: any
 }
 
-export const Groups = ()=>{
+export const Groups = observer(()=>{
   const {studentsGroupsStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     search: '',
@@ -28,6 +28,7 @@ export const Groups = ()=>{
     })
   }
   React.useEffect(()=>{
+    console.log("Load groups")
     studentsGroupsStore!.load()
   })
 
@@ -163,6 +164,8 @@ export const Groups = ()=>{
     )
   )
 
+  console.log("group details: " + state.groupDetail)
+
   return (
     <div className="groups inner">
       <div className="action-bar">
@@ -191,11 +194,12 @@ export const Groups = ()=>{
         visible={state.createDrawerVisible}
         onClose={handleCreateGroupClose}
       />
+      ({state.groupDetail &&
       <EditGroupDrawer
         visible={state.groupDetail !== null}
         onClose={handleEditGroupClose}
         groupDetail={state.groupDetail}
-      />
+      />})
     </div>
   )
-}
+})

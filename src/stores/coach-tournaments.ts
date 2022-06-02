@@ -1,4 +1,4 @@
-import { observable, computed, action, makeObservable } from 'mobx'
+import { observable, computed, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import * as R from 'ramda'
 
@@ -22,9 +22,9 @@ export class CoachTournamentStore {
         .getApiCoreAxiosClient()!
         .get('/coach-tournaments')
 
-      this.tournaments = response.data.records.map((r: any) => {
+      runInAction(()=>this.tournaments = response.data.records.map((r: any) => {
         return { ...r, key: r.uuid }
-      })
+      }))
     } catch (e) {
       console.error(e)
       return false

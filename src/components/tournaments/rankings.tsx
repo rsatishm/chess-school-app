@@ -8,7 +8,7 @@ import Title from 'antd/lib/typography/Title'
 
 const { TabPane } = Tabs
 
-export const Rankings = () => {
+export const Rankings = observer(() => {
   const { tournamentViewStore } = useContext(MobXProviderContext)
   function renderContent() {
     return (
@@ -25,7 +25,7 @@ export const Rankings = () => {
 
   const renderRanking = (item: any) => {
     return (
-      <List.Item>
+      <List.Item key={item.uuid}>
         <Skeleton avatar title={false} loading={false}>
           <List.Item.Meta
             avatar={
@@ -103,4 +103,4 @@ export const Rankings = () => {
   ) : (
     renderContent()
   )
-}
+})

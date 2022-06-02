@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 
@@ -53,38 +53,48 @@ export class StudentsGroupsStore {
 
   async load(forceRefresh = false) {
     if (forceRefresh || !this.students || !this.groups || this.isStale()) {
-      this.error = ''
-      this.loading = !forceRefresh
-      this.lastLoadTime = +new Date()
+      runInAction(() => {
+        this.error = ''
+        this.loading = !forceRefresh
+        this.lastLoadTime = +new Date()
+      })
       try {
         console.log("Get students by coach")
         const response = await userStore
           .getApiCoreV3AxiosClient()!
           .get('students/all-by-coachId/')
-          console.log("Done getting students by coach")
+        console.log("Done getting students by coach")
         // Transform students into uuid->value key-value pairs
-        this.students = R.compose(
-          R.fromPairs,
-          R.map((s: any) => [s.uuid, s] as [string, {}])
-        )(response.data.records)
+
         console.log("Get groups  by coach")
         const groups = await userStore
           .getApiCoreV3AxiosClient()!
           .get('/groups/all-by-coachId/')
-          console.log("Done getting groups by coach")  
+        console.log("Done getting groups by coach")
         // Transform groups into uuid->value key-value pairs
-        this.groups = R.compose(
-          R.fromPairs,
-          R.map((g: any) => [g.uuid, g] as [string, {}])
-        )(groups.data.records)
 
-        this.loading = false
+        console.log(JSON.stringify(groups))
+
+        runInAction(() => {
+          this.students = R.compose(
+            R.fromPairs,
+            R.map((s: any) => [s.uuid, s] as [string, {}])
+          )(response.data.records)
+          this.groups = R.compose(
+            R.fromPairs,
+            R.map((g: any) => [g.uuid, g] as [string, {}])
+          )(groups.data.records)
+          console.log("groups:  "+ JSON.stringify(this.groups))
+          this.loading = false
+        })
       } catch (e) {
         //console.log("Error getting students by coach " + e)
-        this.loading = false
-        this.error = 'Error loading students and groups'
-        this.students = null
-        this.groups = null
+        runInAction(()=>{
+          this.loading = false
+          this.error = 'Error loading students and groups'
+          this.students = null
+          this.groups = null
+        })
       }
     }
   }

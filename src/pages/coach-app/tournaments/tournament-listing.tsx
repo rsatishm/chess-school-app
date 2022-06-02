@@ -7,12 +7,12 @@ import moment from 'moment-timezone'
 import './tournament-listing.less'
 import { Link, useNavigate } from 'react-router-dom'
 
-export const TournamentListing = ()=>{
+export const TournamentListing = observer(()=>{
   const {coachTournamentStore} = useContext(MobXProviderContext)
   const navigate = useNavigate()
   useEffect(()=>{
     coachTournamentStore!.load()
-  })
+  }, [])
   const handleView = (record: any) => {
     navigate(`/app/tournaments/${record.uuid}`)
   }
@@ -131,4 +131,4 @@ export const TournamentListing = ()=>{
       </div>
     </Layout.Content>
   )
-}
+})

@@ -1,15 +1,16 @@
 import { useContext } from 'react'
 import { List, Skeleton, Avatar, Spin } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { DataStatus } from '../../stores/tournament-view'
 import _ from 'lodash'
 import Title from 'antd/lib/typography/Title'
 
-export const Players = ()=>{
+export const Players = observer(()=>{
   const {tournamentViewStore} = useContext(MobXProviderContext)
   const renderPlayer = (item: any) => {
+    console.log("players key " + item.uuid + "-" + item.sno)
     return (
-      <List.Item>
+      <List.Item key={item.uuid}>
         <Skeleton avatar title={false} loading={false}>
           <List.Item.Meta
             avatar={
@@ -62,6 +63,7 @@ export const Players = ()=>{
           {groupNo != 'null' && <Title level={3}>Section {groupNo}</Title>}
 
           <List
+          key={groupNo}
             loading={false}
             itemLayout="horizontal"
             dataSource={groupPlayers}
@@ -71,4 +73,4 @@ export const Players = ()=>{
       )
     })
   )
-}
+})

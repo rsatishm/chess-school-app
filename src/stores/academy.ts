@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, computed, makeObservable } from 'mobx'
+import { observable, action, computed, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import { Rating } from '../types/Rating'
 import { studentsGroupsStore } from './students-groups'
@@ -52,29 +52,36 @@ export class AcademyStore {
   async load() {
     console.log("in academy load")
     if (!this.academy || this.isStale() || this.error) {
-      this.loading = true
-      this.error = ''
+      runInAction(()=>{
+        this.loading = true
+        this.error = ''
+      })
+
       try {
         console.log("Get academies")
         const response = await userStore
           .getApiCoreV3AxiosClient()!
           .get('academies')
         console.log("Loading done")
-        this.academy = response.data.records && response.data.records[0]
-        this.loading = false
-        this.lastLoadTime = +new Date()
+
+        runInAction(()=>{
+          this.academy = response.data.records && response.data.records[0]
+          this.loading = false
+          this.lastLoadTime = +new Date()
+        })
       } catch (error) {
         console.log("Loading error "  + error)
-        this.loading = false
-
-        const e = error as AxiosError
-        if (e.response && e.response.status === 404) {
-          this.academy = null
-          this.error = ''
-        } else {
-          this.error = 'Error loading academy'
-        }
-        this.lastLoadTime = 0
+        runInAction(()=>{
+          this.loading = false
+          const e = error as AxiosError
+          if (e.response && e.response.status === 404) {
+            this.academy = null
+            this.error = ''
+          } else {
+            this.error = 'Error loading academy'
+          }
+          this.lastLoadTime = 0
+        })
       }
     }
   }

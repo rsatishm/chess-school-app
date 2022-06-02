@@ -7,7 +7,8 @@ import {
   message,
   Input,
   Row,
-  Col
+  Col,
+  Modal
 } from 'antd'
 import { MobXProviderContext } from 'mobx-react'
 import StripeCheckout from 'react-stripe-checkout'
@@ -54,6 +55,27 @@ export const Payment = ()=>{
     paymentPlanStore!.load()
     paymentSubscriptionStore!.load()
     studentsGroupsStore!.load(true)
+  })
+
+  React.useEffect(() => {
+    try {
+      const response = userStore!.getAxiosClient()!
+        .get(`/payment/api/v1/coupon/${state.coupon}`)
+      if (response.data && response.data.valid) {
+        message.success('Coupon Applied!')
+        updateState({ couponApplied: response.data })
+      } else {
+        message.error('Coupon Expired!')
+      }
+    } catch (e: any) {
+      if (e.response && e.response.status === 404) {
+        message.error('Invalid coupon')
+      } else {
+        message.error('Error fetching coupon')
+      }
+    } finally {
+      updateState({ couponApplying: false })
+    }
   })
 
   const handleCouponChange = (e: any) => {
@@ -104,26 +126,6 @@ export const Payment = ()=>{
   const handleCouponApply = () => {
     if (state.coupon.trim()) {
       updateState({ couponApplying: true })
-      React.useEffect(() => {
-        try {
-          const response = userStore!.getAxiosClient()!
-            .get(`/payment/api/v1/coupon/${state.coupon}`)
-          if (response.data && response.data.valid) {
-            message.success('Coupon Applied!')
-            updateState({ couponApplied: response.data })
-          } else {
-            message.error('Coupon Expired!')
-          }
-        } catch (e: any) {
-          if (e.response && e.response.status === 404) {
-            message.error('Invalid coupon')
-          } else {
-            message.error('Error fetching coupon')
-          }
-        } finally {
-          updateState({ couponApplying: false })
-        }
-      })
     }
   }
 
@@ -437,4 +439,51 @@ export const Payment = ()=>{
       </div>
     )
   }
+
+  if (
+    paymentPlanStore!.loading ||
+    studentsGroupsStore!.loading ||
+    paymentSubscriptionStore!.loading
+  ) {
+    return <div className="payment inner">{renderLoadingState()}</div>
+  }
+
+  if (
+    paymentPlanStore!.error ||
+    studentsGroupsStore!.error ||
+    paymentSubscriptionStore!.error
+  ) {
+    return <div className="payment inner">{renderErrorState()}</div>
+  }
+
+  const students = R.compose(
+    R.map(R.nth(1)),
+    R.toPairs as any
+  )(studentsGroupsStore.students)
+
+  return (
+    <div className="payment inner">
+      <div className="container">
+        {renderPlans()}
+        {/*<Divider className="divider">
+          Student Accounts ({students.length})
+        </Divider>
+  {this.renderStudents(students)}*/}
+        <Modal
+          visible={state.showInfoPopup}
+          title="Switch Subscription"
+          cancelButtonProps={{ style: { display: 'none' } }}
+          onOk={toggleShowInfoPopup}
+          onCancel={toggleShowInfoPopup}
+        >
+          <h4>To switch your subscription plan, please contact us at:</h4>
+          <h4>
+            <a href="mailto:support@shortcastle.com">
+              support@shortcastle.com
+            </a>
+          </h4>
+        </Modal>
+      </div>
+    </div>
+  )
 }
