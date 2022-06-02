@@ -1,5 +1,6 @@
 import { Layout, Menu } from 'antd'
-import { Route, useNavigate, useLocation, Routes } from 'react-router-dom'
+import { observer } from 'mobx-react'
+import { Route, useNavigate, useLocation, Routes, useParams, Link } from 'react-router-dom'
 
 import './gamebox.less'
 
@@ -8,11 +9,11 @@ import { SharedWithMe } from './shared-with-me/shared-with-me'
 
 const { Content } = Layout
 
-export const Gamebox = ()=>{
+export const Gamebox = observer(() => {
   const navigate = useNavigate()
   const location = useLocation()
   const handleMenuClick = (link: string) => () => {
-    navigate(location.pathname + link)
+    navigate(link)
   }
 
   const getSelectedItem = () => {
@@ -30,26 +31,28 @@ export const Gamebox = ()=>{
   return (
     <Content className="gamebox content">
       <Menu mode="horizontal" selectedKeys={[getSelectedItem()]}>
-        <Menu.Item key="my" onClick={handleMenuClick('/my')}>
-          My Databases
+        <Menu.Item key="my">
+          <nav>
+            <Link to="my">My Databases</Link>
+          </nav>
         </Menu.Item>
         <Menu.Item
           key="shared-with-me"
-          onClick={handleMenuClick('/shared-with-me')}
+          onClick={handleMenuClick('shared-with-me')}
         >
           Shared With Me
         </Menu.Item>
       </Menu>
       <Routes>
         <Route
-          path={'/my'}
-          element={<MyDatabases/>}
+          path={'my'}
+          element={<MyDatabases />}
         />
         <Route
-          path={'/shared-with-me'}
-          element={<SharedWithMe/>}
+          path={'shared-with-me'}
+          element={<SharedWithMe />}
         />
       </Routes>
     </Content>
   )
-}
+})

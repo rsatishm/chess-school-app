@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import * as React from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import {
   Divider,
   Select,
@@ -22,7 +22,7 @@ interface State {
   search: string
 }
 
-export const PublicGamebases = ()=>{
+export const PublicGamebases = observer(()=>{
   const {publicGamebaseStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     sortBy: 'name',
@@ -170,4 +170,4 @@ export const PublicGamebases = ()=>{
       )}
     </div>
   )
-}
+})

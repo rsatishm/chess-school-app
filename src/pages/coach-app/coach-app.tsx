@@ -82,7 +82,7 @@ export const CoachApp = observer(() => {
       <Routes>
         <Route path="/academy/*" element={<Academy/>} />
         <Route path="/assignment" element={<Assignment/>} />
-        <Route path="/practice" element={<Practice/>} />
+        <Route path="/practice/*" element={<Practice/>} />
         <Route
           path="/preferences"
           element={<User/>}

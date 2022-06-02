@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 const TWO_MINUTES = 2 * 60 * 1000
@@ -33,26 +33,35 @@ export class PrivateProblembaseStore {
 
   async load() {
     if (!this.problembases || this.isStale()) {
-      this.loading = true
-      this.error = ''
+      runInAction(()=>{
+        this.loading = true
+        this.error = ''
+      })
 
       try {
         const problembases = await userStore
           .getApiCoreAxiosClient()!
           .get('database/problembase?isPrivate=true')
-        this.loading = false
-        this.problembases = problembases.data.records
-        this.lastLoadTime = +new Date()
+          runInAction(()=>{
+            this.loading = false
+            this.problembases = problembases.data.records
+            this.lastLoadTime = +new Date()
+          })
       } catch (e) {
-        this.loading = true
-        this.error = 'Error loading problembases'
-        this.lastLoadTime = 0
+        runInAction(()=>{
+          this.loading = true
+          this.error = 'Error loading problembases'
+          this.lastLoadTime = 0
+        })
+
       }
     }
   }
 
   async refresh() {
-    this.lastLoadTime = 0
+    runInAction(()=>{
+      this.lastLoadTime = 0
+    })
     if (this.problembases) {
       this.load()
     }

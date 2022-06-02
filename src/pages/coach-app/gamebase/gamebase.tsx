@@ -24,7 +24,7 @@ React.useEffect(()=>{
 )
 
 const handleMenuClick = (link: string) => () => {
-  navigate(location.pathname + link)
+  navigate(link)
 }
 
 const getSelectedItem = () => {
@@ -41,36 +41,36 @@ const getSelectedItem = () => {
 return (
   <Content className="gamebase content">
     <Menu mode="horizontal" selectedKeys={[getSelectedItem()]}>
-      <Menu.Item key="my" onClick={handleMenuClick('/my')}>
+      <Menu.Item key="my" onClick={handleMenuClick('my')}>
         My Gamebases
       </Menu.Item>
-      <Menu.Item key="public" onClick={handleMenuClick('/public')}>
+      <Menu.Item key="public" onClick={handleMenuClick('public')}>
         Public Gamebases
       </Menu.Item>
     </Menu>
     <Routes>
       <Route
-        path={'/my'}
+        path={'my'}
         element={<MyGamebases/>}
       />
       <Route
-        path={'/my/:uuid'}
+        path={'my/:uuid'}
         element={<GamebaseViewer/>}
       />
       <Route
-        path={'/my/:gamebaseUuid/:uuid'}
+        path={'my/:gamebaseUuid/:uuid'}
         element={<GameViewer/>}
       />
       <Route
-        path={'/public'}
+        path={'public'}
         element={<PublicGamebases/>}
       />
       <Route
-        path={'/public/:uuid'}
+        path={'public/:uuid'}
         element={<GamebaseViewer/>}
       />
       <Route
-        path={'/public/:gamebaseUuid/:uuid'}
+        path={'public/:gamebaseUuid/:uuid'}
         element={<GameViewer/>}
       />
     </Routes>

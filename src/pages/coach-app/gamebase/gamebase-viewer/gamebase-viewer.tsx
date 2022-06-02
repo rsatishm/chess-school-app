@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom'
 import { Divider, Breadcrumb } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import InfiniteScroller from 'react-infinite-scroller'
 
 import './gamebase-viewer.less'
 import { States } from '../../../../components/states/states'
 import { BarsOutlined, DatabaseOutlined } from '@ant-design/icons'
 
-export const GamebaseViewer = ()=>{
+export const GamebaseViewer = observer(()=>{
   const {uuid} = useParams()
   const {gamebaseContentStore} = React.useContext(MobXProviderContext)
   const navigate = useNavigate()
@@ -149,4 +149,4 @@ export const GamebaseViewer = ()=>{
       <div className="container">{renderGames()}</div>
     </div>
   )
-}
+})

@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import * as React from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import {
   Button,
   Divider,
@@ -26,7 +26,7 @@ interface State {
   createDrawerVisible: boolean
 }
 
-export const MyGamebases = ()=>{
+export const MyGamebases = observer(()=>{
   const {privateGamebaseStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     sortBy: 'name',
@@ -215,4 +215,4 @@ export const MyGamebases = ()=>{
       {renderGamebases(gamebases)}
     </div>
   )
-}
+})

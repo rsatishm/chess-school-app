@@ -36,7 +36,7 @@ interface State {
   error: string
 }
 
-export const Play = () => {
+export const Play = observer(() => {
   const { practiceStore, engineStore } = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     startFen: '',
@@ -305,4 +305,4 @@ export const Play = () => {
       </Measure>
     </div>
   )
-}
+})

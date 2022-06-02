@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 
@@ -26,28 +26,34 @@ export class ProblembaseContentStore {
 
   async load(uuid: string) {
     if (!this.content[uuid] || this.content[uuid].error) {
-      this.content[uuid] = {
-        loading: true,
-        problems: [],
-        error: '',
-        currentPage: !this.content[uuid] ? 0 : this.content[uuid].currentPage
-      }
-
+      runInAction(()=>{
+        this.content[uuid] = {
+          loading: true,
+          problems: [],
+          error: '',
+          currentPage: !this.content[uuid] ? 0 : this.content[uuid].currentPage
+        }
+  
+      })
       try {
         const response = await userStore
           .getApiCoreAxiosClient()!
           .get('/database/problembase/' + uuid + '/problems')
-        this.content[uuid] = {
-          loading: false,
-          problems: response.data.records,
-          error: '',
-          currentPage: 1
-        }
+          runInAction(()=>{
+            this.content[uuid] = {
+              loading: false,
+              problems: response.data.records,
+              error: '',
+              currentPage: 1
+            }
+          })
       } catch (e) {
-        this.content[uuid] = {
-          ...this.content[uuid],
-          error: `Error loading problembase ${uuid}`
-        }
+        runInAction(()=>{
+          this.content[uuid] = {
+            ...this.content[uuid],
+            error: `Error loading problembase ${uuid}`
+          }
+        })
       }
     }
   }
@@ -63,21 +69,26 @@ export class ProblembaseContentStore {
               '/problems?page=' +
               this.content[uuid].currentPage
           )
-        this.content[uuid] = {
-          ...this.content[uuid],
-          problems: R.uniqBy(p => p.uuid, [
-            ...this.content[uuid].problems,
-            ...response.data.records
-          ]),
-          currentPage: this.content[uuid].currentPage + 1
-        }
+          runInAction(()=>{
+            this.content[uuid] = {
+              ...this.content[uuid],
+              problems: R.uniqBy(p => p.uuid, [
+                ...this.content[uuid].problems,
+                ...response.data.records
+              ]),
+              currentPage: this.content[uuid].currentPage + 1
+            }
+          })
 
         return response.data.total
       } catch (e) {
-        this.content[uuid] = {
-          ...this.content[uuid],
-          error: `Error loading problembase ${uuid}`
-        }
+        runInAction(()=>{
+          this.content[uuid] = {
+            ...this.content[uuid],
+            error: `Error loading problembase ${uuid}`
+          }
+        })
+
       }
     }
     return 0

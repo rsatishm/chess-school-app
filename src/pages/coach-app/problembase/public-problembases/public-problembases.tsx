@@ -25,7 +25,7 @@ interface PublicProblembasesState {
   search: string
 }
 
-export const PublicProblembases = ()=>{
+export const PublicProblembases = observer(()=>{
   const {publicProblembaseStore} = React.useContext(MobXProviderContext)
   const [state, setState] = useState<PublicProblembasesState>({
     sortBy: 'name',
@@ -176,4 +176,4 @@ export const PublicProblembases = ()=>{
       )}
     </div>
   )
-}
+})

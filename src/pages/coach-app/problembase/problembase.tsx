@@ -17,7 +17,7 @@ export const Problembase = ()=>{
     return ()=>document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
   })
   const handleMenuClick = (link: string) => () => {
-    navigate(location.pathname + link)
+    navigate(link)
   }
 
   const getSelectedItem = () => {
@@ -35,28 +35,28 @@ export const Problembase = ()=>{
   return (
     <Content className="problembase content">
       <Menu mode="horizontal" selectedKeys={[getSelectedItem()]}>
-        <Menu.Item key="my" onClick={handleMenuClick('/my')}>
+        <Menu.Item key="my" onClick={handleMenuClick('my')}>
           My Problembases
         </Menu.Item>
-        <Menu.Item key="public" onClick={handleMenuClick('/public')}>
+        <Menu.Item key="public" onClick={handleMenuClick('public')}>
           Public Problembases
         </Menu.Item>
       </Menu>
       <Routes>
         <Route
-          path={'/my'}
+          path={'my'}
           element={<MyProblembases/>}
         />
         <Route
-          path={'/my/:uuid'}
+          path={'my/:uuid'}
           element={<ProblembaseView/>}
         />
         <Route
-          path={'/public'}
+          path={'public'}
           element={<PublicProblembases/>}
         />
         <Route
-          path={'/public/:uuid'}
+          path={'public/:uuid'}
           element={<ProblembaseView/>}
         />
       </Routes>

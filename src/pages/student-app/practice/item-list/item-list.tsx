@@ -40,7 +40,7 @@ interface State {
   createDrawerVisible: boolean
 }
 
-export const ItemList = () => {
+export const ItemList = observer(() => {
   const { practiceStore, userStore } = React.useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     sortBy: 'difficulty_asc',
@@ -261,7 +261,7 @@ export const ItemList = () => {
       </Drawer>
     </div>
   )
-}
+})
 
 interface PracticeFormState {
   fen: string;

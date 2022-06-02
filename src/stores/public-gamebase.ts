@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 export class PublicGamebaseStore {
@@ -23,18 +23,24 @@ export class PublicGamebaseStore {
 
   async load() {
     if (!this.gamebases) {
-      this.loading = true
-      this.error = ''
+      runInAction(()=>{
+        this.loading = true
+        this.error = ''
+      })
 
       try {
         const response = await userStore
           .getApiCoreAxiosClient()!
           .get('/database/gamebase?isPrivate=false')
-        this.loading = false
-        this.gamebases = response.data.records
+          runInAction(()=>{
+            this.loading = false
+            this.gamebases = response.data.records
+          })
       } catch (e) {
-        this.loading = true
-        this.error = 'Error loading gamebases'
+        runInAction(()=>{
+          this.loading = true
+          this.error = 'Error loading gamebases'
+        })
       }
     }
   }

@@ -1,6 +1,6 @@
 import * as jsEnv from 'browser-or-node'
 import * as R from 'ramda'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import { ProblemReader } from '../ProblemReader/ProblemReader'
 
@@ -29,28 +29,36 @@ export class ProblemSolveStore {
   }
 
   async load(uuid: string) {
-    this.loading = true
-    this.error = ''
+    runInAction(()=>{
+      this.loading = true
+      this.error = ''
+    })
     try {
       const response = await userStore
         .getApiCoreAxiosClient()!
         .get(`/assignment/${uuid}`)
 
-      this.assignment = response.data
-      this.assignment.problemDetails = R.filter(
-        (a: any) => a.studentId === userStore.uuid,
-        this.assignment.completionDetails
-      )[0].problemDetails
-      this.loading = false
+        runInAction(()=>{
+          this.assignment = response.data
+          this.assignment.problemDetails = R.filter(
+            (a: any) => a.studentId === userStore.uuid,
+            this.assignment.completionDetails
+          )[0].problemDetails
+          this.loading = false
+        })
     } catch (e) {
-      this.loading = true
-      this.error = 'Error loading assignment'
+      runInAction(()=>{
+        this.loading = true
+        this.error = 'Error loading assignment'
+      })
     }
   }
 
   async submit(uuid: string, attempt: any) {
-    this.submitting = true
-    this.submitError = ''
+    runInAction(()=>{
+      this.submitting = true
+      this.submitError = ''
+    })
     try {
       await userStore
         .getApiCoreAxiosClient()!
@@ -58,18 +66,23 @@ export class ProblemSolveStore {
           studentId: userStore.uuid,
           ...attempt
         })
-      this.submitting = false
-      const response = await userStore
-        .getApiCoreAxiosClient()!
-        .get(`/assignment/${uuid}`)
-      this.assignment = response.data
-      this.assignment.problemDetails = R.filter(
-        (a: any) => a.studentId === userStore.uuid,
-        this.assignment.completionDetails
-      )[0].problemDetails
+        const response = await userStore
+            .getApiCoreAxiosClient()!
+            .get(`/assignment/${uuid}`)
+        runInAction(()=>{
+          this.submitting = false          
+          this.assignment = response.data
+          this.assignment.problemDetails = R.filter(
+            (a: any) => a.studentId === userStore.uuid,
+            this.assignment.completionDetails
+          )[0].problemDetails
+        })
+      
     } catch (e) {
-      this.submitting = true
-      this.submitError = 'Failed to submit assignment'
+      runInAction(()=>{
+        this.submitting = true
+        this.submitError = 'Failed to submit assignment'
+      })
       return false
     }
     return true

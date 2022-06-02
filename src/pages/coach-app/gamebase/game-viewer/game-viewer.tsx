@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as R from 'ramda'
 import { Button, Breadcrumb, Divider, Row, Col } from 'antd'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import Measure from 'react-measure'
 import { HotKeys } from 'react-hotkeys'
 
@@ -20,7 +20,7 @@ interface State {
   orientation: ChessTypes.Side
 }
 
-export const GameViewer = () => {
+export const GameViewer = observer(() => {
   const [state, setState] = React.useState<State>({
     boardSize: 0,
     orientation: 'w' as ChessTypes.Side
@@ -251,4 +251,4 @@ export const GameViewer = () => {
       {renderGame()}
     </HotKeys>
   )
-}
+})

@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 export class PublicProblembaseStore {
@@ -23,18 +23,24 @@ export class PublicProblembaseStore {
 
   async load() {
     if (!this.problembases) {
-      this.loading = true
-      this.error = ''
+      runInAction(()=>{
+        this.loading = true
+        this.error = ''
+      })
 
       try {
         const problembases = await userStore
           .getApiCoreAxiosClient()!
           .get('/database/problembase?isPrivate=false')
-        this.loading = false
-        this.problembases = problembases.data.records
+          runInAction(()=>{
+            this.loading = false
+            this.problembases = problembases.data.records
+          })
       } catch (e) {
-        this.loading = true
-        this.error = 'Error loading problembases'
+        runInAction(()=>{
+          this.loading = true
+          this.error = 'Error loading problembases'
+        })
       }
     }
   }

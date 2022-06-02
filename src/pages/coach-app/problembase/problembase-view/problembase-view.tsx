@@ -20,7 +20,7 @@ interface State {
   hasMore: boolean
 }
 
-export const ProblembaseView = ()=>{
+export const ProblembaseView = observer(()=>{
   const {problembaseContentStore} = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     hasMore: true
@@ -175,4 +175,4 @@ export const ProblembaseView = ()=>{
       <div className="container">{renderProblems()}</div>
     </div>
   )
-}
+})

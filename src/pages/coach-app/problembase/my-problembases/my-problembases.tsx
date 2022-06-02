@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import * as React from 'react'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import {
   Button,
   Divider,
@@ -30,7 +30,7 @@ interface State {
   problembaseName: string
 }
 
-export const MyProblembases = ()=>{
+export const MyProblembases = observer(()=>{
   const {privateProblembaseStore} = React.useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     sortBy: 'name',
@@ -278,4 +278,4 @@ export const MyProblembases = ()=>{
       </Modal>
     </div>
   )
-}
+})
