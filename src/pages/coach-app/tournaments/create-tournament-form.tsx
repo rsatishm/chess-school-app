@@ -47,7 +47,7 @@ export const CreateTournamentForm = observer(() => {
       createTournamentFormStore.load(uuid)
     }
     return () => createTournamentFormStore.init()
-  })
+  }, [])
 
   const steps = [
     {
@@ -130,10 +130,10 @@ const TournamentDetailsStep = observer(() => {
       ratingSystemStore.loadAcademyRatingSystems()
     })
     createTournamentFormStore!.loadBookOpenings()
-  })
+  }, [])
   const [form] = useForm()
   const handleSubmit = (event: any) => {
-    event.preventDefault()
+    //event.preventDefault()
     form.validateFields().then((values: any) => {
       createTournamentFormStore.setTournamentDetails(values)
       createTournamentFormStore.generateSchedule()
@@ -758,7 +758,7 @@ const PartipantsStep = observer(() => {
   const { createTournamentFormStore, studentsGroupsStore } = useContext(MobXProviderContext)
   useEffect(() => {
     studentsGroupsStore.load()
-  })
+  }, [])
 
   const navigate = useNavigate()
 
