@@ -1,4 +1,4 @@
-import { observable, action, computed, makeObservable } from 'mobx'
+import { observable, action, computed, makeObservable, runInAction } from 'mobx'
 import Axios from 'axios'
 import { userStore } from './user'
 import { Chess } from 'chess.js'
@@ -179,24 +179,28 @@ export class AnalyzerStore {
         }
         keyVal += 1
       })
-      if (this.analysisData.length != 0) {
-        this.isLoading = false
-        this.analysisLoaded = true
-        this.noData = false
-        this.errorPresent = false
-      } else {
-        this.isLoading = false
-        this.analysisLoaded = false
-        this.noData = true
-        this.errorPresent = false
-      }
+      runInAction(()=>{
+        if (this.analysisData.length != 0) {
+          this.isLoading = false
+          this.analysisLoaded = true
+          this.noData = false
+          this.errorPresent = false
+        } else {
+          this.isLoading = false
+          this.analysisLoaded = false
+          this.noData = true
+          this.errorPresent = false
+        }
+      })
     }
     catch (err) {
       console.error(err)
-      this.errorPresent = true
-      this.analysisLoaded = false
-      this.isLoading = false
-      this.noData = false
+      runInAction(()=>{
+        this.errorPresent = true
+        this.analysisLoaded = false
+        this.isLoading = false
+        this.noData = false
+      })
 
     }
   }

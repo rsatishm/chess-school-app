@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 const TWO_MINUTES = 2 * 60 * 1000
@@ -54,21 +54,25 @@ export class PaymentSubscriptionStore {
         const subscriptions = await userStore
           .getAxiosClient()!
           .get('/payment/api/v1/subscription')
-        this.subscriptions = (subscriptions.data || []).map((s: any) => ({
-          ...s,
-          gatewayDetails: JSON.parse(s.gatewayDetails)
-        }))
-        this.loading = false
-        this.lastLoadTime = +new Date()
+          runInAction(()=>{
+            this.subscriptions = (subscriptions.data || []).map((s: any) => ({
+              ...s,
+              gatewayDetails: JSON.parse(s.gatewayDetails)
+            }))
+            this.loading = false
+            this.lastLoadTime = +new Date()
+          })
       } catch (e: any) {
-        this.loading = false
-        if (e.response && e.response.status === 404) {
-          this.subscriptions = null
-          this.error = ''
-        } else {
-          this.error = 'Error loading subscriptions'
-        }
-        this.lastLoadTime = 0
+        runInAction(()=>{
+          this.loading = false
+          if (e.response && e.response.status === 404) {
+            this.subscriptions = null
+            this.error = ''
+          } else {
+            this.error = 'Error loading subscriptions'
+          }
+          this.lastLoadTime = 0
+        })
         return false
       }
     }
@@ -87,13 +91,17 @@ export class PaymentSubscriptionStore {
       await userStore
         .getAxiosClient()!
         .delete(`/payment/api/v1/subscription/${subscriptionUuid}`)
-      this.cancelling = false
-      this.cancelled = true
+      runInAction(()=>{
+        this.cancelling = false
+        this.cancelled = true
+      })  
       this.refresh()
       return true
     } catch (e) {
-      this.cancelling = false
-      this.cancelError = 'Error cancellign subscription'
+      runInAction(()=>{
+        this.cancelling = false
+        this.cancelError = 'Error cancellign subscription'
+      })
       return false
     }
   }
@@ -115,13 +123,17 @@ export class PaymentSubscriptionStore {
         stripeEmail,
         coupon
       })
-      this.creating = false
-      this.created = true
+      runInAction(()=>{
+        this.creating = false
+        this.created = true
+      })
       this.refresh()
       return true
     } catch (e) {
-      this.createError = 'Error creating subscription'
-      this.creating = false
+      runInAction(()=>{
+        this.createError = 'Error creating subscription'
+        this.creating = false
+      })
       return false
     }
   }

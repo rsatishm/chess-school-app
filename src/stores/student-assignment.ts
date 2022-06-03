@@ -23,15 +23,12 @@ export class StudentAssignmentStore {
       load: action.bound,
       loadCompletionDetails: action.bound,
       setSolved: action.bound,
-      unsolvedCount: computed,
-      setLoading: action.bound,
-      setAssignments: action.bound,
-      setCompletionDetails: action.bound
+      unsolvedCount: computed
     })
   }
 
   async load() {
-    this.setLoading(true)
+    this.loading = true
     this.error = ''
 
     try {
@@ -39,36 +36,24 @@ export class StudentAssignmentStore {
       const response = await userStore
         .getApiCoreAxiosClient()!
         .get(`/assignment/student/${userStore.uuid}`)
-      this.setAssignments(response.data.records)
-      this.setLoading(false)
+
+        this.assignments = response.data.records
+      this.loading = false
       console.log("response: " + JSON.stringify(response))
     } catch (error) {      
       const e = error as AxiosError
       console.log("error: " + e.cause + e.message)
-      this.setLoading(false)
+      this.loading = false
       if (e.response && e.response.status === 404) {
         this.error = ''
-        this.setAssignments([])
+        this.assignments = []
       } else {
         this.error = 'Error loading assignments'
       }
     }
   }
 
-  setLoading(loading: boolean) {
-    this.loading = loading
-  }
-
-  setAssignments(records: any[]) {
-    this.assignments = records
-  }
-
   async loadCompletionDetails(assignmentUuid: string) {
-    this.setCompletionDetails(assignmentUuid, {
-      ...this.completionDetails[assignmentUuid],
-      loading: true,
-      error: ''
-    })
     this.completionDetails[assignmentUuid] = {
       ...this.completionDetails[assignmentUuid],
       loading: true,
@@ -81,25 +66,21 @@ export class StudentAssignmentStore {
         .get(
           `/exercise/assignment/student/completion-details/${assignmentUuid}`
         )
-        this.setCompletionDetails(assignmentUuid,  {
+        this.completionDetails[assignmentUuid] = {
         ...this.completionDetails[assignmentUuid],
         details: completionDetails.data
-      })
+      }
     } catch (e) {
-      this.setCompletionDetails(assignmentUuid, {
+      this.completionDetails[assignmentUuid] = {
         ...this.completionDetails[assignmentUuid],
         error: 'Error loading solved status'
-      })
+      }
     } finally {
-      this.setCompletionDetails(assignmentUuid, {
+      this.completionDetails[assignmentUuid] = {
         ...this.completionDetails[assignmentUuid],
         loading: false
-      })
+      }
     }
-  }
-
-  setCompletionDetails(assignmentUuid: string, completionDetails: any) {
-    this.completionDetails[assignmentUuid] = completionDetails
   }
 
   setSolved(assignmentUuid: string, problemId: string) {

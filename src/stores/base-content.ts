@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { ChessTypes } from '../types'
 
 import { userStore } from './user'
@@ -36,17 +36,22 @@ export class BaseContentStore {
         const response = await userStore
           .getApiCoreAxiosClient()!
           .get(`/database/${baseType}/` + uuid)
+       runInAction(()=>{
         this.content[uuid] = {
           loading: false,
           content: response.data as ChessTypes.Game,
           error: ''
         }
+       })   
       } catch (e) {
-        this.content[uuid] = {
-          loading: false,
-          content: null,
-          error: `Error loading ${baseType} ${uuid}`
-        }
+        runInAction(()=>{
+          this.content[uuid] = {
+            loading: false,
+            content: null,
+            error: `Error loading ${baseType} ${uuid}`
+          }
+        })
+
       }
     }
   }

@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import { studentsGroupsStore } from './students-groups'
 
@@ -59,7 +59,8 @@ export class AnalyticsStore {
 
       this.currGroupObj = this.currGroupObj[0]
     }
-    let res = null
+    
+    let res: any = null
     try {
       if (this.currGroup === 'all') {
         res = await userStore
@@ -82,28 +83,35 @@ export class AnalyticsStore {
             }`
           )
       }
-      this.analyticsData = res['data']
+      runInAction(()=>{
+        this.analyticsData = res['data']
 
-      this.analyticsData['table_data'] = this.analyticsData['table_data'].map(
-        (obj: any) => {
-          return {
-            ...obj,
-            key: obj['studentId']
+        this.analyticsData['table_data'] = this.analyticsData['table_data'].map(
+          (obj: any) => {
+            return {
+              ...obj,
+              key: obj['studentId']
+            }
           }
-        }
-      )
+        )
+  
+        this.loading = false
+      })
 
-      this.loading = false
     } catch (e) {
-      this.loading = false
-      this.errors = e
+      runInAction(()=>{
+        this.loading = false
+        this.errors = e
+      })
     }
   }
 
   async loadGroups() {
     this.groups = ['all']
     await studentsGroupsStore!.load(true)
-    this.allGroupsObj = Object.values(studentsGroupsStore.groups)
+    runInAction(()=>{
+      this.allGroupsObj = Object.values(studentsGroupsStore.groups)
+    })
     this.allGroupsObj.map((ele: any, i: any) => {
       this.groups.push(ele['name'])
     })

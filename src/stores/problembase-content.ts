@@ -26,15 +26,12 @@ export class ProblembaseContentStore {
 
   async load(uuid: string) {
     if (!this.content[uuid] || this.content[uuid].error) {
-      runInAction(()=>{
-        this.content[uuid] = {
-          loading: true,
-          problems: [],
-          error: '',
-          currentPage: !this.content[uuid] ? 0 : this.content[uuid].currentPage
-        }
-  
-      })
+      this.content[uuid] = {
+        loading: true,
+        problems: [],
+        error: '',
+        currentPage: !this.content[uuid] ? 0 : this.content[uuid].currentPage
+      }
       try {
         const response = await userStore
           .getApiCoreAxiosClient()!

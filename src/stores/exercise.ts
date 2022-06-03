@@ -1,6 +1,6 @@
 import * as jsEnv from 'browser-or-node'
 import * as R from 'ramda'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 const TWO_MINUTES = 2 * 60 * 1000
@@ -68,15 +68,19 @@ export class ExerciseStore {
         const response = await userStore
           .getApiCoreAxiosClient()!
           .get('/exercise', { params: { search, sort } })
-        this.loading = false
-        this.exercises = response.data.records
-        this.lastLoadTime = +new Date()
+        runInAction(()=>{
+          this.loading = false
+          this.exercises = response.data.records
+          this.lastLoadTime = +new Date()
+        })  
       } catch (e) {
         // FIXME
         console.log(
           'FATAL: error loading exercises ( This is a ninja quick fix. Please find a proper fix )'
         )
-        this.loading = false
+        runInAction(()=>{
+          this.loading = false
+        })
         // this.error = "Error loading exercises";
         // this.lastLoadTime = 0;
       }
@@ -90,8 +94,10 @@ export class ExerciseStore {
         .get('/exercise', {
           params: { page, search: this.search, sort: this.sort }
         })
-      this.exercises = [...(this.exercises || []), ...response.data.records]
-      this.hasMore = response.data.records.length !== 0
+      runInAction(()=>{
+        this.exercises = [...(this.exercises || []), ...response.data.records]
+        this.hasMore = response.data.records.length !== 0
+      })  
     } catch (e) {
       // FIXME
       console.log(
@@ -118,12 +124,15 @@ export class ExerciseStore {
         coachId: userStore.uuid,
         ...exercise
       })
-
-      this.submitting = false
+      runInAction(()=>{
+        this.submitting = false
+      })
       this.refresh()
     } catch (e) {
-      this.submitting = false
-      this.submitError = 'Failed to submit exercise'
+      runInAction(()=>{
+        this.submitting = false
+        this.submitError = 'Failed to submit exercise'
+      })
 
       return false
     }

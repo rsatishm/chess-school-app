@@ -1,4 +1,4 @@
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import RatingSystem from '../types/RatingSystem'
 import { userStore } from './user'
 import { academyStore } from './academy'
@@ -25,7 +25,9 @@ export class RatingSystemStore {
     this.availableRatingSystems = allRatingSystemsResponse.data.records || []
 
     await this.loadAcademyRatingSystems()
-    this.loading = false
+    runInAction(()=>{
+      this.loading = false
+    })
   }
 
   async loadAcademyRatingSystems() {
@@ -33,8 +35,10 @@ export class RatingSystemStore {
     const ratingSystemsResponse = await userStore
       .getApiCoreAxiosClient()!
       .get(`/academy/${academyStore.id}/rating-systems`)
-    this.ratingSystems = ratingSystemsResponse.data.records || []
-    this.loading = false
+      runInAction(()=>{
+        this.ratingSystems = ratingSystemsResponse.data.records || []
+        this.loading = false
+      })
   }
 
   async add(ratingSystemId: string) {
@@ -43,7 +47,9 @@ export class RatingSystemStore {
       .getApiCoreAxiosClient()!
       .post(`/academy/${academyStore.id}/rating-systems/${ratingSystemId}`)
     await this.loadAcademyRatingSystems()
-    this.loading = false
+    runInAction(()=>{
+      this.loading = false
+    })
   }
 
   async remove(ratingSystemId: string) {
@@ -52,7 +58,9 @@ export class RatingSystemStore {
       .getApiCoreAxiosClient()!
       .delete(`/academy/${academyStore.id}/rating-systems/${ratingSystemId}`)
     await this.loadAcademyRatingSystems()
-    this.loading = false
+    runInAction(()=>{
+      this.loading = false
+    })
   }
 }
 

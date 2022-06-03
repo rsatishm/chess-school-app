@@ -1,4 +1,4 @@
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 //import { Firebase } from '../firebaseInit'
 import { userStore } from './user'
 import { invitationStore } from './invitation-store'
@@ -77,8 +77,10 @@ export class LiveGameStore {
         .getGameServerAxiosClient()!
         .post(`live-games/clear`)
 
-      this.currentGameId = null
-      this.isTournamentModeOn = false
+        runInAction(()=>{
+          this.currentGameId = null
+          this.isTournamentModeOn = false
+        })
       console.log('Current game cleared')
     } catch (err) {
       console.error('Clear failed')

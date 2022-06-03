@@ -1,4 +1,4 @@
-import { observable, action, computed, autorun, makeObservable } from 'mobx'
+import { observable, action, computed, autorun, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import _ from 'lodash'
 import moment from 'moment-timezone'
@@ -94,29 +94,34 @@ export class CreateTournamentFormStore {
         initial_fen
       }: any = response.data
 
-      this.tournamentDetails = {
-        name,
-        description,
-        start_date,
-        end_date,
-        start_time,
-        time_control,
-        time_increment,
-        rounds,
-        timezone,
-        time_range: [moment(start_date), moment(end_date)],
-        tournamentUuid
-      }
-
-      this.initialFen = initial_fen
-      this.schedule = schedule
-      this.players = players
-
-      this.checkedKeys = this.players.map(p => `student-${p.userUuid}`)
+      runInAction(()=>{
+        this.tournamentDetails = {
+          name,
+          description,
+          start_date,
+          end_date,
+          start_time,
+          time_control,
+          time_increment,
+          rounds,
+          timezone,
+          time_range: [moment(start_date), moment(end_date)],
+          tournamentUuid
+        }
+  
+        this.initialFen = initial_fen
+        this.schedule = schedule
+        this.players = players
+  
+        this.checkedKeys = this.players.map(p => `student-${p.userUuid}`)
+      })
+ 
     } catch (err) {
       console.error(err)
     } finally {
-      this.loading = false
+      runInAction(()=>{
+        this.loading = false
+      })
     }
   }
 
@@ -143,7 +148,9 @@ export class CreateTournamentFormStore {
         .post(`coach-tournaments/`, payload)
     } catch (err) {
     } finally {
-      this.loading = false
+      runInAction(()=>{
+        this.loading = false
+      })
     }
 
     this.init()
@@ -177,7 +184,9 @@ export class CreateTournamentFormStore {
     } catch (err) {
       console.error(err)
     } finally {
-      this.loading = false
+      runInAction(()=>{
+        this.loading = false
+      })
     }
 
     this.init()
@@ -263,7 +272,9 @@ export class CreateTournamentFormStore {
     const response = await userStore
       .getApiCoreAxiosClient()!
       .get(`coach-tournaments/book-openings`)
-    this.bookOpenings = response.data
+      runInAction(()=>{
+        this.bookOpenings = response.data
+      })
   }
 
   get isEditing() {

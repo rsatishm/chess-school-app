@@ -103,13 +103,21 @@ export class GameboxDatabaseStore {
     this.error = false
 
     try {
-      this.databases = await this.getDatabases()
-      this.recentEvents = await this.getRecentEvents()
+      const databases = await this.getDatabases()
+      const recentEvents = await this.getRecentEvents()
+      runInAction(()=>{
+        this.databases = databases
+        this.recentEvents = recentEvents
+      })
     } catch (e) {
-      this.error = true
+      runInAction(()=>{
+        this.error = true
+      })
       return false
     } finally {
-      this.loading = false
+      runInAction(()=>{
+        this.loading = false
+      })
     }
 
     return true
@@ -162,26 +170,32 @@ export class GameboxDatabaseStore {
             headers: { 'Content-Type': 'multipart/form-data' },
             data: formData,
             onUploadProgress: ({ loaded, total }) => {
-              this.uploadProgressPercent = (loaded / total) * 100
+              runInAction(()=>{
+                this.uploadProgressPercent = (loaded / total) * 100
+              })            
               if (this.uploadProgressPercent >= 95.0) {
                 resolve()
               }
             }
           })
             .then(response => {
-              this.uploadProgressPercent = 0
-              this.uploading = false
-              if (response.data) {
-                this.databases = [response.data, ...this.databases]
-                this.load()
-              }
+              runInAction(()=>{
+                this.uploadProgressPercent = 0
+                this.uploading = false
+                if (response.data) {
+                  this.databases = [response.data, ...this.databases]
+                  this.load()
+                }
+              })
             })
             .catch(e => {
               reject(e)
             })
         })
       } catch (e) {
-        this.uploadError = true
+        runInAction(()=>{
+          this.uploadError = true
+        })
         return false
       }
 
@@ -223,13 +237,19 @@ export class GameboxDatabaseStore {
           .getApiCoreAxiosClient()!
           .delete(`game-collections/${uuid}`)
 
-        this.databases = R.reject(R.propEq('uuid', uuid), this.databases)
+          runInAction(()=>{
+            this.databases = R.reject(R.propEq('uuid', uuid), this.databases)
+          })
         return true
       } catch (e) {
-        this.deleteError = true
+        runInAction(()=>{
+          this.deleteError = true
+        })
         return false
       } finally {
-        this.deleting = false
+        runInAction(()=>{
+          this.deleting = false
+        })
       }
     }
 

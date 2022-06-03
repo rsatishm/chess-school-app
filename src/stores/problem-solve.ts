@@ -29,10 +29,8 @@ export class ProblemSolveStore {
   }
 
   async load(uuid: string) {
-    runInAction(()=>{
-      this.loading = true
-      this.error = ''
-    })
+    this.loading = true
+    this.error = ''
     try {
       const response = await userStore
         .getApiCoreAxiosClient()!
@@ -55,10 +53,8 @@ export class ProblemSolveStore {
   }
 
   async submit(uuid: string, attempt: any) {
-    runInAction(()=>{
-      this.submitting = true
-      this.submitError = ''
-    })
+    this.submitting = true
+    this.submitError = ''
     try {
       await userStore
         .getApiCoreAxiosClient()!

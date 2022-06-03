@@ -23,10 +23,8 @@ export class PublicGamebaseStore {
 
   async load() {
     if (!this.gamebases) {
-      runInAction(()=>{
-        this.loading = true
-        this.error = ''
-      })
+      this.loading = true
+      this.error = ''
 
       try {
         const response = await userStore

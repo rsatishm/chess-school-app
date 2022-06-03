@@ -92,9 +92,7 @@ export class TournamentViewStore {
     if (this.detailStatus != DataStatus.STALE) {
       return
     }
-    runInAction(()=>{
     this.detailStatus = DataStatus.LOADING
-  })
     try {
       const response = await userStore
         .getApiCoreAxiosClient()!
@@ -118,9 +116,7 @@ export class TournamentViewStore {
     if (this.pairingStatus != DataStatus.STALE && !forceReload) {
       return
     }
-
-    runInAction(()=>{
-    this.pairingStatus = showLoader ? DataStatus.LOADING : this.pairingStatus})
+    this.pairingStatus = showLoader ? DataStatus.LOADING : this.pairingStatus
     try {
       const response = await userStore
         .getApiCoreAxiosClient()!
@@ -144,10 +140,7 @@ export class TournamentViewStore {
     if (this.rankingStatus != DataStatus.STALE) {
       return
     }
-
-    runInAction(()=>{
     this.rankingStatus = DataStatus.LOADING
-    })
     try {
       const response = await userStore
         .getApiCoreAxiosClient()!
@@ -178,8 +171,7 @@ export class TournamentViewStore {
       return
     }
     try {
-      runInAction(()=>{
-      this.detailStatus = DataStatus.LOADING})
+      this.detailStatus = DataStatus.LOADING
       const response = await userStore
         .getApiCoreAxiosClient()!
         .post(`/pgn/download-tournament/${this.uuid}`)

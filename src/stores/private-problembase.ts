@@ -33,10 +33,8 @@ export class PrivateProblembaseStore {
 
   async load() {
     if (!this.problembases || this.isStale()) {
-      runInAction(()=>{
-        this.loading = true
-        this.error = ''
-      })
+      this.loading = true
+      this.error = ''
 
       try {
         const problembases = await userStore
@@ -59,9 +57,7 @@ export class PrivateProblembaseStore {
   }
 
   async refresh() {
-    runInAction(()=>{
-      this.lastLoadTime = 0
-    })
+    this.lastLoadTime = 0
     if (this.problembases) {
       this.load()
     }

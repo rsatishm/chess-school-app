@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 const TWO_MINUTES = 2 * 60 * 1000
@@ -37,18 +37,22 @@ export class PaymentPlanStore {
         const plans = await userStore
           .getAxiosClient()!
           .get('/payment/api/v1/plan/')
-        this.plans = plans.data
-        this.loading = false
-        this.lastLoadTime = +new Date()
+          runInAction(()=>{
+            this.plans = plans.data
+            this.loading = false
+            this.lastLoadTime = +new Date()
+          })
       } catch (e: any) {
-        this.loading = false
-        if (e.response && e.response.status === 404) {
-          this.plans = null
-          this.error = ''
-        } else {
-          this.error = 'Error loading payment plans'
-        }
-        this.lastLoadTime = 0
+        runInAction(()=>{
+          this.loading = false
+          if (e.response && e.response.status === 404) {
+            this.plans = null
+            this.error = ''
+          } else {
+            this.error = 'Error loading payment plans'
+          }
+          this.lastLoadTime = 0
+        })
       }
     }
   }

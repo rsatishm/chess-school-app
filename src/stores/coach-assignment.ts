@@ -1,6 +1,6 @@
 //
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import * as R from 'ramda'
 
@@ -60,13 +60,18 @@ export class CoachAssignmentStore {
         const response = await userStore
           .getApiCoreAxiosClient()!
           .get(`/assignment/coach/${userStore.uuid}`)
-        this.loading = false
-        this.assignments = response.data.records
-        this.lastLoadTime = +new Date()
+        
+        runInAction(()=>{
+          this.loading = false
+          this.assignments = response.data.records
+          this.lastLoadTime = +new Date()
+        })
       } catch (e) {
-        this.loading = true
-        this.error = 'Error loading assignments'
-        this.lastLoadTime = 0
+        runInAction(()=>{
+          this.loading = true
+          this.error = 'Error loading assignments'
+          this.lastLoadTime = 0
+        })
       }
     }
   }
@@ -87,12 +92,15 @@ export class CoachAssignmentStore {
         status: 'active',
         ...assignment
       })
-
-      this.submitting = false
+      runInAction(()=>{
+        this.submitting = false
+      })
       this.refresh()
     } catch (e) {
-      this.submitting = false
-      this.submitError = 'Failed to submit assignment'
+      runInAction(()=>{
+        this.submitting = false
+        this.submitError = 'Failed to submit assignment'
+      })
 
       return false
     }

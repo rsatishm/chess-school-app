@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 
@@ -36,12 +36,18 @@ export class GameboxGamePreviewStore {
         .getApiCoreAxiosClient()!
         .get(`games/${gameUuid}`)
 
-      this.game = response.data
+        runInAction(()=>{
+          this.game = response.data
+        })
     } catch (e) {
-      this.error = true
+      runInAction(()=>{
+        this.error = true
+      })
       return false
     } finally {
-      this.loading = false
+      runInAction(()=>{
+        this.loading = false
+      })
     }
 
     return true

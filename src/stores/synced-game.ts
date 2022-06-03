@@ -1,4 +1,4 @@
-import { observable, action, computed, autorun, makeObservable } from 'mobx'
+import { observable, action, computed, autorun, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import _ from 'lodash'
 import { Chess } from 'chess.js'
@@ -123,11 +123,12 @@ export class SyncedGameStore {
         .get(`live-games/${gameId}`)
 
       const state: RpcGameState = response.data
-
       if (state.result.status == GameStatus.IN_PROGRESS) {
-        this.loading = true
-        this.rpcGame = new RpcGame(gameId)
-        this.rpcGame.onConnect(this.onConnect)
+        runInAction(()=>{
+          this.loading = true
+          this.rpcGame = new RpcGame(gameId)        
+          this.rpcGame.onConnect(this.onConnect)
+        })
       }
 
       this.setGameState(response.data)

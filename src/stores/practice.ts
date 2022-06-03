@@ -1,5 +1,5 @@
 import Drill from '../types/Drill'
-import { action, makeObservable, observable } from 'mobx'
+import { action, makeObservable, observable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 const ONE_HOUR = 60 * 60 * 1000
@@ -41,19 +41,22 @@ export class PracticeStore {
 
       try {
         const drills = await userStore.getApiCoreAxiosClient()?.get('/drills')
-
-        this.items = drills?.data.records
-        this.loading = false
-        this.lastLoadTime = +new Date()
+        runInAction(()=>{
+          this.items = drills?.data.records
+          this.loading = false
+          this.lastLoadTime = +new Date()
+        })
       } catch (e: any) {
-        this.loading = false
-        if (e.response && e.response.status === 404) {
-          this.items = []
-          this.error = ''
-        } else {
-          this.error = 'Error loading practice items'
-        }
-        this.lastLoadTime = 0
+        runInAction(()=>{
+          this.loading = false
+          if (e.response && e.response.status === 404) {
+            this.items = []
+            this.error = ''
+          } else {
+            this.error = 'Error loading practice items'
+          }
+          this.lastLoadTime = 0
+        })
         return false
       }
 

@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { action, makeObservable, observable } from 'mobx'
+import { action, makeObservable, observable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 import { ChessTypes } from '../types'
@@ -70,18 +70,22 @@ export class EngineStore {
         const response = await userStore
           .getAxiosClient()!
           .post('/stockfish/api/v1/go', { fen, depth })
-        this.evals[fen] = {
-          depth,
-          loading: false,
-          error: '',
-          result: this.parseEval(fen, response.data.line)
-        }
+          runInAction(()=>{
+            this.evals[fen] = {
+              depth,
+              loading: false,
+              error: '',
+              result: this.parseEval(fen, response.data.line)
+            }
+          })
       } catch (e) {
-        this.evals[fen] = {
-          depth,
-          loading: false,
-          error: 'Failed to load engine evaluation'
-        }
+        runInAction(()=>{
+          this.evals[fen] = {
+            depth,
+            loading: false,
+            error: 'Failed to load engine evaluation'
+          }
+        })
       }
     }
   }

@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 
@@ -35,17 +35,22 @@ export class CoachAssignmentCompletionDetailsStore {
         const result = await userStore
           .getApiCoreAxiosClient()!
           .get(`/exercise/assignment/coach/completion-details/${uuid}`)
-        this.content[uuid] = {
-          loading: false,
-          data: result.data,
-          error: ''
-        }
+         
+        runInAction(()=>{
+          this.content[uuid] = {
+            loading: false,
+            data: result.data,
+            error: ''
+          }
+        })  
       } catch (e) {
-        this.content[uuid] = {
-          loading: false,
-          data: null,
-          error: `Error loading completion details`
-        }
+        runInAction(()=>{
+          this.content[uuid] = {
+            loading: false,
+            data: null,
+            error: `Error loading completion details`
+          }
+        })
       }
     }
   }

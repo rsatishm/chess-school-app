@@ -23,10 +23,8 @@ export class PublicProblembaseStore {
 
   async load() {
     if (!this.problembases) {
-      runInAction(()=>{
-        this.loading = true
-        this.error = ''
-      })
+      this.loading = true
+      this.error = ''
 
       try {
         const problembases = await userStore

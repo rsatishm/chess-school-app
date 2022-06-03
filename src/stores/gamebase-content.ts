@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 
@@ -39,17 +39,22 @@ export class GamebaseContentStore {
           .get('/database/gamebase/' + uuid + '/games')
 
         const games = response.data.records
-        this.content[uuid] = {
-          loading: false,
-          games: games,
-          error: '',
-          currentPage: 1
-        }
+
+        runInAction(()=>{
+          this.content[uuid] = {
+            loading: false,
+            games: games,
+            error: '',
+            currentPage: 1
+          }
+        })        
       } catch (e) {
-        this.content[uuid] = {
-          ...this.content[uuid],
-          error: `Error loading gamebase ${uuid}`
-        }
+        runInAction(()=>{
+          this.content[uuid] = {
+            ...this.content[uuid],
+            error: `Error loading gamebase ${uuid}`
+          }
+        })
       }
     }
   }
@@ -65,19 +70,23 @@ export class GamebaseContentStore {
               '/games?page=' +
               this.content[uuid].currentPage
           )
-        this.content[uuid] = {
-          ...this.content[uuid],
-          games: R.uniqBy(p => p.uuid, [
-            ...this.content[uuid].games,
-            ...response.data.records
-          ]),
-          currentPage: this.content[uuid].currentPage + 1
-        }
+          runInAction(()=>{
+            this.content[uuid] = {
+              ...this.content[uuid],
+              games: R.uniqBy(p => p.uuid, [
+                ...this.content[uuid].games,
+                ...response.data.records
+              ]),
+              currentPage: this.content[uuid].currentPage + 1
+            }
+          })
       } catch (e) {
-        this.content[uuid] = {
-          ...this.content[uuid],
-          error: `Error loading gamebase ${uuid}`
-        }
+        runInAction(()=>{
+          this.content[uuid] = {
+            ...this.content[uuid],
+            error: `Error loading gamebase ${uuid}`
+          }
+        })
       }
     }
   }

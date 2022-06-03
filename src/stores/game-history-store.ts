@@ -1,4 +1,4 @@
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 export class GameHistoryStore {
@@ -25,11 +25,13 @@ export class GameHistoryStore {
     const res = await userStore
       .getApiCoreAxiosClient()!
       .get(`/platform-games?page=${page}`)
-    if (res?.data) {
-      this.games = [].concat(this.games, res.data.records)
-    }
-    this.loadingGames = false
-    this.hasMore = res?.data.total !== 0
+      runInAction(()=>{
+        if (res?.data) {
+          this.games = [].concat(this.games, res.data.records)
+        }
+        this.loadingGames = false
+        this.hasMore = res?.data.total !== 0
+      })
   }
 
   async gameLoadMore() {

@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 
@@ -47,13 +47,16 @@ export class CoachNetworkStore {
           .getApiCoreV3AxiosClient()!
           .get('/coaches/all/')
         // Transform students into uuid->value key-value pairs
-        this.coaches = R.uniqBy(R.prop('uuid') as any, coaches.data.records)
-
-        this.loading = false
+        runInAction(()=>{
+          this.coaches = R.uniqBy(R.prop('uuid') as any, coaches.data.records)
+          this.loading = false
+        })
       } catch (e) {
-        this.loading = false
-        this.error = 'Error loading students and groups'
-        this.coaches = []
+        runInAction(()=>{
+          this.loading = false
+          this.error = 'Error loading students and groups'
+          this.coaches = []
+        })
       }
     }
   }
