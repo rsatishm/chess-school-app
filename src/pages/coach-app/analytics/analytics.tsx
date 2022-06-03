@@ -28,8 +28,8 @@ function fix(x: any) {
   return x
 }
 
-export const Analytics = observer(()=>{
-  const {analyticsStore} = useContext(MobXProviderContext)
+export const Analytics = observer(() => {
+  const { analyticsStore } = useContext(MobXProviderContext)
   let sampledata: { key: string; name: string; age: number; address: string }[] = []
   let columns: any = [
     {
@@ -179,19 +179,19 @@ export const Analytics = observer(()=>{
     await analyticsStore!.load(startDate, endDate)
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     let startDate = moment()
-    .subtract(1, 'week')
-    .format('YYYY-MM-DD')
-  let endDate = moment()
-    .add(1, 'day') // to make sure current date is included
-    .format('YYYY-MM-DD')
+      .subtract(1, 'week')
+      .format('YYYY-MM-DD')
+    let endDate = moment()
+      .add(1, 'day') // to make sure current date is included
+      .format('YYYY-MM-DD')
 
-  // let startDate = '2018-01-01'
-  // let endDate = '2019-01-01'
+    // let startDate = '2018-01-01'
+    // let endDate = '2019-01-01'
 
     loadAnalytics(startDate, endDate)
-  })
+  }, [])
 
   let analytics = analyticsStore!
   if (analytics.loading) {
