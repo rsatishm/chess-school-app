@@ -187,7 +187,7 @@ export const GamebaseCreateDrawer = observer((props: Props)=>{
       placement="right"
       onClose={props.onClose}
       maskClosable={false}
-      closable={false}
+      //closable={false}
       visible={props.visible}
     >
       <div className="drawer-inner">

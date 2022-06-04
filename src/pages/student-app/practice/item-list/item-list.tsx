@@ -294,7 +294,7 @@ const CreatePractiseProblemForm = (props: {
   })
 
   const handleSubmit = (event: any) => {
-    event.preventDefault()
+    //event.preventDefault()
     form.validateFields().then(async (values: any) => {
       updateState({ loading: true })
       await practiceStore.createDrill(values)

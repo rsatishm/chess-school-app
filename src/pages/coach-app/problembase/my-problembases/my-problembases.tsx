@@ -108,6 +108,7 @@ export const MyProblembases = observer(()=>{
   }
 
   const handleCreateDrawerClose = () => {
+    console.log("hide drawer")
     updateState({
       createDrawerVisible: false
     })

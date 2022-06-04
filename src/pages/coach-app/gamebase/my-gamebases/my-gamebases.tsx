@@ -67,6 +67,7 @@ export const MyGamebases = observer(()=>{
   }
 
   const handleCreateDrawerClose = () => {
+    console.log("hide drawer")
     updateState({
       createDrawerVisible: false
     })

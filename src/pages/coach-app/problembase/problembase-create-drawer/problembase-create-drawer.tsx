@@ -38,7 +38,7 @@ export const ProblembaseCreateDrawer = observer((props: Props) => {
     if (shouldRefresh) {
       privateProblembaseStore!.refresh()
     }
-  }, [state.importStatus.uploadedCount])
+  }, [state.importStatus])
   let importer: ProblemsImporter.ProblemsImporter | null = null
 
   const handleCancelClick = () => {
@@ -178,13 +178,14 @@ export const ProblembaseCreateDrawer = observer((props: Props) => {
     )
   }
 
+  console.log("problembase create drawer")
   return <Drawer
     className="create-problembase-drawer"
     width={400}
     placement="right"
     onClose={props.onClose}
     maskClosable={false}
-    closable={false}
+    //closable={false}
     visible={props.visible}
   >
     <div className="drawer-inner">
@@ -202,8 +203,7 @@ export const ProblembaseCreateDrawer = observer((props: Props) => {
           disabled={
             state.importStatus.uploading ||
             state.importStatus.uploadedCount > 0
-          }
-        >
+          }>
           Submit
         </Button>
       </div>
