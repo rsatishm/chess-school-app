@@ -7,7 +7,7 @@ import { CreateGroupDrawer } from './create-group-drawer/create-group-drawer'
 import './groups.less'
 import { EditGroupDrawer } from './edit-group-drawer/edit-group-drawer'
 import { States } from '../../../../components/states/states'
-import { TeamOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, TeamOutlined } from '@ant-design/icons'
 
 interface State {
   search: string
@@ -15,8 +15,8 @@ interface State {
   groupDetail: any
 }
 
-export const Groups = observer(()=>{
-  const {studentsGroupsStore} = React.useContext(MobXProviderContext)
+export const Groups = observer(() => {
+  const { studentsGroupsStore } = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     search: '',
     createDrawerVisible: false,
@@ -27,7 +27,7 @@ export const Groups = observer(()=>{
       return { ...prevState, ...newState }
     })
   }
-  React.useEffect(()=>{
+  React.useEffect(() => {
     console.log("Load groups")
     studentsGroupsStore!.load()
   })
@@ -101,15 +101,18 @@ export const Groups = observer(()=>{
                 {g.userIds.length === 1 ? 'student' : 'students'}
               </span>
               <Button
-                icon="edit"
                 shape="circle"
                 onClick={handleEditGroup(g.uuid)}
-              />
+              >
+                <EditOutlined />
+              </Button>
               <Popconfirm
                 title="Are you sure you want to delete the group?"
                 onConfirm={handleDeleteGroup(g.uuid)}
               >
-                <Button icon="delete" shape="circle" />
+                <Button shape="circle">
+                  <DeleteOutlined />
+                </Button>
               </Popconfirm>
             </div>
           )
@@ -195,11 +198,11 @@ export const Groups = observer(()=>{
         onClose={handleCreateGroupClose}
       />
       ({state.groupDetail &&
-      <EditGroupDrawer
-        visible={state.groupDetail !== null}
-        onClose={handleEditGroupClose}
-        groupDetail={state.groupDetail}
-      />})
+        <EditGroupDrawer
+          visible={state.groupDetail !== null}
+          onClose={handleEditGroupClose}
+          groupDetail={state.groupDetail}
+        />})
     </div>
   )
 })
