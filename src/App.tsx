@@ -1,7 +1,7 @@
 import { Button, notification } from 'antd';
 import { MobXProviderContext, observer } from 'mobx-react';
 import { useContext, useEffect } from 'react';
-import { Route, Routes, BrowserRouter, useLocation, useNavigationType, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation,useNavigate } from 'react-router-dom';
 import { CoachApp } from './pages/coach-app/coach-app';
 import { PublicAnalysisBoard } from './pages/common-pages/analysis-board/public-analysis-board';
 import Login from './pages/login/login';
@@ -9,8 +9,6 @@ import NotFound from './pages/not-found/not-found';
 import { ResetPassword } from './pages/reset-password/reset-password';
 import { Signup } from './pages/signup/signup';
 import { StudentApp } from './pages/student-app/student-app';
-import { useSignupStore } from './stores/signup';
-import { useUserStore } from './stores/user';
 
 const App = observer(()=>{
   console.log("in app");

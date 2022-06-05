@@ -22,7 +22,9 @@ export class RatingSystemStore {
     const allRatingSystemsResponse = await userStore
       .getApiCoreAxiosClient()!
       .get(`/rating-systems`)
-    this.availableRatingSystems = allRatingSystemsResponse.data.records || []
+    runInAction(()=>{
+      this.availableRatingSystems = allRatingSystemsResponse.data.records || []
+    })  
 
     await this.loadAcademyRatingSystems()
     runInAction(()=>{

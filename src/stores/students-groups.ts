@@ -53,11 +53,9 @@ export class StudentsGroupsStore {
 
   async load(forceRefresh = false) {
     if (forceRefresh || !this.students || !this.groups || this.isStale()) {
-      runInAction(() => {
-        this.error = ''
-        this.loading = !forceRefresh
-        this.lastLoadTime = +new Date()
-      })
+      this.error = ''
+      this.loading = !forceRefresh
+      this.lastLoadTime = +new Date()
       try {
         console.log("Get students by coach")
         const response = await userStore
@@ -117,12 +115,15 @@ export class StudentsGroupsStore {
         groupType: 'academy',
         purpose: 'student'
       })
-
-      this.editing = false
+      runInAction(()=>{
+        this.editing = false
+      })
       this.refresh()
     } catch (e) {
-      this.editing = false
-      this.editError = 'Failed to edit group'
+      runInAction(()=>{
+        this.editing = false
+        this.editError = 'Failed to edit group'
+      })
 
       return false
     }
@@ -142,11 +143,15 @@ export class StudentsGroupsStore {
         purpose: 'student'
       })
 
-      this.creating = false
+      runInAction(()=>{
+        this.creating = false
+      })
       this.refresh()
     } catch (e) {
-      this.creating = false
-      this.createError = 'Failed to create group'
+      runInAction(()=>{
+        this.creating = false
+        this.createError = 'Failed to create group'
+      })
 
       return false
     }

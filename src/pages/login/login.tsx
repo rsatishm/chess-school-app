@@ -4,11 +4,11 @@ import 'antd/dist/antd.css';
 import { Link } from 'react-router-dom';
 import pawnImage from '../../images/pawn.png'
 import { observer } from "mobx-react-lite"
-import { LoginStore } from '../../stores/login';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import * as jsEnv from 'browser-or-node'
 
+import './login.less'
 import liveLessons from '../../images/Live-lessons.png'
 import solvePuzzles from '../../images/Solve-puzzles.png'
 import playFeature from '../../images/play-feature.png'
@@ -23,16 +23,13 @@ interface LoginState {
         username: string
         password: string
     }
-}
-
-interface LoginProps {
-    loginStore: LoginStore
+    features: any[]
 }
 
 const Login = observer(() => {
     const {loginStore, userStore} = useContext(MobXProviderContext);
     const [form] = Form.useForm();
-    let [loginState, setLoginState] = useState({
+    let [loginState, setLoginState] = useState<LoginState>({
         confirmDirty: false,
         formFields: loginStore,
         features: [
@@ -290,7 +287,7 @@ const Login = observer(() => {
                             </Col>
                             <Col className="feature-content" md={12} xs={24}>
                                 <h2>{title}</h2>
-                                {points.map((point, i) => (
+                                {points.map((point: any, i: number) => (
                                     <p key={i}>{point}</p>
                                 ))}
                             </Col>
