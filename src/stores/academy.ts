@@ -66,6 +66,7 @@ export class AcademyStore {
           this.academy = response.data.records && response.data.records[0]
           this.loading = false
           this.lastLoadTime = +new Date()
+          console.log("Academies\n" + JSON.stringify(response))
         })
       } catch (error) {
         console.log("Loading error "  + error)

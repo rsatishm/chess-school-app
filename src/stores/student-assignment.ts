@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import * as jsEnv from 'browser-or-node'
-import { observable, action, computed, makeObservable } from 'mobx'
+import { observable, action, computed, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 export class StudentAssignmentStore {
@@ -36,20 +36,23 @@ export class StudentAssignmentStore {
       const response = await userStore
         .getApiCoreAxiosClient()!
         .get(`/assignment/student/${userStore.uuid}`)
-
+      runInAction(()=>{
         this.assignments = response.data.records
-      this.loading = false
+        this.loading = false
+      })
       console.log("response: " + JSON.stringify(response))
     } catch (error) {      
       const e = error as AxiosError
       console.log("error: " + e.cause + e.message)
-      this.loading = false
-      if (e.response && e.response.status === 404) {
-        this.error = ''
-        this.assignments = []
-      } else {
-        this.error = 'Error loading assignments'
-      }
+      runInAction(()=>{
+        this.loading = false
+        if (e.response && e.response.status === 404) {
+          this.error = ''
+          this.assignments = []
+        } else {
+          this.error = 'Error loading assignments'
+        }
+      })
     }
   }
 
@@ -66,20 +69,25 @@ export class StudentAssignmentStore {
         .get(
           `/exercise/assignment/student/completion-details/${assignmentUuid}`
         )
-        this.completionDetails[assignmentUuid] = {
-        ...this.completionDetails[assignmentUuid],
-        details: completionDetails.data
-      }
+        runInAction(()=>{
+          this.completionDetails[assignmentUuid] = {
+            ...this.completionDetails[assignmentUuid],
+            details: completionDetails.data
+        }})      
     } catch (e) {
-      this.completionDetails[assignmentUuid] = {
-        ...this.completionDetails[assignmentUuid],
-        error: 'Error loading solved status'
-      }
+      runInAction(()=>{
+        this.completionDetails[assignmentUuid] = {
+          ...this.completionDetails[assignmentUuid],
+          error: 'Error loading solved status'
+        }
+      })
     } finally {
-      this.completionDetails[assignmentUuid] = {
-        ...this.completionDetails[assignmentUuid],
-        loading: false
-      }
+      runInAction(()=>{
+        this.completionDetails[assignmentUuid] = {
+          ...this.completionDetails[assignmentUuid],
+          loading: false
+        }
+      })
     }
   }
 

@@ -197,12 +197,12 @@ export const Groups = observer(() => {
         visible={state.createDrawerVisible}
         onClose={handleCreateGroupClose}
       />
-      ({state.groupDetail &&
+      {state.groupDetail &&
         <EditGroupDrawer
           visible={state.groupDetail !== null}
           onClose={handleEditGroupClose}
           groupDetail={state.groupDetail}
-        />})
+        />}
     </div>
   )
 })

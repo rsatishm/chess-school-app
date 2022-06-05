@@ -1,13 +1,11 @@
 import { Layout, Menu } from 'antd'
-import { inject, MobXProviderContext, observer } from 'mobx-react'
-import { Route, useNavigate, useLocation, Routes, Navigate, useMatch, useRoutes, useSearchParams } from 'react-router-dom'
+import { MobXProviderContext, observer } from 'mobx-react'
+import { Route, useNavigate, useLocation, Routes, Navigate, useMatch } from 'react-router-dom'
 
 import './academy.less'
 
 import { CreateAcademyForm } from './create-academy-form/create-academy-form'
-import { AcademyStore } from '../../../stores/academy'
-import { StudentsGroupsStore } from '../../../stores/students-groups'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { States } from '../../../components/states/states'
 import { Students } from './students/students'
 import { Groups } from './groups/groups'
@@ -17,25 +15,17 @@ import { Settings } from './settings/Settings'
 
 const { Content } = Layout
 
-interface Props {
-  academyStore?: AcademyStore
-  studentsGroupsStore?: StudentsGroupsStore
-}
-
-export const Academy = observer(()=>{
-  const {academyStore, studentsGroupsStore} = useContext(MobXProviderContext)
+export const Academy = observer(() => {
+  const { academyStore, studentsGroupsStore } = useContext(MobXProviderContext)
   const academy = academyStore!.academy
   const navigate = useNavigate();
   const location = useLocation();
-  const match = useMatch("/*");
 
-  console.log("match on: " + JSON.stringify(match))
-  
-  useEffect(()=>{
+  useEffect(() => {
     console.log("Load academies")
     academyStore!.load()
     studentsGroupsStore!.load()
-  }, [academyStore, studentsGroupsStore])
+  })
 
   if (
     academyStore!.loading ||
@@ -57,7 +47,7 @@ export const Academy = observer(()=>{
     navigate("/app/academy" + link)
   }
 
-  const handleRetry = ()=> {
+  const handleRetry = () => {
     academyStore!.load()
     studentsGroupsStore!.load()
   }
@@ -67,7 +57,7 @@ export const Academy = observer(()=>{
     studentsGroupsStore!.error
   ) {
     console.log("Errors in fetching academies and students")
-    return (      
+    return (
       <Content className="academy content">
         <div className="inner">
           <States
@@ -114,75 +104,75 @@ export const Academy = observer(()=>{
 
     return ''
   }
-/*
-  const Groups = ()=>{
-    return <h1>Groups</h1>
-  }
-
-  const Website = ()=>{
-    return <h1>Website</h1>
-  }
-
-  const Payment = ()=>{
-    return <h1>Payment</h1>
-  }
-
-  const Settings = ()=>{
-    return <h1>Settings</h1>
-  }*/
+  /*
+    const Groups = ()=>{
+      return <h1>Groups</h1>
+    }
+  
+    const Website = ()=>{
+      return <h1>Website</h1>
+    }
+  
+    const Payment = ()=>{
+      return <h1>Payment</h1>
+    }
+  
+    const Settings = ()=>{
+      return <h1>Settings</h1>
+    }*/
 
   const renderAcademyPage = () => {
     console.log("renderAcademyPage " + location.pathname)
-    return  <>
-    <Menu mode="horizontal" selectedKeys={[getSelectedItem()]}>
-      <Menu.Item key="students" onClick={handleMenuClick('/students')}>
-        Students
-      </Menu.Item>
-      <Menu.Item key="groups" onClick={handleMenuClick('/groups')}>
-        Groups
-      </Menu.Item>
-      <Menu.Item key="settings" onClick={handleMenuClick('/settings')}>
-        Settings
-      </Menu.Item>
-    </Menu>
-    <Routes>
-      <Route
-        path="/"
-        element={<Students/>}
-      />
-       <Route
-        path="/students"
-        element={<Students/>}
-      />
-      <Route
-        path="/groups"
-        element={<Groups />}
-      />
-      <Route
-        path="/website"
-        element={<Website />}
-      />
-      <Route
-        path="/payment"
-        element={<Payment />}
-      />
-      <Route
-        path="/settings"
-        element={<Settings />}
-      />
-      <Route path={location.pathname} element={<Navigate replace to={location.pathname + '/students'} />} />
-    </Routes>
+    return <>
+      <Menu mode="horizontal" selectedKeys={[getSelectedItem()]}>
+        <Menu.Item key="students" onClick={handleMenuClick('/students')}>
+          Students
+        </Menu.Item>
+        <Menu.Item key="groups" onClick={handleMenuClick('/groups')}>
+          Groups
+        </Menu.Item>
+        <Menu.Item key="settings" onClick={handleMenuClick('/settings')}>
+          Settings
+        </Menu.Item>
+      </Menu>
+      <Routes>
+        <Route
+          path="/"
+          element={<Students />}
+        />
+        <Route
+          path="/students"
+          element={<Students />}
+        />
+        <Route
+          path="/groups"
+          element={<Groups />}
+        />
+        <Route
+          path="/website"
+          element={<Website />}
+        />
+        <Route
+          path="/payment"
+          element={<Payment />}
+        />
+        <Route
+          path="/settings"
+          element={<Settings />}
+        />
+        <Route path={location.pathname} element={<Navigate replace to={location.pathname + '/students'} />} />
+      </Routes>
     </>
   }
 
   return (
     <Content className="academy content">
-{academy ? 
+      {academy ?
         renderAcademyPage() : (
-        <div className="form-container">
-          <CreateAcademyForm/>
-        </div>
-      )}
+          <div className="form-container">
+            <CreateAcademyForm />
+          </div>
+        )}
     </Content>
   )
 })

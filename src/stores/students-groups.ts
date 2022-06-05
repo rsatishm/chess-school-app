@@ -63,14 +63,14 @@ export class StudentsGroupsStore {
         const response = await userStore
           .getApiCoreV3AxiosClient()!
           .get('students/all-by-coachId/')
-        console.log("Done getting students by coach")
+        console.log("students/all-by-coachId/\n" + JSON.stringify(response))
         // Transform students into uuid->value key-value pairs
 
         console.log("Get groups  by coach")
         const groups = await userStore
           .getApiCoreV3AxiosClient()!
           .get('/groups/all-by-coachId/')
-        console.log("Done getting groups by coach")
+        console.log("groups/all-by-coachId/\n" + JSON.stringify(groups))
         // Transform groups into uuid->value key-value pairs
 
         console.log(JSON.stringify(groups))
