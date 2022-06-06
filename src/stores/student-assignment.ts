@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import * as jsEnv from 'browser-or-node'
-import { observable, action, computed, makeObservable } from 'mobx'
+import { observable, action, computed, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 export class StudentAssignmentStore {
@@ -14,6 +14,7 @@ export class StudentAssignmentStore {
     this.assignments = initValues.assignments || []
     this.loading = initValues.loading || true
     this.error = initValues.error || ''
+
     makeObservable(this, {
       assignments: observable,
       loading: observable,
@@ -31,20 +32,27 @@ export class StudentAssignmentStore {
     this.error = ''
 
     try {
+      console.log("uuid: " + userStore.uuid)
       const response = await userStore
         .getApiCoreAxiosClient()!
         .get(`/assignment/student/${userStore.uuid}`)
-      this.assignments = response.data.records
-      this.loading = false
-    } catch (error) {
+      runInAction(()=>{
+        this.assignments = response.data.records
+        this.loading = false
+      })
+      console.log("response: " + JSON.stringify(response))
+    } catch (error) {      
       const e = error as AxiosError
-      this.loading = false
-      if (e.response && e.response.status === 404) {
-        this.error = ''
-        this.assignments = []
-      } else {
-        this.error = 'Error loading assignments'
-      }
+      console.log("error: " + e.cause + e.message)
+      runInAction(()=>{
+        this.loading = false
+        if (e.response && e.response.status === 404) {
+          this.error = ''
+          this.assignments = []
+        } else {
+          this.error = 'Error loading assignments'
+        }
+      })
     }
   }
 
@@ -61,20 +69,25 @@ export class StudentAssignmentStore {
         .get(
           `/exercise/assignment/student/completion-details/${assignmentUuid}`
         )
-      this.completionDetails[assignmentUuid] = {
-        ...this.completionDetails[assignmentUuid],
-        details: completionDetails.data
-      }
+        runInAction(()=>{
+          this.completionDetails[assignmentUuid] = {
+            ...this.completionDetails[assignmentUuid],
+            details: completionDetails.data
+        }})      
     } catch (e) {
-      this.completionDetails[assignmentUuid] = {
-        ...this.completionDetails[assignmentUuid],
-        error: 'Error loading solved status'
-      }
+      runInAction(()=>{
+        this.completionDetails[assignmentUuid] = {
+          ...this.completionDetails[assignmentUuid],
+          error: 'Error loading solved status'
+        }
+      })
     } finally {
-      this.completionDetails[assignmentUuid] = {
-        ...this.completionDetails[assignmentUuid],
-        loading: false
-      }
+      runInAction(()=>{
+        this.completionDetails[assignmentUuid] = {
+          ...this.completionDetails[assignmentUuid],
+          loading: false
+        }
+      })
     }
   }
 
@@ -90,12 +103,22 @@ export class StudentAssignmentStore {
 
   get unsolvedCount() {
     var unsolved = 0
+    console.log("Get unsolved")
+    if (this.assignments.length == 0) {
+      this.load()
+    }
     this.assignments.forEach(e => {
+      console.log("Assignment: \n" + JSON.stringify(e))
+      if (!e.solved) {
+        unsolved++
+      }
       var details = this.completionDetails[e.uuid]
 
       if (details === undefined) {
+        console.log("Load completion details")
         this.loadCompletionDetails(e.uuid)
         details = this.completionDetails[e.uuid]
+        console.log("Details: " + JSON.stringify(details))
       }
 
       if (details && !details.loading && details.details) {

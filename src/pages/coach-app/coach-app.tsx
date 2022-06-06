@@ -3,20 +3,28 @@ import { ExceptionOutlined } from '@ant-design/icons';
 import { Route, Routes } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { UserStore } from '../../stores/user'
-import { Dashboard } from '../dashboard/dashboard';
+import { Dashboard } from './dashboard/dashboard';
 import { Academy } from './academy/academy';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { useState } from 'react';
 import { Chessboard } from '../../components/chessboard/Chessboard';
 import { AnalysisBoard } from '../common-pages/analysis-board/analysis-board';
 import { ChessboardDemo } from '../../components/chessgroundboard/ChessboardDemo';
-import { Classrooms } from './classtooms/classrooms';
-import { CreateClassRoom } from './classtooms/create-classroom-form';
-import { AntdExamples } from '../antd-examples/antd-examples';
-import { AntdPageHeader } from '../antd-examples/page-header/page-header';
-import { AntdPageHeaderActions } from '../antd-examples/page-header/actions';
-import { AntdPageHeaderBasic } from '../antd-examples/page-header/basic';
-import { AntdRoute } from '../antd-examples/antd-route';
+import { Classrooms } from './classrooms/classrooms';
+import { CreateClassroom } from './classrooms/create-classroom-form';
+import { StartClassRoom } from './classrooms/start-classroom';
+import { TournamentView } from '../../components/tournaments/tournament-view';
+import { Assignment } from '../student-app/assignment/assignment';
+import { Practice } from '../student-app/practice/practice';
+import { User } from '../user/user';
+import { Blindbot } from '../student-app/blindbot/blindbot';
+import { Gamebox } from '../student-app/gamebox/gamebox';
+import { Gamebase } from './gamebase/gamebase';
+import { Problembase } from './problembase/problembase';
+import { CreateTournamentForm } from './tournaments/create-tournament-form';
+import { Analytics } from './analytics/analytics';
+import { TournamentListing } from './tournaments/tournament-listing';
+import { GameArea } from '../common-pages/gameArea/gameArea';
 
 interface Props {
   userStore?: UserStore
@@ -54,57 +62,13 @@ export const CoachApp = observer(() => {
     )
   }
 
-  function Assignment() {
-    return <h1>Assignment</h1>
-  }
-
-  function Practice() {
-    return <h1>Practice</h1>
-  }
-
-  function User() {
-    return <h1>User</h1>
-  }
-
-  function Blindbot() {
-    return <h1>Blindbot</h1>
-  }
-
-  function Gamebase() {
-    return <h1>Gamebase</h1>
-  }
-
-  function Gamebox() {
-    return <h1>Gamebox</h1>
-  }
-
-  function Problembase() {
-    return <h1>Problembase</h1>
-  }
-
-  function Analytics() {
-    return <h1>Analytics</h1>
-  }
-
-  function GameArea() {
+  function GameArea1() {
     //const fen = new Chess().fen()
     const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
     return <><table><tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="NONE" /></td></tr>
     <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="MOVE" /></td></tr>
     <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="ARROW" /></td></tr>
     <tr><td><Chessboard width={300} height={300} fen={fen} interactionMode="SQUARE_HIGHLIGHT" /></td></tr></table></>
-  }
-
-  function CreateTournamentForm() {
-    return <h1>CreateTournamentForm</h1>
-  }
-
-  function TournamentViewWithRouter() {
-    return <h1>TournamentViewWithRouter</h1>
-  }
-
-  function TournamentListingWithRouter() {
-    return <h1>TournamentListingWithRouter</h1>
   }
 
   function ChessboardExample()  {
@@ -118,7 +82,7 @@ export const CoachApp = observer(() => {
       <Routes>
         <Route path="/academy/*" element={<Academy/>} />
         <Route path="/assignment" element={<Assignment/>} />
-        <Route path="/practice" element={<Practice/>} />
+        <Route path="/practice/*" element={<Practice/>} />
         <Route
           path="/preferences"
           element={<User/>}
@@ -127,12 +91,12 @@ export const CoachApp = observer(() => {
         <Route path="/classrooms" element={<Classrooms/>} />
         <Route
           path="/blindbot"
-          element={Blindbot}
+          element={<Blindbot/>}
         />
 
-        <Route path="/gamebase" element={<Gamebase/>} />
-        <Route path="/sharebox" element={<Gamebox/>} />
-        <Route path="/problembase" element={<Problembase/>} />
+        <Route path="/gamebase/*" element={<Gamebase/>} />
+        <Route path="/sharebox/*" element={<Gamebox/>} />
+        <Route path="/problembase/*" element={<Problembase/>} />
         <Route path="/reports" element={<Analytics/>} />
         <Route path="/game-area" element={<GameArea/>} />
 
@@ -142,23 +106,24 @@ export const CoachApp = observer(() => {
         />
         <Route
             path="/classrooms/create"
-            element={<CreateClassRoom/>}
-          />        
+            element={<CreateClassroom/>}
+          />  
+        <Route
+            path="/classrooms/start"
+            element={<StartClassRoom/>}
+          />                      
         <Route
           path="/tournaments/:uuid/edit"
           element={<CreateTournamentForm/>}
         />
         <Route
           path="/tournaments/:uuid"
-          element={<TournamentViewWithRouter/>}
+          element={<TournamentView/>}
         />
         <Route
           path="/tournaments"
-          element={<TournamentListingWithRouter/>}
+          element={<TournamentListing/>}
         />
-        <Route
-          path="/antd/*"
-          element={<AntdRoute/>}/>
         <Route
           path="/*"
           element={<Dashboard />}

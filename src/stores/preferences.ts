@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import * as jsEnv from 'browser-or-node'
-import { observable, action, computed, makeObservable } from 'mobx'
+import { observable, action, computed, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 import React from 'react'
@@ -83,13 +83,17 @@ export class PreferencesStore {
         const prefs = await userStore
           .getApiCoreAxiosClient()!
           .get('/identity/preferences/')
-        this.preferences = { ...prefs.data }
+          runInAction(()=>{
+            this.preferences = { ...prefs.data }
 
-        this.loading = false
-        this.lastLoadTime = +new Date()
+            this.loading = false
+            this.lastLoadTime = +new Date()
+          })
       } catch (e) {
-        this.loading = false
-        this.error = 'Failed to load the preferences'
+        runInAction(()=>{
+          this.loading = false
+          this.error = 'Failed to load the preferences'
+        })
       }
     }
   }
@@ -102,9 +106,13 @@ export class PreferencesStore {
       await userStore
         .getApiCoreAxiosClient()!
         .put('/identity/preferences/', { ...newPrefs })
-      this.loading = false
+        runInAction(()=>{
+          this.loading = false
+        })
     } catch (e) {
-      this.loading = false
+      runInAction(()=>{
+        this.loading = false
+      })
       return false
     }
 

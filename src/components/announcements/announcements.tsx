@@ -1,5 +1,5 @@
 import { Modal, Carousel, Row, Col } from 'antd'
-import { MobXProviderContext } from 'mobx-react'
+import { MobXProviderContext, observer } from 'mobx-react'
 import { useLocation } from 'react-router-dom'
 import { AnnouncementStore } from '../../stores/announcements'
 
@@ -12,7 +12,7 @@ interface Props {
   announcementStore?: AnnouncementStore
 }
 
-const Announcements = ()=>{
+const Announcements = observer(()=>{
   const {announcementStore} = useContext(MobXProviderContext)
   const location = useLocation()
   const isVisible = location.pathname != '/app/dashboard' && // don't show announcnments on dashboard
@@ -93,5 +93,5 @@ const Announcements = ()=>{
       )}
     </Modal>
   )
-}
+})
 export default Announcements

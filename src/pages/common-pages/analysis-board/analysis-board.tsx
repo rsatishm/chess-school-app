@@ -48,7 +48,7 @@ interface State {
   pgn?: string
 }
 
-export const AnalysisBoard = ()=>{
+export const AnalysisBoard = observer(()=>{
   let gameFormRef= useRef(null)
   const [state, setState] = useState<State>({
     modalState: 'HIDDEN',
@@ -597,4 +597,4 @@ export const AnalysisBoard = ()=>{
     </Layout>
   )
 
-}
+})

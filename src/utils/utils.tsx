@@ -4,7 +4,9 @@ import { FormattedMessage } from 'react-intl'
 import { ChessTypes } from '../types'
 import { Game, GameResult } from '../types/game'
 import * as _ChessJS from 'chess.js';
+import Cookies from 'universal-cookie'
 
+export const cookies = new Cookies()
 export const DEFAULT_START_FEN: ChessTypes.FEN =
   'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 export const CLEAR_FEN: ChessTypes.FEN = '8/8/8/8/8/8/8/8 w - - 0 1'

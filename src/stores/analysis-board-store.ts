@@ -139,7 +139,9 @@ export class AnalysisBoardStore {
         .getApiCoreAxiosClient()!
         .get(`games/${gameUuid}`)
 
-      this.savedGameDetails = response.data
+      runInAction(()=>{
+        this.savedGameDetails = response.data
+      })  
 
       var gameInLegacyFormat = hydrateWithDerviedFields(
         response.data.meta,
@@ -165,7 +167,9 @@ export class AnalysisBoardStore {
         return false
       }
 
-      this.savedGameDetails = response.data
+      runInAction(()=>{
+        this.savedGameDetails = response.data
+      })    
 
       var gameInLegacyFormat = hydrateWithDerviedFields(
         response.data.meta,
@@ -193,7 +197,9 @@ export class AnalysisBoardStore {
         databaseUuid: databaseUuid
       })
 
-      this.savedGameDetails = response.data
+      runInAction(()=>{
+        this.savedGameDetails = response.data
+      })
       console.log('Game created ', this.savedGameDetails.uuid)
       return this.savedGameDetails.uuid
     } catch (e) {
@@ -215,7 +221,10 @@ export class AnalysisBoardStore {
           content: game
         })
 
-      this.savedGameDetails = response.data
+      runInAction(()=>{
+        this.savedGameDetails = response.data
+      })  
+      
       console.log('Game updated ', this.savedGameDetails.uuid)
     } catch (e) {
       // this.error = true
@@ -234,8 +243,11 @@ export class AnalysisBoardStore {
         .post(`games/${this.savedGameDetails.uuid}/is-public`, {
           isPublic: checked
         })
+      
+      runInAction(()=>{
+        this.savedGameDetails = response.data
+      })
 
-      this.savedGameDetails = response.data
       console.log('Game updated ', this.savedGameDetails.uuid)
     } catch (e) {
       return false

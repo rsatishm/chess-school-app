@@ -1,5 +1,5 @@
 //import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 //import { Firebase } from '../firebaseInit'
 //import shortid from 'shortid'
@@ -103,7 +103,9 @@ export class InvitationStore {
       .getApiCoreAxiosClient()!
       .get(`/report/statistics/${userStore.uuid}`)
     if (res?.data) {
-      this.statistics = res.data
+      runInAction(()=>{
+        this.statistics = res.data
+      })
     }
   }
 

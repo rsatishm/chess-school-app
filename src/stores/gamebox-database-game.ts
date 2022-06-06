@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 
 export interface DatabaseGameState {
@@ -45,12 +45,18 @@ export class GameboxDatabaseGameStore {
         game.index = index + 1
       })
 
-      this.games = response.data.records
+      runInAction(()=>{
+        this.games = response.data.records
+      })
     } catch (e) {
-      this.error = true
+      runInAction(()=>{
+        this.error = true
+      })
       return false
     } finally {
-      this.loading = false
+      runInAction(()=>{
+        this.loading = false
+      })
     }
 
     return true

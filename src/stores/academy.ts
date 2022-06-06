@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, computed, makeObservable } from 'mobx'
+import { observable, action, computed, makeObservable, runInAction } from 'mobx'
 import { userStore } from './user'
 import { Rating } from '../types/Rating'
 import { studentsGroupsStore } from './students-groups'
@@ -54,27 +54,33 @@ export class AcademyStore {
     if (!this.academy || this.isStale() || this.error) {
       this.loading = true
       this.error = ''
+
       try {
         console.log("Get academies")
         const response = await userStore
           .getApiCoreV3AxiosClient()!
           .get('academies')
         console.log("Loading done")
-        this.academy = response.data.records && response.data.records[0]
-        this.loading = false
-        this.lastLoadTime = +new Date()
+
+        runInAction(()=>{
+          this.academy = response.data.records && response.data.records[0]
+          this.loading = false
+          this.lastLoadTime = +new Date()
+          console.log("Academies\n" + JSON.stringify(response))
+        })
       } catch (error) {
         console.log("Loading error "  + error)
-        this.loading = false
-
-        const e = error as AxiosError
-        if (e.response && e.response.status === 404) {
-          this.academy = null
-          this.error = ''
-        } else {
-          this.error = 'Error loading academy'
-        }
-        this.lastLoadTime = 0
+        runInAction(()=>{
+          this.loading = false
+          const e = error as AxiosError
+          if (e.response && e.response.status === 404) {
+            this.academy = null
+            this.error = ''
+          } else {
+            this.error = 'Error loading academy'
+          }
+          this.lastLoadTime = 0
+        })
       }
     }
   }
@@ -147,20 +153,22 @@ export class AcademyStore {
   async create(academy: any) {
     this.creating = true
     this.createError = ''
-
     try {
       await userStore.getApiCoreV3AxiosClient()!.post('/academies', academy)
-      this.creating = false
+      runInAction(()=>{
+        this.creating = false
+      })
       this.refresh()
     } catch (error) {
-      this.creating = false
-      const e = error as AxiosError
-      if (e.response && e.response.data && e.response.data.error) {
-        this.createError = e.response.data.error
-      } else {
-        this.createError = 'Failed to create academy'
-      }
-
+      runInAction(()=>{
+        this.creating = false
+        const e = error as AxiosError
+        if (e.response && e.response.data && e.response.data.error) {
+          this.createError = e.response.data.error
+        } else {
+          this.createError = 'Failed to create academy'
+        }
+      })
       return false
     }
 
@@ -170,14 +178,17 @@ export class AcademyStore {
   async edit(uuid: string, academy: any) {
     this.editing = true
     this.editError = ''
-
     try {
       await userStore.getApiCoreAxiosClient()!.put(`/academy/${uuid}`, academy)
-      this.editing = false
+      runInAction(()=>{
+        this.editing = false
+      })
       this.refresh()
     } catch (e) {
-      this.editing = false
-      this.editError = 'Failed to update academy'
+      runInAction(()=>{
+        this.editing = false
+        this.editError = 'Failed to update academy'
+      })
 
       return false
     }

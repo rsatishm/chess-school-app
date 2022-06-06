@@ -1,4 +1,4 @@
-import { observable, action, computed, makeObservable } from 'mobx'
+import { observable, action, computed, makeObservable, runInAction } from 'mobx'
 import axios, { AxiosInstance } from 'axios'
 //import { Firebase } from '../firebaseInit'
 
@@ -79,11 +79,13 @@ export class AnnouncementStore {
         '/appjA1rVokzT0KneN/announcements/'
       )
 
-      this.announcements = announcements.data.records.sort(
-        (one: any, two: any) => one.fields.id - two.fields.id
-      )
-
-      this.loaded = true
+      runInAction(()=>{
+        this.announcements = announcements.data.records.sort(
+          (one: any, two: any) => one.fields.id - two.fields.id
+        )
+  
+        this.loaded = true
+      })
 
       // auto show annoucenments when last seen id is less then max id in announcenments
       const lastOne = this.announcements[this.announcements.length - 1]

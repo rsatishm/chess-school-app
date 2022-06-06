@@ -12,11 +12,11 @@ import { useContext, useEffect } from 'react'
 
 const { Content } = Layout
 
-export const GameArea = ()=>{
+export const GameArea = observer(()=>{
   const navigate = useNavigate()
   const location = useLocation()
   const {liveGameStore, invitationStore} = useContext(MobXProviderContext)
-  console.log(liveGameStore!.currentGameId)
+  console.log("Render game area" + liveGameStore!.currentGameId)
 
   const handleMenuClick = (link: string) => () => {
     navigate(location.pathname + link)
@@ -62,3 +62,4 @@ export const GameArea = ()=>{
 
   return <Content className={`game-area content`}>{innerContent}</Content>
 }
+)

@@ -1,5 +1,5 @@
 import * as jsEnv from 'browser-or-node'
-import { observable, action, computed, reaction, makeObservable } from 'mobx'
+import { observable, action, computed, reaction, makeObservable, runInAction } from 'mobx'
 import { decode } from 'jwt-simple'
 import axios, { AxiosInstance } from 'axios'
 //import { analysisBoardStore } from './analysis-board-store'
@@ -165,6 +165,7 @@ export class UserStore {
       //   timeout: 30 * 1000,
       //   headers: { Authorization: `Bearer ${this.accessToken}` }
       // })
+      //process.env.API_CORE_URL
 
       this.shortcastleAxiosClient = axios.create({
         baseURL: 'https://api.shortcastle.com/',
@@ -232,7 +233,7 @@ export class UserStore {
 
     return true
   }
-
+  
   async changePassword(args: ChangePasswordArgs) {
     this.changingPassword = true
     this.changePasswordError = ''
@@ -242,7 +243,9 @@ export class UserStore {
         '/identity/account/change-password',
         args
       )
-      this.changingPassword = false
+      runInAction(()=>{
+        this.changingPassword = false
+      })
     } catch (e) {
       console.dir(e)
       //if (e.response && e.response.status === 400) {
@@ -250,8 +253,9 @@ export class UserStore {
       //} else {
       //  this.changePasswordError = 'Error changing password'
       //}
-
-      this.changingPassword = false
+      runInAction(()=>{
+        this.changingPassword = false
+      })
       return false
     }
 
@@ -268,10 +272,14 @@ export class UserStore {
 
     try {
       await this.getApiCoreAxiosClient()!.put('identity/profile/me', args)
-      this.changingName = false
+      runInAction(()=>{
+        this.changingName = false
+      })
     } catch (e) {
-      this.changeNameError = 'Error saving changes'
-      this.changingName = false
+      runInAction(()=>{
+        this.changeNameError = 'Error saving changes'
+        this.changingName = false
+      })
       return false
     }
 

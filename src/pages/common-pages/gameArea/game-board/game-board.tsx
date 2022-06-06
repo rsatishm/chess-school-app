@@ -14,12 +14,16 @@ import {
 } from 'antd'
 
 import './game-board.less'
+import { autorun } from 'mobx'
+import { formatTime } from '../../../../utils/utils'
+import Chessgroundboard from '../../../../components/chessgroundboard/Chessgroundboard'
+
 
 interface Props {
   gameId: any
 }
 
-const GameBoard = (props: Props)=>{
+const GameBoard = observer((props: Props)=>{
   const {syncedGameStore, userStore} = useContext(MobXProviderContext)
 
   const handleAcceptDraw = () => {
@@ -268,11 +272,7 @@ const GameBoard = (props: Props)=>{
     </div>
   )
 
-}
-
-import { autorun } from 'mobx'
-import { formatTime } from '../../../../utils/utils'
-import Chessgroundboard from '../../../../components/chessgroundboard/Chessgroundboard'
+})
 
 interface TimerProps {
   name: String

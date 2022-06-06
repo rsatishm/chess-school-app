@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { observable, action, makeObservable } from 'mobx'
+import { observable, action, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
 
@@ -61,30 +61,38 @@ export class StudentsGroupsStore {
         const response = await userStore
           .getApiCoreV3AxiosClient()!
           .get('students/all-by-coachId/')
-          console.log("Done getting students by coach")
+        console.log("students/all-by-coachId/\n" + JSON.stringify(response))
         // Transform students into uuid->value key-value pairs
-        this.students = R.compose(
-          R.fromPairs,
-          R.map((s: any) => [s.uuid, s] as [string, {}])
-        )(response.data.records)
+
         console.log("Get groups  by coach")
         const groups = await userStore
           .getApiCoreV3AxiosClient()!
           .get('/groups/all-by-coachId/')
-          console.log("Done getting groups by coach")  
+        console.log("groups/all-by-coachId/\n" + JSON.stringify(groups))
         // Transform groups into uuid->value key-value pairs
-        this.groups = R.compose(
-          R.fromPairs,
-          R.map((g: any) => [g.uuid, g] as [string, {}])
-        )(groups.data.records)
 
-        this.loading = false
+        console.log(JSON.stringify(groups))
+
+        runInAction(() => {
+          this.students = R.compose(
+            R.fromPairs,
+            R.map((s: any) => [s.uuid, s] as [string, {}])
+          )(response.data.records)
+          this.groups = R.compose(
+            R.fromPairs,
+            R.map((g: any) => [g.uuid, g] as [string, {}])
+          )(groups.data.records)
+          console.log("groups:  "+ JSON.stringify(this.groups))
+          this.loading = false
+        })
       } catch (e) {
         //console.log("Error getting students by coach " + e)
-        this.loading = false
-        this.error = 'Error loading students and groups'
-        this.students = null
-        this.groups = null
+        runInAction(()=>{
+          this.loading = false
+          this.error = 'Error loading students and groups'
+          this.students = null
+          this.groups = null
+        })
       }
     }
   }
@@ -107,12 +115,15 @@ export class StudentsGroupsStore {
         groupType: 'academy',
         purpose: 'student'
       })
-
-      this.editing = false
+      runInAction(()=>{
+        this.editing = false
+      })
       this.refresh()
     } catch (e) {
-      this.editing = false
-      this.editError = 'Failed to edit group'
+      runInAction(()=>{
+        this.editing = false
+        this.editError = 'Failed to edit group'
+      })
 
       return false
     }
@@ -132,11 +143,15 @@ export class StudentsGroupsStore {
         purpose: 'student'
       })
 
-      this.creating = false
+      runInAction(()=>{
+        this.creating = false
+      })
       this.refresh()
     } catch (e) {
-      this.creating = false
-      this.createError = 'Failed to create group'
+      runInAction(()=>{
+        this.creating = false
+        this.createError = 'Failed to create group'
+      })
 
       return false
     }
