@@ -136,6 +136,10 @@ exports.AntdExamples = function () {
         {
             to: '/app/antd/image',
             title: 'Image'
+        },
+        {
+            to: '/app/antd/steps',
+            title: 'Steps'
         }
     ];
     return React.createElement(React.Fragment, null,

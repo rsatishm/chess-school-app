@@ -134,7 +134,11 @@ export const AntdExamples = ()=>{
           {
             to: '/app/antd/image',
             title: 'Image'
-          }                
+          } ,
+          {
+            to: '/app/antd/steps',
+            title: 'Steps'
+          }                           
       ];
     return <>
     <Layout>

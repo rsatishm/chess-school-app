@@ -26,6 +26,7 @@ var select_1 = require("./select/select");
 var skeleton_1 = require("./skeleton/skeleton");
 var space_1 = require("./space/space");
 var statistic_1 = require("./statistic/statistic");
+var steps_1 = require("./steps/steps");
 var table_1 = require("./table/table");
 var tabs_1 = require("./tabs/tabs");
 var tag_1 = require("./tag/tag");
@@ -71,5 +72,6 @@ exports.AntdRoute = function () {
         React.createElement(react_router_dom_1.Route, { path: "/statistic/*", element: React.createElement(statistic_1.AntdStatistic, null) }),
         React.createElement(react_router_dom_1.Route, { path: "/skeleton/*", element: React.createElement(skeleton_1.AntdSkeleton, null) }),
         React.createElement(react_router_dom_1.Route, { path: "/modal/*", element: React.createElement(modal_1.AntdModal, null) }),
-        React.createElement(react_router_dom_1.Route, { path: "/image/*", element: React.createElement(image_1.AntdImage, null) }));
+        React.createElement(react_router_dom_1.Route, { path: "/image/*", element: React.createElement(image_1.AntdImage, null) }),
+        React.createElement(react_router_dom_1.Route, { path: "/steps/*", element: React.createElement(steps_1.AntdSteps, null) }));
 };

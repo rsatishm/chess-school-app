@@ -23,6 +23,7 @@ import { AntdSelect } from "./select/select";
 import { AntdSkeleton } from "./skeleton/skeleton";
 import { AntdSpace } from "./space/space";
 import { AntdStatistic } from "./statistic/statistic";
+import { AntdSteps } from "./steps/steps";
 import { AntdTable } from "./table/table";
 import { AntdTabs } from "./tabs/tabs";
 import { AntdTag } from "./tag/tag";
@@ -172,7 +173,11 @@ export const AntdRoute = () => {
     <Route
       path="/image/*"
       element={<AntdImage/>}
-    />           
+    />   
+    <Route
+      path="/steps/*"
+      element={<AntdSteps/>}
+    />                
   </Routes>
 
 }
