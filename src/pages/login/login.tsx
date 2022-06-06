@@ -182,7 +182,7 @@ const Login = observer(() => {
 
     return (<Layout className="page login">
         <Layout.Header />
-        <Layout className="content">
+        <Layout.Content className="content">
             <div className="wrapper">
                 <Row
                     justify="space-around"
@@ -295,7 +295,7 @@ const Login = observer(() => {
                     )
                 )}
             </div>
-        </Layout>
+        </Layout.Content>
     </Layout>)
 })
 export default Login;

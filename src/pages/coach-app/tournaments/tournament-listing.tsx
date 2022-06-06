@@ -7,10 +7,10 @@ import moment from 'moment-timezone'
 import './tournament-listing.less'
 import { Link, useNavigate } from 'react-router-dom'
 
-export const TournamentListing = observer(()=>{
-  const {coachTournamentStore} = useContext(MobXProviderContext)
+export const TournamentListing = observer(() => {
+  const { coachTournamentStore } = useContext(MobXProviderContext)
   const navigate = useNavigate()
-  useEffect(()=>{
+  useEffect(() => {
     coachTournamentStore!.load()
   }, [])
   const handleView = (record: any) => {
@@ -89,16 +89,13 @@ export const TournamentListing = observer(()=>{
 
   return (
     <Layout.Content className="content tournaments">
+      <div className='header'>
+        <p className="title"><span className='cursor-pointer'>Tournaments</span></p>
+        <Button type='primary'>
+            <Link to="/app/tournaments/create">Create Tournament</Link>
+          </Button>
+      </div>
       <div className="inner">
-        <h1>Tournaments</h1>
-        <Row>
-          <Col span={4}>
-            <Button>
-              <Link to="/app/tournaments/create">Create Tournament</Link>
-            </Button>
-          </Col>
-        </Row>
-
         <div className="tournaments-section">
           <h2>Current Tournaments</h2>
           <List
