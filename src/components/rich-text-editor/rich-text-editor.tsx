@@ -28,14 +28,12 @@ export const RichTextEditor = (props: Props)=>{
   })
 
   React.useEffect(()=>{
-    () => {
       if (props.onChange) {
         const htmlContent = draftConvert.convertToHTML(
           state.editorState.getCurrentContent()
         )
         props.onChange(htmlContent)
       }
-    }
   }, [props.onChange])
 
   const updateState = (newState: Partial<State>) => {
