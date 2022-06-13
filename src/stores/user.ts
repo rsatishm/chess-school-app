@@ -18,7 +18,7 @@ export interface ChangeNameArgs {
   firstname: string
   lastname: string
 }
-
+const PROD : boolean = false
 export class UserStore {
   isLoggedIn = false
   uuid = ''
@@ -47,8 +47,15 @@ export class UserStore {
   private shortcastleAxiosClient: AxiosInstance | null = null
   private analyticsAxiosClient: AxiosInstance | null = null
 
+
+  private apiCoreAxiosLocalClient: AxiosInstance | null = axios.create({
+    baseURL: "http://localhost:3000/api/v2/",
+    timeout: 30 * 1000
+  })
+
   private apiCoreAxiosClient: AxiosInstance | null = axios.create({
-    baseURL: "https://api-core.chesslang.com/api/v2/",
+    baseURL: PROD ? "https://api-core.chesslang.com/api/v2/" :
+    "https://localhost:3000/api/v2/",
     timeout: 30 * 1000
   })
 
@@ -305,6 +312,11 @@ export class UserStore {
 
   getShortcastleAxiosClient() {
     return this.shortcastleAxiosClient
+  }
+  
+  getApiCoreAxiosLocalClient() {
+    console.log("get local client")
+    return this.apiCoreAxiosLocalClient
   }
 
   getApiCoreAxiosClient() {

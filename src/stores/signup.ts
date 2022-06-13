@@ -1,7 +1,8 @@
 import * as jsEnv from 'browser-or-node'
-import { makeObservable, observable } from 'mobx'
+import { action, makeObservable, observable, runInAction } from 'mobx'
 import { MobXProviderContext } from 'mobx-react'
 import React from 'react'
+import { userStore } from './user'
 
 export class SignupStore {
   firstname = ''
@@ -28,7 +29,7 @@ export class SignupStore {
     this.error = initValues.error || ''
 
     makeObservable(this, {
-       firstname: observable,
+      firstname: observable,
       lastname: observable,
       username: observable,
       phone: observable,
@@ -38,13 +39,34 @@ export class SignupStore {
       password: observable,
       retypePassword: observable,
       complete: observable,
-      error: observable
+      error: observable,
+      signup: action.bound
     })
+  }
+
+  async signup(userdetails: any) {
+    console.log("Userdetails: " + JSON.stringify(userdetails))
+    this.complete = false
+    this.error = ''
+    try {
+      await userStore.getApiCoreAxiosLocalClient()!.post("signup", userdetails)
+      runInAction(() => {
+        this.complete = true
+      })
+      return true
+    } catch (e) {
+      console.log("erroro while signing up! " + e)
+      runInAction(() => {
+        this.complete = false
+        this.error = 'Failed to signup'
+      })
+    }
+    return false
   }
 }
 
-export const useSignupStore = ()=> {
-  const {signupStore} = React.useContext(MobXProviderContext);
+export const useSignupStore = () => {
+  const { signupStore } = React.useContext(MobXProviderContext);
   return signupStore;
 }
 

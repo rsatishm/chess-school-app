@@ -12,14 +12,10 @@ interface SignupState {
   formFields: SignupStore
 }
 
-interface SignupProps {
-  signupStore: SignupStore
-}
-
 export const Signup = observer(() => {
 	const [form] = Form.useForm();
   const signupStore : SignupStore = useSignupStore();
-  const [state, setState] = React.useState({
+  const [state, setState] = React.useState<SignupState>({
     confirmDirty: false,
     formFields: signupStore
   });
@@ -36,7 +32,7 @@ export const Signup = observer(() => {
     }
   }
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = () => {
     //e.preventDefault();
     form.validateFields().then((values: any) => {
       setState((prevState)=>{
@@ -45,7 +41,7 @@ export const Signup = observer(() => {
           formFields: { ...state.formFields, ...values }
         }}
       );
-      signup();
+      signupStore!.signup(values)
     })
     return false;
   }
@@ -75,6 +71,7 @@ export const Signup = observer(() => {
       callback('Username should not contain spaces')
       return
     }
+    callback()
   }
 
   const validateEmail = (_: any, value: string, callback: Function) => {
@@ -82,6 +79,7 @@ export const Signup = observer(() => {
       callback()
       return
     }
+    callback()
   }
 
   const compareToFirstPassword = (_: any, value: string, callback: Function) => {
@@ -115,41 +113,6 @@ export const Signup = observer(() => {
             Already have an account? <Link to="/login">Login</Link>
           </p>
           <p className="muted-message">All fields are required.</p>
-          <form
-            className="hi   dden-form"
-            ref={backingFormRef}
-            action="/signup"
-            method="POST"
-          >
-            <input name="firstname" type="hidden" value="FirstName" />
-            <input name="lastname" type="hidden" value="LastName" />
-            <input
-              name="dateOfBirth"
-              type="hidden"
-              value={new Date().toISOString()}
-            />
-            <input name="gender" type="hidden" value="M" />
-            <input
-              name="username"
-              type="hidden"
-              value={state.formFields.username}
-            />
-            <input
-              name="email"
-              type="hidden"
-              value={state.formFields.email}
-            />
-            <input
-              name="phoneNumber"
-              type="hidden"
-              value={state.formFields.phone}
-            />
-            <input
-              name="password"
-              type="hidden"
-              value={state.formFields.password}
-            />
-          </form>
           <Form form={form} className="signup-form" onFinish={handleSubmit}>
             <Form.Item name="username" rules={[
                   {
