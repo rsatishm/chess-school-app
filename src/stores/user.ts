@@ -55,7 +55,7 @@ export class UserStore {
 
   private apiCoreAxiosClient: AxiosInstance | null = axios.create({
     baseURL: PROD ? "https://api-core.chesslang.com/api/v2/" :
-    "https://localhost:3000/api/v2/",
+    "http://localhost:3000/api/v2/",
     timeout: 30 * 1000
   })
 
@@ -65,7 +65,7 @@ export class UserStore {
   })
 
   private apiCoreV3AxiosClient: AxiosInstance | null = axios.create({
-    baseURL: "https://api-core.chesslang.com/api/v2/",
+    baseURL: "http://api-core.chesslang.com/api/v2/",
     timeout: 30 * 1000
   })
 
@@ -124,13 +124,14 @@ export class UserStore {
     try {
       console.log("decode")
       const payload : any = decode(this.accessToken, '', true)
-      console.log("after decode: " + payload)
+      console.log("after decode: " + JSON.stringify(payload))
+      /*
       if (payload.exp < +new Date()) {
         this.accessToken = ''
         this.refreshToken = ''
         this.logout()
         return
-      }
+      }*/
 
       this.isLoggedIn = true
       this.uuid = payload.user.uuid
@@ -227,13 +228,17 @@ export class UserStore {
         const profile = await this.getApiCoreAxiosClient()!.get(
           'identity/profile/me'
         )
-        this.profile = profile.data
-        console.log("Profile loaded " + this.profile.firstname)
-        this.profileLoading = false
+        runInAction(()=>{
+          this.profile = profile.data
+          console.log("Profile loaded " + this.profile.firstname)
+          this.profileLoading = false
+        })
         preferencesStore!.load()
       } catch (e) {
-        this.profileLoading = false
-        this.profileError = 'Error loading profile'
+        runInAction(()=>{
+          this.profileLoading = false
+          this.profileError = 'Error loading profile'
+        })
         return false
       }
     }

@@ -102,6 +102,7 @@ const Login = observer(() => {
               client_id: 'default',
               client_secret: 'xyzfgh'
             })
+          console.log("Got response " + JSON.stringify(response.data))  
           const { access_token, refresh_token } = response.data
           console.log("access token: " + access_token)
           if (access_token && refresh_token) {
