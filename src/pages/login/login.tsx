@@ -90,50 +90,17 @@ const Login = observer(() => {
         console.log('refresh page')
       }
 
-    const login = async () => {
-        try {
-          console.log("Call login api for " + loginState.formFields.username)  
-          const response = await userStore
-            .getApiCoreAxiosClient()!
-            .post('identity/oauth/token', {              
-              username: loginState.formFields.username,
-              password: loginState.formFields.password,
-              grant_type: 'password',
-              client_id: 'default',
-              client_secret: 'xyzfgh'
-            })
-          console.log("Got response " + JSON.stringify(response.data))  
-          const { access_token, refresh_token } = response.data
-          console.log("access token: " + access_token)
-          if (access_token && refresh_token) {
-            userStore.consumeTokens(access_token, refresh_token)
-            //this.props.invitationStore.init()
-            //this.props.liveGameStore.init()
-            navigate('/app')
-            //refresh()
-          } else {
-            throw new Error('Server Error')
-          }
-        } catch (e) {
-            message.error(e + "Server Error");
-            /*
-          if (e.response && e.response.status === 400) {
-            message.error(
-              <FormattedMessage
-                id="login.log_in_area.invalid_creds"
-                defaultMessage="Invalid Credentials"
-              />
-            )
-          } else {
-            message.error(
-              <FormattedMessage
-                id="login.log_in_area.server_error"
-                defaultMessage="Server Error"
-              />
-            )
-          }
-          */
-        }        
+    const login = () => {
+        console.log("Call login api for " + loginState.formFields.username)  
+        loginStore!.login(loginState.formFields)
+        if (!loginStore.error) {
+          //this.props.invitationStore.init()
+          //this.props.liveGameStore.init()
+          navigate('/app')
+          //refresh()
+        } else {
+          throw new Error(loginStore!.error)
+        }     
     }
 
     let handleSubmit = (v : any) => {

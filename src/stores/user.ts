@@ -53,9 +53,16 @@ export class UserStore {
     timeout: 30 * 1000
   })
 
+  private getApiURL() {
+    return PROD ? "https://api-core.chesslang.com/" : "http://localhost:3000/"
+  }
+
+  private getBaseApiURL() {
+    return this.getApiURL() + "api/v2/"
+  }
+
   private apiCoreAxiosClient: AxiosInstance | null = axios.create({
-    baseURL: PROD ? "https://api-core.chesslang.com/api/v2/" :
-    "http://localhost:3000/api/v2/",
+    baseURL: this.getBaseApiURL(),
     timeout: 30 * 1000
   })
 
@@ -163,7 +170,7 @@ export class UserStore {
       localStorage.setItem('chesslang-refresh-token', this.refreshToken)
 
       this.axiosClient = axios.create({
-        baseURL: "https://api.chesslang.com/",
+        baseURL: this.getApiURL(),
         timeout: 30 * 1000,
         headers: { 'X-Authorization': `Bearer ${this.accessToken}` }
       })
@@ -181,8 +188,10 @@ export class UserStore {
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })
 
+      console.log("apiCoreAxiosClient recreated with token in header")
+
       this.apiCoreAxiosClient = axios.create({
-        baseURL: "https://api-core.chesslang.com/api/v2/",
+        baseURL: this.getBaseApiURL(),
         timeout: 30 * 1000,
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })
