@@ -54,15 +54,27 @@ export class UserStore {
   })
 
   private getApiURL() {
+    return PROD ? "https://api.chesslang.com/" : "http://localhost:3000/"
+  }
+
+  private getCoreApiURL() {
     return PROD ? "https://api-core.chesslang.com/" : "http://localhost:3000/"
   }
 
-  private getBaseApiURL() {
-    return this.getApiURL() + "api/v2/"
+  private getCoreApiV3URL() {
+    return PROD ? "https://api-core.chesslang.com/" : "http://localhost:3000/"
+  }
+
+  private getCoreBaseApiURL() {
+    return this.getCoreApiURL() + "api/v2/"
+  }
+
+  private getCoreBaseApiV3URL() {
+    return this.getCoreApiV3URL() + "api/v2/"
   }
 
   private apiCoreAxiosClient: AxiosInstance | null = axios.create({
-    baseURL: this.getBaseApiURL(),
+    baseURL: this.getCoreBaseApiURL(),
     timeout: 30 * 1000
   })
 
@@ -72,7 +84,7 @@ export class UserStore {
   })
 
   private apiCoreV3AxiosClient: AxiosInstance | null = axios.create({
-    baseURL: "http://api-core.chesslang.com/api/v2/",
+    baseURL: this.getCoreBaseApiV3URL(),
     timeout: 30 * 1000
   })
 
@@ -191,13 +203,13 @@ export class UserStore {
       console.log("apiCoreAxiosClient recreated with token in header")
 
       this.apiCoreAxiosClient = axios.create({
-        baseURL: this.getBaseApiURL(),
+        baseURL: this.getCoreBaseApiURL(),
         timeout: 30 * 1000,
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })
 
       this.apiCoreV3AxiosClient = axios.create({
-        baseURL: "https://api-core.chesslang.com/api/v2/",
+        baseURL: this.getCoreBaseApiV3URL(),
         timeout: 30 * 1000,
         headers: { Authorization: `Bearer ${this.accessToken}` }
       })

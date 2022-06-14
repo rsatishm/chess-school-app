@@ -74,20 +74,24 @@ export class StudentsGroupsStore {
         console.log(JSON.stringify(groups))
 
         runInAction(() => {
-          this.students = R.compose(
-            R.fromPairs,
-            R.map((s: any) => [s.uuid, s] as [string, {}])
-          )(response.data.records)
-          this.groups = R.compose(
-            R.fromPairs,
-            R.map((g: any) => [g.uuid, g] as [string, {}])
-          )(groups.data.records)
-          console.log("groups:  "+ JSON.stringify(this.groups))
+          if (response.data.records) {
+            this.students = R.compose(
+              R.fromPairs,
+              R.map((s: any) => [s.uuid, s] as [string, {}])
+            )(response.data.records)
+          }
+          if (groups.data.records) {
+            this.groups = R.compose(
+              R.fromPairs,
+              R.map((g: any) => [g.uuid, g] as [string, {}])
+            )(groups.data.records)
+            console.log("groups:  " + JSON.stringify(this.groups))
+          }
           this.loading = false
         })
       } catch (e) {
         //console.log("Error getting students by coach " + e)
-        runInAction(()=>{
+        runInAction(() => {
           this.loading = false
           this.error = 'Error loading students and groups'
           this.students = null
@@ -115,12 +119,12 @@ export class StudentsGroupsStore {
         groupType: 'academy',
         purpose: 'student'
       })
-      runInAction(()=>{
+      runInAction(() => {
         this.editing = false
       })
       this.refresh()
     } catch (e) {
-      runInAction(()=>{
+      runInAction(() => {
         this.editing = false
         this.editError = 'Failed to edit group'
       })
@@ -143,12 +147,12 @@ export class StudentsGroupsStore {
         purpose: 'student'
       })
 
-      runInAction(()=>{
+      runInAction(() => {
         this.creating = false
       })
       this.refresh()
     } catch (e) {
-      runInAction(()=>{
+      runInAction(() => {
         this.creating = false
         this.createError = 'Failed to create group'
       })

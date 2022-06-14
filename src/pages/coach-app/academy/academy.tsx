@@ -25,7 +25,7 @@ export const Academy = observer(() => {
     console.log("Load academies")
     academyStore!.load()
     studentsGroupsStore!.load()
-  })
+  }, [])
 
   if (
     academyStore!.loading ||
