@@ -154,7 +154,8 @@ export class AcademyStore {
     this.creating = true
     this.createError = ''
     try {
-      await userStore.getApiCoreV3AxiosClient()!.post('/academies', academy)
+      console.log("Create Academy: " + JSON.stringify(academy))
+      await userStore.getApiCoreV3AxiosClient()!.post('/academies/create', academy)
       runInAction(()=>{
         this.creating = false
       })

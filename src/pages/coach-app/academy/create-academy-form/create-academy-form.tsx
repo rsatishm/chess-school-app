@@ -8,11 +8,15 @@ import { ExceptionOutlined, HomeOutlined, LoadingOutlined } from '@ant-design/ic
 
 const { TextArea } = Input
 
+interface Props {
+  onCreate: ()=>void
+}
+
 interface State {
   confirmDirty: boolean
   formFields: {
     name: string
-    shortname: string
+    shortName: string
   }
 }
 
@@ -22,14 +26,16 @@ export const CreateAcademyForm = observer(()=>{
     confirmDirty: false,
     formFields: {
       name: '',
-      shortname: ''
+      shortName: ''
     }
   })
   const [form] = useForm()
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
+    console.log("validate form fields")
     form.validateFields().then(async (values: any) => {
+      console.log("Create academy for " + JSON.stringify(values))
       academyStore!.create(values)
     })
   }
@@ -44,7 +50,7 @@ export const CreateAcademyForm = observer(()=>{
       userStore
         .getApiCoreAxiosClient()!
         .post(
-          `${process.env.API_CORE_URL}academy/shortname-exists`,
+          "academy/shortname-exists",
           { shortName: (value || '').toLowerCase() },
           {
             headers: {
@@ -96,10 +102,10 @@ export const CreateAcademyForm = observer(()=>{
         <HomeOutlined/>
         <h2>Create your virtual academy</h2>
       </div>
-      <Form.Item rules= {[{ required: true, message: 'Name is required' }]}>
+      <Form.Item name="name" rules= {[{ required: true, message: 'Name is required' }]}>
         <Input placeholder="Name" />
       </Form.Item>
-      <Form.Item rules={ [
+      <Form.Item name="shortName" rules={ [
             {
               required: true,
               message: 'Short name is required, no spaces'
