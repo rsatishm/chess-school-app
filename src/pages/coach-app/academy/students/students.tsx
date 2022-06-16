@@ -13,6 +13,7 @@ import { getFormattedName } from '../../../../utils/utils'
 import { observable } from 'mobx'
 import { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
+import { CreateStudentDrawer } from './create-student-drawer/create-student-drawer'
 
 interface Props {
   studentsGroupsStore?: StudentsGroupsStore
@@ -20,7 +21,9 @@ interface Props {
   ratingSystemStore: RatingSystemStore
 }
 
+
 interface State {
+  createDrawerVisible: boolean
   showPassword: boolean
   resetPasswordModalVisible: boolean
   resetNameMovdalVisible: boolean
@@ -45,6 +48,7 @@ export const Students = observer(()=>{
   console.log(JSON.stringify(students))
 
   const [state, setState] = useState({
+    createDrawerVisible: false,
     showPassword: false,
     resetPasswordModalVisible: false,
     resetNameMovdalVisible: false,
@@ -237,6 +241,12 @@ export const Students = observer(()=>{
     console.log(JSON.stringify(students))
     return (
       <div className="networked-students">
+        <div className="flex flex-row-reverse">
+        <div className='mr-4'>
+        <Button type='primary' onClick={handleStudentCreate} className="w-40">
+            Add Students
+        </Button>
+        </div>
         <p className="muted-text">
           Initial password for all accounts:{' '}
           {state.showPassword ? (
@@ -249,6 +259,7 @@ export const Students = observer(()=>{
             </span>
           )}
         </p>
+        </div>
         <div className="scroller">
           <List
             itemLayout="horizontal"
@@ -385,11 +396,32 @@ export const Students = observer(()=>{
       </Modal>
     )
   }
-  
+  const updateState = (newState: Partial<State>) => {
+    setState((prevState) => {
+      return { ...prevState, ...newState }
+    })
+  }
+
+  const handleCreateStudentClose = () => {
+    updateState({
+      createDrawerVisible: false
+    })
+  }
+
+  const handleStudentCreate = () => {
+    updateState({
+      createDrawerVisible: true
+    })
+  }
+
   return (
     <div className="students inner">
       <div className="container">
         {renderStudents(students)}
+        <CreateStudentDrawer
+        visible={state.createDrawerVisible}
+        onClose={handleCreateStudentClose}
+      />        
         <Modal
           title="Reset Password"
           visible={state.resetPasswordModalVisible}
