@@ -48,13 +48,13 @@ export const CreateStudentDrawer = observer((props: Props) => {
     e.preventDefault()
     groupForm.validateFields().then(async (values: any) => {
       console.log('---> values: ', values)
-      const success = await studentsGroupsStore!.create(values)
+      const success = await studentsGroupsStore!.addStudent(values)
       if (success) {
-        message.success('Created group successfully.')
+        message.success('Added student successfully.')
         props.onClose()
       }
     }).catch(()=>{
-      message.error('Failed to create group.')
+      message.error('Failed add student.')
     })
   }
 

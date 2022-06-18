@@ -100,7 +100,7 @@ export class StudentsGroupsStore {
       }
     }
   }
-
+  
   async refresh() {
     this.lastLoadTime = 0
     if (this.groups) {
@@ -146,6 +146,29 @@ export class StudentsGroupsStore {
         groupType: 'academy',
         purpose: 'student'
       })
+
+      runInAction(() => {
+        this.creating = false
+      })
+      this.refresh()
+    } catch (e) {
+      runInAction(() => {
+        this.creating = false
+        this.createError = 'Failed to create group'
+      })
+
+      return false
+    }
+
+    return true
+  }
+
+  async addStudent(student: any) {
+    this.creating = true
+    this.createError = ''
+    try {
+      console.log('--> creating: ', JSON.stringify(student))
+      await userStore.getApiCoreV3AxiosClient()!.post('/students/add', student)
 
       runInAction(() => {
         this.creating = false

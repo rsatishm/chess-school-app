@@ -134,6 +134,9 @@ export const Academy = observer(() => {
         <Menu.Item key="settings" onClick={handleMenuClick('/settings')}>
           Settings
         </Menu.Item>
+        <Menu.Item key="settings" onClick={handleMenuClick('/academy')}>
+          Academy
+        </Menu.Item>
       </Menu>
       <Routes>
         <Route
