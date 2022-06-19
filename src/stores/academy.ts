@@ -135,8 +135,10 @@ export class AcademyStore {
         })
 
       studentsGroupsStore.load(true)
-      return response.data
+      console.log("Student update successful, return " + JSON.stringify(response.data))
+      return {...response.data, success: true}
     } catch (error) {
+      console.log("studen update failed")
       const e = error as AxiosError
       console.log(e.response)
       return e.response!.data

@@ -19,7 +19,6 @@ interface State {
   createDrawerVisible: boolean
   showPassword: boolean
   resetPasswordModalVisible: boolean
-  resetNameMovdalVisible: boolean
   ratingModalVisible: boolean
   studentUuid: string
   studentPassword: string
@@ -43,7 +42,6 @@ export const Students = observer(()=>{
     createDrawerVisible: false,
     showPassword: false,
     resetPasswordModalVisible: false,
-    resetNameMovdalVisible: false,
     ratingModalVisible: false,
     studentUuid: '',
     studentPassword: '',
@@ -58,7 +56,7 @@ export const Students = observer(()=>{
   
  useEffect(()=>{
     ratingSystemStore.load()
-  }, [state.createDrawerVisible])
+  }, [state])
 
   const handleShowPassword = () => {
     setState((prevState: State)=>{
@@ -149,12 +147,13 @@ export const Students = observer(()=>{
       state.studentFirstname,
       state.studentLastname
     )
+    console.log("Update response of student: " + JSON.stringify(resp))
     if (resp.success) {
       message.success(resp.message)
       resetFirstnameState()
       resetLastnameState()
     } else {
-      message.error(resp.message)
+      message.error("Error: " + resp.message)
     }
   }
 
@@ -434,6 +433,7 @@ export const Students = observer(()=>{
         >
           <Form.Item>
             <Input
+              name="username"
               type="text"
               placeholder="User Name"
               value={state.studentUsername}
@@ -442,6 +442,7 @@ export const Students = observer(()=>{
           </Form.Item>
           <Form.Item>
             <Input
+              name="firstname"
               type="text"
               placeholder="First Name"
               autoComplete="first-name"
@@ -451,6 +452,7 @@ export const Students = observer(()=>{
           </Form.Item>
           <Form.Item>
             <Input
+              name="lastname"
               type="text"
               placeholder="Last Name"
               value={state.studentLastname}
