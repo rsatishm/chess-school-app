@@ -51,7 +51,7 @@ export const CreateStudentDrawer = observer((props: Props) => {
       const success = await studentsGroupsStore!.addStudent(values)
       if (success) {
         message.success('Added student successfully.')
-        props.onClose()
+        handleClose()
       }
     }).catch(()=>{
       message.error('Failed add student.')
@@ -166,10 +166,10 @@ export const CreateStudentDrawer = observer((props: Props) => {
                 />
               
             </Form.Item>
-            <Form.Item name='firstName' initialValue={'Firstname'}>
+            <Form.Item name='firstname' initialValue={'Firstname'}>
           <Input placeholder="First Name" />
           </Form.Item>  
-          <Form.Item name='lastName' initialValue={'Lastname'}>
+          <Form.Item name='lastname' initialValue={'Lastname'}>
           <Input placeholder="First Name" />
           </Form.Item>             
             <Form.Item name="email">

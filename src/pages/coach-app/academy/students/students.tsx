@@ -15,13 +15,6 @@ import { useContext, useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { CreateStudentDrawer } from './create-student-drawer/create-student-drawer'
 
-interface Props {
-  studentsGroupsStore?: StudentsGroupsStore
-  academyStore?: AcademyStore
-  ratingSystemStore: RatingSystemStore
-}
-
-
 interface State {
   createDrawerVisible: boolean
   showPassword: boolean
@@ -37,7 +30,6 @@ interface State {
   loading: boolean
   resetNameModalVisible: boolean
 }
-
 
 export const Students = observer(()=>{
   const {studentsGroupsStore, ratingSystemStore, academyStore} = useContext(MobXProviderContext)
@@ -66,7 +58,7 @@ export const Students = observer(()=>{
   
  useEffect(()=>{
     ratingSystemStore.load()
-  }, [ratingSystemStore])
+  }, [state.createDrawerVisible])
 
   const handleShowPassword = () => {
     setState((prevState: State)=>{

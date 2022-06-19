@@ -108,6 +108,13 @@ export class StudentsGroupsStore {
     }
   }
 
+  async refreshStudents() {
+    this.lastLoadTime = 0
+    if (this.students) {
+      this.load(true)
+    }
+  }
+
   async edit(uuid: string, group: any) {
     this.editing = true
     this.editError = ''
@@ -173,7 +180,7 @@ export class StudentsGroupsStore {
       runInAction(() => {
         this.creating = false
       })
-      this.refresh()
+      this.refreshStudents()
     } catch (e) {
       runInAction(() => {
         this.creating = false
