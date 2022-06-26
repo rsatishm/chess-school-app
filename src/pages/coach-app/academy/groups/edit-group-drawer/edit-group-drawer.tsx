@@ -28,14 +28,15 @@ interface State {
 }
 
 export const EditGroupDrawer = observer((props: Props) => {
+  console.log("Group detail: " + JSON.stringify(props.groupDetail))
   const [state, setState] = useState<State>({
     confirmDirty: false,
     formFields: {
-      name: '',
-      description: '',
+      name:  props.groupDetail.name,
+      description: props.groupDetail.description,
       groupType: 'academy',
       purpose: 'student',
-      userIds: []
+      userIds: props.groupDetail.userIds
     }
   })
 
@@ -47,8 +48,9 @@ export const EditGroupDrawer = observer((props: Props) => {
 
   const [form] = useForm()
 
+  /*
   React.useEffect(() => {
-    if (props.visible) {
+    if (props.visible) {      
       updateState({
         formFields: {
           name: props.groupDetail.name,
@@ -58,8 +60,9 @@ export const EditGroupDrawer = observer((props: Props) => {
           userIds: props.groupDetail.userIds
         }
       })
+      console.log("After update state: " + JSON.stringify(state.formFields))
     }
-  }, [props.groupDetail.name, props.groupDetail.description, props.groupDetail.userIds])
+  }, [props.groupDetail.name, props.groupDetail.description, props.groupDetail.userIds])*/
 
   const { studentsGroupsStore } = useContext(MobXProviderContext)
 
@@ -72,7 +75,7 @@ export const EditGroupDrawer = observer((props: Props) => {
     e.preventDefault()
     form.validateFields().then(async (values: any) => {
       const success = await studentsGroupsStore!.edit(
-        props.groupDetail.uuid,
+        props.groupDetail._id,
         values)
       message.success('Edited group successfully.')
       props.onClose()
@@ -159,21 +162,16 @@ export const EditGroupDrawer = observer((props: Props) => {
     }
 
     const groupForm = (() => {
-      return (
-        <Form form={form} initialValues={{
-          name: state.formFields!.name,
-          userIds: state.formFields!.userIds,
-          description: state.formFields!.description
-        }}>
-          <Form.Item rules={[{ required: true, message: 'Name is required' }]}>
-            <Input placeholder="Group Name" />
+      return <Form form={form}>
+          <Form.Item name="name" rules={[{ required: true, message: 'Name is required' }]} initialValue={state.formFields!.name}>
+            <Input placeholder="Group Name"/>
           </Form.Item>
-          <Form.Item rules={[
+          <Form.Item name="userIds" rules={[
             {
               required: true,
               message: 'At least one student must be selected'
             }
-          ]}>
+          ]} initialValue={state.formFields!.userIds}>
             <Select
               mode="multiple"
               placeholder="Select Students"
@@ -188,11 +186,10 @@ export const EditGroupDrawer = observer((props: Props) => {
               )}
             </Select>
           </Form.Item>
-          <Form.Item rules={[{ required: true, message: 'Description is required' }]}>
-            <TextArea rows={2} placeholder="Group Description" />)
+          <Form.Item name="description" rules={[{ required: true, message: 'Description is required' }]} initialValue={state.formFields!.description}>
+            <TextArea rows={2} placeholder="Group Description" />
           </Form.Item>
         </Form>
-      )
     })()
 
     return (

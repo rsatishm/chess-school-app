@@ -30,7 +30,7 @@ export const Groups = observer(() => {
   React.useEffect(() => {
     console.log("Load groups")
     studentsGroupsStore!.load()
-  })
+  }, [state.createDrawerVisible])
 
   const handleGroupCreate = () => {
     updateState({

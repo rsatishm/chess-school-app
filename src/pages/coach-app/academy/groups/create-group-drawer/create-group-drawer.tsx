@@ -47,7 +47,7 @@ export const CreateGroupDrawer = observer((props: Props) => {
   const handleSubmit = (e: any) => {
     e.preventDefault()
     groupForm.validateFields().then(async (values: any) => {
-      console.log('---> values: ', values)
+      console.log('---> values: ', JSON.stringify(values))
       const success = await studentsGroupsStore!.create(values)
       if (success) {
         message.success('Created group successfully.')
@@ -139,10 +139,10 @@ export const CreateGroupDrawer = observer((props: Props) => {
         <Form form={groupForm} initialValues={
           {userIds: state.formFields.userIds,
             description: state.formFields.description}}>
-          <Form.Item rules={ [{ required: true, message: 'Name is required' }]}>
+          <Form.Item name="name" rules={ [{ required: true, message: 'Name is required' }]}>
           <Input placeholder="Group Name" />
           </Form.Item>
-          <Form.Item rules={ [
+          <Form.Item name="userIds" rules={ [
                 {
                   required: true,
                   message: 'At least one student must be selected'
@@ -162,7 +162,7 @@ export const CreateGroupDrawer = observer((props: Props) => {
                 )}
               </Select>          
           </Form.Item>
-          <Form.Item rules={ [{ required: true, message: 'Description is required' }]}>
+          <Form.Item name="description" rules={ [{ required: true, message: 'Description is required' }]}>
             <TextArea rows={2} placeholder="Group Description" />
           </Form.Item>
         </Form>

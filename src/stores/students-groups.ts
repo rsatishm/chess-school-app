@@ -103,14 +103,7 @@ export class StudentsGroupsStore {
   
   async refresh() {
     this.lastLoadTime = 0
-    if (this.groups) {
-      this.load(true)
-    }
-  }
-
-  async refreshStudents() {
-    this.lastLoadTime = 0
-    if (this.students) {
+    if (this.groups || this.students) {
       this.load(true)
     }
   }
@@ -119,7 +112,7 @@ export class StudentsGroupsStore {
     this.editing = true
     this.editError = ''
     try {
-      await userStore.getApiCoreV3AxiosClient()!.put('/groups/', {
+      await userStore.getApiCoreV3AxiosClient()!.put('/groups/update', {
         uuid: uuid,
         ownerUuid: userStore.uuid,
         ...group,
@@ -128,8 +121,8 @@ export class StudentsGroupsStore {
       })
       runInAction(() => {
         this.editing = false
+        this.refresh()
       })
-      this.refresh()
     } catch (e) {
       runInAction(() => {
         this.editing = false
@@ -146,18 +139,18 @@ export class StudentsGroupsStore {
     this.creating = true
     this.createError = ''
     try {
-      console.log('--> creating: ', group)
-      await userStore.getApiCoreV3AxiosClient()!.post('/groups/', {
+      console.log('Create group: ', group)
+      await userStore.getApiCoreV3AxiosClient()!.post('/groups/create', {
         ownerUuid: userStore.uuid,
         ...group,
         groupType: 'academy',
         purpose: 'student'
       })
-
+      console.log('Done creating')
       runInAction(() => {
         this.creating = false
+        this.refresh()
       })
-      this.refresh()
     } catch (e) {
       runInAction(() => {
         this.creating = false
@@ -180,7 +173,7 @@ export class StudentsGroupsStore {
       runInAction(() => {
         this.creating = false
       })
-      this.refreshStudents()
+      this.refresh()
     } catch (e) {
       runInAction(() => {
         this.creating = false
