@@ -90,6 +90,7 @@
     "react-refresh": "^0.11.0",
     "react-resize-detector": "^7.0.0",
     "react-router-dom": "^6.2.2",
+    "react-splitter-layout": "^4.0.0",
     "react-stripe-checkout": "^2.6.3",
     "resolve": "^1.20.0",
     "resolve-url-loader": "^4.0.0",
@@ -143,7 +144,8 @@
     "@types/ramda": "^0.28.1",
     "@types/react-infinite-scroller": "^1.2.3",
     "@types/react-key-handler": "^1.2.0",
-    "@types/react-measure": "^2.0.8"
+    "@types/react-measure": "^2.0.8",
+    "@types/react-splitter-layout": "^3.0.2"
   },
   "jest": {
     "roots": [

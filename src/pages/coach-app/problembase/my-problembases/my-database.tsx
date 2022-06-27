@@ -7,6 +7,8 @@ import './my-database.less'
 import { Link, useNavigate } from 'react-router-dom'
 import Dragger from 'antd/lib/upload/Dragger'
 import { InboxOutlined } from '@ant-design/icons'
+import SplitterLayout from 'react-splitter-layout';
+import 'react-splitter-layout/lib/index.css';
 
 interface State {
   showUploadPgn: boolean
@@ -98,6 +100,15 @@ export const MyDatabase = observer(() => {
           </div>
         </Modal>
       )}
+      <div className='inner'>
+        <SplitterLayout percentage secondaryInitialSize={68}>
+          <div>database explorer</div>
+          <SplitterLayout percentage secondaryInitialSize={50}>
+            <div>PNG details</div>
+            <div>chessboard</div>
+          </SplitterLayout>
+        </SplitterLayout>
+      </div>
     </Layout.Content>
   )
 })
