@@ -25,6 +25,7 @@ import { CreateTournamentForm } from './tournaments/create-tournament-form';
 import { Analytics } from './analytics/analytics';
 import { TournamentListing } from './tournaments/tournament-listing';
 import { GameArea } from '../common-pages/gameArea/gameArea';
+import { MyDatabase } from './problembase/my-problembases/my-database';
 
 interface Props {
   userStore?: UserStore
@@ -123,6 +124,10 @@ export const CoachApp = observer(() => {
         <Route
           path="/tournaments"
           element={<TournamentListing/>}
+        />
+        <Route
+          path="/database"
+          element={<MyDatabase/>}
         />
         <Route
           path="/*"

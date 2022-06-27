@@ -239,11 +239,11 @@ export const Sidebar = observer(()=>{
           {renderForRoles(
             ['coach'],
             <Menu.Item
-              key="problembase"
-              onClick={handleClick('/app/problembase')}
+              key="database"
+              onClick={handleClick('/app/database')}
             >
               <TableOutlined style={iconStyle} />
-              <span className="nav-text">Problembase</span>
+              <span className="nav-text">Database</span>
             </Menu.Item>
           )}
           {renderForRoles(
