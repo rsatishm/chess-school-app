@@ -1,14 +1,22 @@
 import React, { Component, useContext, useEffect, useState } from 'react'
-import { Layout, Row, Col, Button, Table, List, Skeleton, message, Modal, UploadProps, Space, Form, Input } from 'antd'
+import { Layout, Row, Col, Button, Table, List, Skeleton, message, Modal, UploadProps, Space, Form, Input, Tooltip } from 'antd'
 import { observer, inject, MobXProviderContext } from 'mobx-react'
 import moment from 'moment-timezone'
 
 import './my-database.less'
+import '../../../common-pages/analysis-board/analysis-board.less'
+import '../../../../components/scoresheet/scoresheet.less'
 import { Link, useNavigate } from 'react-router-dom'
 import Dragger from 'antd/lib/upload/Dragger'
-import { InboxOutlined } from '@ant-design/icons'
+import { BackwardOutlined, FastBackwardOutlined, FastForwardOutlined, ForwardOutlined, InboxOutlined, SwapOutlined } from '@ant-design/icons'
 import SplitterLayout from 'react-splitter-layout';
 import 'react-splitter-layout/lib/index.css';
+import { DataNode, DirectoryTreeProps } from 'antd/lib/tree'
+import DirectoryTree from 'antd/lib/tree/DirectoryTree'
+import { Chessboard } from '../../../../components/chessboard/Chessboard'
+import * as _ChessJS from 'chess.js';
+import { SetupChessboard } from '../../../../components/chessboard/setup-chessboard'
+import Chessgroundboard from '../../../../components/chessgroundboard/Chessgroundboard'
 
 interface State {
   showUploadPgn: boolean
@@ -67,6 +75,125 @@ export const MyDatabase = observer(() => {
     </Dragger>
   );
 
+  const treeData: DataNode[] = [
+    {
+      title: 'My Databases',
+      key: '0-0',
+      children: [
+        { title: 'Absolute Pin (Easy)', key: '0-0-0', isLeaf: true },
+        { title: 'Absolute Pin (Hard)', key: '0-0-1', isLeaf: true },
+        { title: 'Clearance (Easy)', key: '0-0-2', isLeaf: true },
+        { title: 'Clearance (Hard)', key: '0-0-3', isLeaf: true },
+        { title: 'Blockade (Easy)', key: '0-0-4', isLeaf: true },
+        { title: 'Blockade (Hard)', key: '0-0-5', isLeaf: true }
+      ],
+    },
+    {
+      title: 'Public Databases',
+      key: '0-1'
+    },
+  ];
+  
+  const DatabaseTree: React.FC = () => {
+    const onSelect: DirectoryTreeProps['onSelect'] = (keys, info) => {
+      console.log('Trigger Select', keys, info);
+    };
+  
+    const onExpand: DirectoryTreeProps['onExpand'] = (keys, info) => {
+      console.log('Trigger Expand', keys, info);
+    };
+  
+    return (
+      <DirectoryTree
+        multiple
+        defaultExpandAll
+        onSelect={onSelect}
+        onExpand={onExpand}
+        treeData={treeData}
+      />
+    );
+  };
+
+  const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+  const fen = new ChessJS().fen()
+
+  const backward = ()=>{}
+  const prev=()=>{}
+  const handleFlip = ()=>{}
+  const next = ()=>{}
+  const forward = ()=>{}
+
+  const ChessboardPosition = ()=>{
+    return (<Row className="analysis-board scoresheet-container">
+    <Col md={{ span: 12, offset: 2 }} sm={24}>
+      <Chessgroundboard
+        height={600}
+        width={600}
+        orientation='w'
+        fen={fen}
+        turnColor='white'
+        onMove={()=>{}}
+      />
+      <Row            
+        justify="center"
+        style={{ marginTop: '1rem', marginBottom: '1rem' }}
+      >
+        <Col span={2} offset={1}>
+          <Tooltip title="fast-backward (< key)">
+            <Button
+              icon={<FastBackwardOutlined/>}
+              type="ghost"
+              shape="circle"
+              onClick={backward}
+            />
+          </Tooltip>
+        </Col>
+        <Col span={2}>
+          <Tooltip title="backward (left arrow)">
+            <Button
+              icon={<BackwardOutlined/>}
+              type="ghost"
+              shape="circle"
+              onClick={prev}
+            />
+          </Tooltip>
+        </Col>
+        <Col span={2}>
+          <Tooltip title="flip board (f key)">
+            <Button
+              icon={<SwapOutlined/>}
+              style={{ transform: 'rotate(90deg)' }}
+              type="ghost"
+              shape="circle"
+              onClick={handleFlip} //{this.props.analysisBoardStore!.prev} //change this
+            />
+          </Tooltip>
+        </Col>
+        <Col span={2}>
+          <Tooltip title="forward (right arrow)">
+            <Button
+              icon={<ForwardOutlined/>}
+              type="ghost"
+              shape="circle"
+              onClick={next}
+            />
+          </Tooltip>
+        </Col>
+        <Col span={2}>
+          <Tooltip title="fast-forward (> key)">
+            <Button
+              icon={<FastForwardOutlined/>}
+              type="ghost"
+              shape="circle"
+              onClick={forward}
+            />
+          </Tooltip>
+        </Col>
+      </Row>
+    </Col>
+  </Row>)
+  }
+
   return (
     <Layout.Content className="content databases">
       <div className='header'>
@@ -101,11 +228,13 @@ export const MyDatabase = observer(() => {
         </Modal>
       )}
       <div className='inner'>
-        <SplitterLayout percentage secondaryInitialSize={68}>
-          <div>database explorer</div>
-          <SplitterLayout percentage secondaryInitialSize={50}>
+        <SplitterLayout percentage secondaryInitialSize={85}>
+          <DatabaseTree/>
+          <SplitterLayout percentage secondaryInitialSize={65}>
             <div>PNG details</div>
-            <div>chessboard</div>
+            <div>
+            <ChessboardPosition/>
+            </div>
           </SplitterLayout>
         </SplitterLayout>
       </div>
