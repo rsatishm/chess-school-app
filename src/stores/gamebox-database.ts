@@ -185,6 +185,7 @@ export class GameboxDatabaseStore {
                 this.uploading = false
                 if (response.data) {
                   this.databases = [response.data, ...this.databases]
+                  console.log("After upload: " + JSON.stringify(this.databases))
                   this.load()
                 }
               })

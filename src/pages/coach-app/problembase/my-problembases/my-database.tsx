@@ -34,13 +34,38 @@ export const MyDatabase = observer(() => {
     fileList: []
   })
 
-  React.useEffect(()=>{
+  const pgnFiles = (db: any) => {
+    console.log("Before rendering: " + JSON.stringify(db))
+    return db.pgnFiles.map((pgnFile: any) => {
+      return {
+        title: pgnFile.name,
+        key: pgnFile.uuid,
+        isLeaf: true
+      }
+    })
+  }
+
+  React.useEffect(() => {
     gameboxDatabaseStore!.load()
-  })
+  }, [])
+
+  const dbTree = () => {
+    const tree: any[] = gameboxDatabaseStore!.databases.map((db: any) => {
+      return {
+        title: db.name,
+        key: db.uuid,
+        children: pgnFiles(db)
+      }
+    })
+
+    console.log("TREE: " + JSON.stringify(tree))
+
+    return tree
+  }
 
   const updateState = (newState: Partial<State>) => {
     setState((prevState) => {
-        return { ...prevState, ...newState }
+      return { ...prevState, ...newState }
     })
   }
   const handleOk = () => {
@@ -62,8 +87,8 @@ export const MyDatabase = observer(() => {
   }
 
   const uploadPgn = (values: any) => {
-      const data = values.pgnFile.file.originFileObj
-      console.log("Data: " + data)
+    const data = values.pgnFile.file.originFileObj
+    console.log("Data: " + data)
   }
 
   const props: UploadProps = {
@@ -89,11 +114,11 @@ export const MyDatabase = observer(() => {
   function isPGN(file: File) {
     return file.name.endsWith('.pgn')
   }
-  
+
   function isLessThan2MB(file: File) {
     return file.size < TWO_THOUSAND_KBYTES
   }
-  
+
   const beforeUpload = (file: File) => {
     if (!isPGN(file)) {
       message.error('Only PGN files are allowed')
@@ -104,20 +129,20 @@ export const MyDatabase = observer(() => {
 
     if (isPGN(file) && isLessThan2MB(file)) {
       const reader: FileReader = new FileReader();
-      updateState({fileList: [{ uid: 1, name: file.name, status: 'done', url: reader.result }]})
+      updateState({ fileList: [{ uid: 1, name: file.name, status: 'done', url: reader.result }] })
     }
 
     return false
   }
 
   const UploadPgn: React.FC = () => (
-    <Dragger 
-    disabled={gameboxDatabaseStore!.uploading}
-    accept=".pgn,application/x-chess-pgn"
-    supportServerRender={true}
-    showUploadList={false}
-    fileList={state.fileList ? state.fileList : []}
-    beforeUpload={beforeUpload}>
+    <Dragger
+      disabled={gameboxDatabaseStore!.uploading}
+      accept=".pgn,application/x-chess-pgn"
+      supportServerRender={true}
+      showUploadList={false}
+      fileList={state.fileList ? state.fileList : []}
+      beforeUpload={beforeUpload}>
       <p className="ant-upload-drag-icon">
         <InboxOutlined />
       </p>
@@ -133,14 +158,7 @@ export const MyDatabase = observer(() => {
     {
       title: 'My Databases',
       key: '0-0',
-      children: [
-        { title: 'Absolute Pin (Easy)', key: '0-0-0', isLeaf: true },
-        { title: 'Absolute Pin (Hard)', key: '0-0-1', isLeaf: true },
-        { title: 'Clearance (Easy)', key: '0-0-2', isLeaf: true },
-        { title: 'Clearance (Hard)', key: '0-0-3', isLeaf: true },
-        { title: 'Blockade (Easy)', key: '0-0-4', isLeaf: true },
-        { title: 'Blockade (Hard)', key: '0-0-5', isLeaf: true }
-      ],
+      children: dbTree()
     },
     {
       title: 'Public Databases',
@@ -160,7 +178,7 @@ export const MyDatabase = observer(() => {
     return (
       <DirectoryTree
         multiple
-        defaultExpandAll
+        defaultExpandParent
         onSelect={onSelect}
         onExpand={onExpand}
         treeData={treeData}
@@ -177,37 +195,37 @@ export const MyDatabase = observer(() => {
   const next = () => { }
   const forward = () => { }
 
-  const PgnUploadLocal = ()=>{
+  const PgnUploadLocal = () => {
     return <Modal
-        title={
-          gameboxDatabaseStore!.uploading
-            ? 'Uploading PGN...'
-            : 'Upload PGN'
-        }
-        style={{ width: 600 }}
-          visible={state.uploadPgnVisible}
-          width={800}
-          maskClosable={false}
-          onCancel={handleOk}
-          onOk={handleOk} >
-          <div className="position-setup-modal" title="Setup Position">
-            <Form name="pgn-upload" onFinish={uploadPgn}>
-              <Form.Item name="pgnFile" rules={[{ required: true, message: 'Upload PGN file' }]} label="PGN File">
-                <UploadPgn />
-              </Form.Item>
-              <Button type='primary' block onClick={handleUploadPGN}>
-                Create Database
-              </Button>
-              <Button type='primary' block onClick={handleUploadPGN}>
-                Merging with Database
-              </Button>
-              <Form.Item name="name" rules={[{ required: true, message: 'Name is required' }]} label="Database name">
-                <Input placeholder="Enter New Database Name" />
-              </Form.Item>
-            </Form>
-          </div>
-        </Modal>
-  } 
+      title={
+        gameboxDatabaseStore!.uploading
+          ? 'Uploading PGN...'
+          : 'Upload PGN'
+      }
+      style={{ width: 600 }}
+      visible={state.uploadPgnVisible}
+      width={800}
+      maskClosable={false}
+      onCancel={handleOk}
+      onOk={handleOk} >
+      <div className="position-setup-modal" title="Setup Position">
+        <Form name="pgn-upload" onFinish={uploadPgn}>
+          <Form.Item name="pgnFile" rules={[{ required: true, message: 'Upload PGN file' }]} label="PGN File">
+            <UploadPgn />
+          </Form.Item>
+          <Button type='primary' block onClick={handleUploadPGN}>
+            Create Database
+          </Button>
+          <Button type='primary' block onClick={handleUploadPGN}>
+            Merging with Database
+          </Button>
+          <Form.Item name="name" rules={[{ required: true, message: 'Name is required' }]} label="Database name">
+            <Input placeholder="Enter New Database Name" />
+          </Form.Item>
+        </Form>
+      </div>
+    </Modal>
+  }
 
   const ChessboardPosition = () => {
     return (<Row className="analysis-board scoresheet-container">
@@ -286,13 +304,13 @@ export const MyDatabase = observer(() => {
         <p className="title"><span className='cursor-pointer'>Database</span></p>
         <div className='button'>
           <Button type='primary' block onClick={toggleUploadPgnVisible} loading={gameboxDatabaseStore!.uploading}>
-          <UploadOutlined
-                  style={{
-                    opacity: gameboxDatabaseStore!.uploading
-                      ? 0
-                      : 1
-                  }}
-                />{' '}
+            <UploadOutlined
+              style={{
+                opacity: gameboxDatabaseStore!.uploading
+                  ? 0
+                  : 1
+              }}
+            />{' '}
             Upload PGN
           </Button>
 
@@ -300,9 +318,9 @@ export const MyDatabase = observer(() => {
       </div>
       {state.uploadPgnVisible && (
         <PgnUploadModal
-        visible={state.uploadPgnVisible}
-        onClose={toggleUploadPgnVisible}
-      />
+          visible={state.uploadPgnVisible}
+          onClose={toggleUploadPgnVisible}
+        />
       )}
       <div className='inner'>
         <SplitterLayout percentage secondaryInitialSize={85}>
@@ -310,7 +328,7 @@ export const MyDatabase = observer(() => {
           <SplitterLayout percentage secondaryInitialSize={65}>
             <div>PNG details</div>
             <div>
-              <ChessboardPosition />
+              <ChessboardPosition/>
             </div>
           </SplitterLayout>
         </SplitterLayout>
