@@ -34,6 +34,10 @@ export const MyDatabase = observer(() => {
     fileList: []
   })
 
+  React.useEffect(()=>{
+    gameboxDatabaseStore!.load()
+  })
+
   const updateState = (newState: Partial<State>) => {
     setState((prevState) => {
         return { ...prevState, ...newState }
@@ -90,7 +94,6 @@ export const MyDatabase = observer(() => {
     return file.size < TWO_THOUSAND_KBYTES
   }
   
-
   const beforeUpload = (file: File) => {
     if (!isPGN(file)) {
       message.error('Only PGN files are allowed')

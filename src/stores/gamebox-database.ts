@@ -127,6 +127,7 @@ export class GameboxDatabaseStore {
     const response = await userStore
       .getApiCoreAxiosClient()!
       .get(`game-collections`)
+      console.log("Database: " + JSON.stringify(response.data.records))
     return response.data.records
   }
 
