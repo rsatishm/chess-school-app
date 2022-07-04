@@ -328,7 +328,7 @@ export const MyDatabase = observer(() => {
           <SplitterLayout percentage secondaryInitialSize={65}>
             <div>PNG details</div>
             <div>
-              <ChessboardPosition/>
+              ChessboardPosition
             </div>
           </SplitterLayout>
         </SplitterLayout>
