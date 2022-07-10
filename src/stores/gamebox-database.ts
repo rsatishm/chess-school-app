@@ -9,6 +9,7 @@ import {
   getPgnWithMeta,
   downloadFile
 } from '../utils/utils'
+import * as _ChessJS from 'chess.js';
 
 interface UploadArgs {
   file: File
@@ -29,7 +30,9 @@ export interface UpdateArgs {
 }
 
 export class GameboxDatabaseStore {
+  defaultPgnRec = {}
   databases = [] as any[]
+  pgnList = [] as any[]
   recentEvents = [] as string[]
 
   loading = true
@@ -70,6 +73,8 @@ export class GameboxDatabaseStore {
 
     makeObservable(this, {
       databases: observable,
+      pgnList: observable,
+      defaultPgnRec: observable,
       recentEvents: observable,
       loading: observable,
       error: observable,
@@ -90,7 +95,8 @@ export class GameboxDatabaseStore {
       createDatabase: action.bound,
       upload: action.bound,
       download: action.bound,
-      deleteDb: action.bound
+      deleteDb: action.bound,
+      getPgnPiecesByFile: action.bound
     })
   }
 
@@ -105,17 +111,18 @@ export class GameboxDatabaseStore {
     try {
       const databases = await this.getDatabases()
       const recentEvents = await this.getRecentEvents()
-      runInAction(()=>{
+      runInAction(() => {
         this.databases = databases
+        this.getPgnPiecesByFile(databases.pgnFiles[0].uuid)
         this.recentEvents = recentEvents
       })
     } catch (e) {
-      runInAction(()=>{
+      runInAction(() => {
         this.error = true
       })
       return false
     } finally {
-      runInAction(()=>{
+      runInAction(() => {
         this.loading = false
       })
     }
@@ -127,8 +134,50 @@ export class GameboxDatabaseStore {
     const response = await userStore
       .getApiCoreAxiosClient()!
       .get(`game-collections`)
-      console.log("Database: " + JSON.stringify(response.data.records))
+    console.log("Database: " + JSON.stringify(response.data.records))
     return response.data.records
+  }
+
+  async getPgnPiecesByFile(fileUuid: string) {
+    this.loading = true
+    try {
+      const response = await userStore
+        .getApiCoreAxiosClient()!
+        .get(`pgn-pieces/` + fileUuid)
+      //console.log("PGN: " + JSON.stringify(response.data.records))
+      const records: any[] = response.data.records;
+      console.log("ChssJs a function?" + (typeof _ChessJS === 'function'))
+      const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+      const g = new ChessJS()
+      const pgnList : any = records.map((record, index) => {
+        const pgnArray: any[] = record.pgn.split("\n")
+        const pgn = pgnArray.join('\n')
+        const loaded = g.load_pgn(pgn)
+        if (!loaded) {
+          console.log("Error loading pgn")
+          return []
+        }
+        const header: any = g.header()
+        return {
+          uuid: records[index].uuid,
+          sno: index + 1,
+          white: header['White'],
+          black: header['Black'],
+          result: header['result'],
+          fen: g.fen(),
+          pgn
+        }
+      })
+      console.log(JSON.stringify(pgnList))
+      runInAction(()=>{
+        this.pgnList = pgnList
+        this.defaultPgnRec = {uuid: pgnList[0].uuid, fen: pgnList[0].fen, pgn: pgnList[0].pgn}
+      })
+    } finally {
+      runInAction(() => {
+        this.loading = false
+      })
+    }
   }
 
   async getRecentEvents() {
@@ -171,16 +220,16 @@ export class GameboxDatabaseStore {
             headers: { 'Content-Type': 'multipart/form-data' },
             data: formData,
             onUploadProgress: ({ loaded, total }) => {
-              runInAction(()=>{
+              runInAction(() => {
                 this.uploadProgressPercent = (loaded / total) * 100
-              })            
+              })
               if (this.uploadProgressPercent >= 95.0) {
                 resolve()
               }
             }
           })
             .then(response => {
-              runInAction(()=>{
+              runInAction(() => {
                 this.uploadProgressPercent = 0
                 this.uploading = false
                 if (response.data) {
@@ -195,7 +244,7 @@ export class GameboxDatabaseStore {
             })
         })
       } catch (e) {
-        runInAction(()=>{
+        runInAction(() => {
           this.uploadError = true
         })
         return false
@@ -239,17 +288,17 @@ export class GameboxDatabaseStore {
           .getApiCoreAxiosClient()!
           .delete(`game-collections/${uuid}`)
 
-          runInAction(()=>{
-            this.databases = R.reject(R.propEq('uuid', uuid), this.databases)
-          })
+        runInAction(() => {
+          this.databases = R.reject(R.propEq('uuid', uuid), this.databases)
+        })
         return true
       } catch (e) {
-        runInAction(()=>{
+        runInAction(() => {
           this.deleteError = true
         })
         return false
       } finally {
-        runInAction(()=>{
+        runInAction(() => {
           this.deleting = false
         })
       }

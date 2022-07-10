@@ -18,6 +18,7 @@ import * as _ChessJS from 'chess.js';
 import { SetupChessboard } from '../../../../components/chessboard/setup-chessboard'
 import Chessgroundboard from '../../../../components/chessgroundboard/Chessgroundboard'
 import { PgnUploadModal } from './pgn-upload-modal'
+import { PGNList } from './PGNList'
 
 interface State {
   uploadPgnVisible: boolean,
@@ -27,8 +28,9 @@ const ONE_KILO_BYTE = 1024
 // const TWO_FIFTY_KBYTES = 250 * ONE_KILO_BYTE
 const TWO_THOUSAND_KBYTES = 2000 * ONE_KILO_BYTE
 
+
 export const MyDatabase = observer(() => {
-  const { gameboxDatabaseStore, gameboxDatabaseGameStore } = React.useContext(MobXProviderContext)
+  const { gameboxDatabaseStore } = React.useContext(MobXProviderContext)
   const [state, setState] = useState<State>({
     uploadPgnVisible: false,
     fileList: []
@@ -36,16 +38,17 @@ export const MyDatabase = observer(() => {
 
   const pgnFiles = (db: any) => {
     console.log("Before rendering: " + JSON.stringify(db))
-    return db.pgnFiles.map((pgnFile: any) => {
+    return db.pgnFiles ? db.pgnFiles.map((pgnFile: any) => {
       return {
         title: pgnFile.name,
         key: pgnFile.uuid,
         isLeaf: true
       }
-    })
+    }) : []
   }
 
   React.useEffect(() => {
+    console.log("PGN DATABASE LOAD!")
     gameboxDatabaseStore!.load()
   }, [])
 
@@ -58,7 +61,7 @@ export const MyDatabase = observer(() => {
       }
     })
 
-    console.log("TREE: " + JSON.stringify(tree))
+    //console.log("TREE: " + JSON.stringify(tree))
 
     return tree
   }
@@ -88,7 +91,7 @@ export const MyDatabase = observer(() => {
 
   const uploadPgn = (values: any) => {
     const data = values.pgnFile.file.originFileObj
-    console.log("Data: " + data)
+   // console.log("Data: " + data)
   }
 
   const props: UploadProps = {
@@ -169,6 +172,7 @@ export const MyDatabase = observer(() => {
   const DatabaseTree: React.FC = () => {
     const onSelect: DirectoryTreeProps['onSelect'] = (keys, info) => {
       console.log('Trigger Select', keys, info);
+      gameboxDatabaseStore!.getPgnPiecesByFile(keys[0])
     };
 
     const onExpand: DirectoryTreeProps['onExpand'] = (keys, info) => {
@@ -177,24 +181,14 @@ export const MyDatabase = observer(() => {
 
     return (
       <DirectoryTree
-        multiple
-        defaultExpandParent
         onSelect={onSelect}
-        onExpand={onExpand}
-        treeData={treeData}
+        treeData={treeData}        
       />
     );
   };
 
   const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
-  const fen = new ChessJS().fen()
-
-  const backward = () => { }
-  const prev = () => { }
-  const handleFlip = () => { }
-  const next = () => { }
-  const forward = () => { }
-
+  //const fen = new ChessJS().fen()
   const PgnUploadLocal = () => {
     return <Modal
       title={
@@ -227,77 +221,6 @@ export const MyDatabase = observer(() => {
     </Modal>
   }
 
-  const ChessboardPosition = () => {
-    return (<Row className="analysis-board scoresheet-container">
-      <Col md={{ span: 12, offset: 2 }} sm={24}>
-        <Chessgroundboard
-          height={600}
-          width={600}
-          orientation='w'
-          fen={fen}
-          turnColor='white'
-          onMove={() => { }}
-        />
-        <Row
-          justify="center"
-          style={{ marginTop: '1rem', marginBottom: '1rem' }}
-        >
-          <Col span={2} offset={1}>
-            <Tooltip title="fast-backward (< key)">
-              <Button
-                icon={<FastBackwardOutlined />}
-                type="ghost"
-                shape="circle"
-                onClick={backward}
-              />
-            </Tooltip>
-          </Col>
-          <Col span={2}>
-            <Tooltip title="backward (left arrow)">
-              <Button
-                icon={<BackwardOutlined />}
-                type="ghost"
-                shape="circle"
-                onClick={prev}
-              />
-            </Tooltip>
-          </Col>
-          <Col span={2}>
-            <Tooltip title="flip board (f key)">
-              <Button
-                icon={<SwapOutlined />}
-                style={{ transform: 'rotate(90deg)' }}
-                type="ghost"
-                shape="circle"
-                onClick={handleFlip} //{this.props.analysisBoardStore!.prev} //change this
-              />
-            </Tooltip>
-          </Col>
-          <Col span={2}>
-            <Tooltip title="forward (right arrow)">
-              <Button
-                icon={<ForwardOutlined />}
-                type="ghost"
-                shape="circle"
-                onClick={next}
-              />
-            </Tooltip>
-          </Col>
-          <Col span={2}>
-            <Tooltip title="fast-forward (> key)">
-              <Button
-                icon={<FastForwardOutlined />}
-                type="ghost"
-                shape="circle"
-                onClick={forward}
-              />
-            </Tooltip>
-          </Col>
-        </Row>
-      </Col>
-    </Row>)
-  }
-
   return (
     <Layout.Content className="content databases">
       <div className='header'>
@@ -326,10 +249,7 @@ export const MyDatabase = observer(() => {
         <SplitterLayout percentage secondaryInitialSize={85}>
           <DatabaseTree />
           <SplitterLayout percentage secondaryInitialSize={65}>
-            <div>PNG details</div>
-            <div>
-              ChessboardPosition
-            </div>
+            <PGNList/>            
           </SplitterLayout>
         </SplitterLayout>
       </div>

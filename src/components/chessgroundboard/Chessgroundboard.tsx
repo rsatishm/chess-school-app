@@ -180,7 +180,7 @@ const Chessgroundboard = (props: Props) => {
 
   const playSound = () => {
     var audio = new Audio('https://lichess1.org/assets/sound/standard/Move.ogg')
-    audio.play()
+    //audio.play()
   }
 
   useEffect(() => {
