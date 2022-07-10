@@ -163,7 +163,7 @@ export class GameboxDatabaseStore {
           sno: index + 1,
           white: header['White'],
           black: header['Black'],
-          result: header['result'],
+          result: header['Result'],
           fen: g.fen(),
           pgn
         }
