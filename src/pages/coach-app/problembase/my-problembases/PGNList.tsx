@@ -5,6 +5,8 @@ import { MobXProviderContext, observer } from 'mobx-react';
 import React, { useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import Chessgroundboard from '../../../../components/chessgroundboard/Chessgroundboard';
+import './PGNList.css'
+
 interface PGNRecord {
     sno: number,
     white: string,
@@ -25,7 +27,7 @@ interface Props {
 const columns = [
     {
         title: 'S No',
-        dataIndex: 'sno',
+        dataIndex: 'sno'
     },
     {
         title: 'White',
@@ -54,6 +56,7 @@ const columns = [
     },
 ];
 
+
 export const PGNList = observer(() => {
     const { gameboxDatabaseStore } = React.useContext(MobXProviderContext)
 
@@ -81,6 +84,15 @@ export const PGNList = observer(() => {
         <SplitterLayout percentage secondaryInitialSize={50}>
             <div>
                 <Table
+                className='pgnTable'
+                rowClassName={(record) => {      
+                    if (!record || !chessboardState)               {
+                        return ''
+                    }
+                    return record.uuid == chessboardState!.uuid ? 'rowSelected' : ''
+                }
+                }
+                rowKey="uuid"
                     columns={columns}
                     dataSource={data}
                     loading={gameboxDatabaseStore!.loading} 
