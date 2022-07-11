@@ -132,7 +132,7 @@ const ChessboardPosition = (props: ChessboardProps) => {
             analysisBoardStore!.loadPgnText(props.pgn)
             updateBoard()
         }
-    }, [])
+    }, [props.pgn])
 
     const onMove = (orig: SquareLabel, dest: SquareLabel, metadata: ChessTypes.ChessJSVerboseMove) => {
         console.log('Move made', orig, dest, metadata)
