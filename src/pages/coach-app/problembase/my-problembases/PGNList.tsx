@@ -9,6 +9,7 @@ import './PGNList.css'
 import * as _Chess from 'chess.js'
 import { SquareLabel } from '../../../../types/ChessTypes/ChessTypes';
 import { ChessTypes } from '../../../../types';
+import { Scoresheet } from '../../../../components/scoresheet/scoresheet';
 
 interface PGNRecord {
     sno: number,
@@ -134,6 +135,30 @@ const ChessboardPosition = (props: ChessboardProps) => {
         }
     }, [props.pgn])
 
+    const handleGoToPath = (path: ChessTypes.PlyPath) => {
+        analysisBoardStore!.gotoPath(path)
+        updateBoard()
+    }
+
+    const handlePromoteVariation = (path: ChessTypes.PlyPath) => {
+        analysisBoardStore!.promoteVariation(path)
+    }
+
+    const handleDeleteVariation = (path: ChessTypes.PlyPath) => {
+        analysisBoardStore!.deleteVariation(path)
+        updateBoard()
+    }
+
+    const handleAddComment = (path: ChessTypes.PlyPath, text: string) => {
+        analysisBoardStore!.handleAddComment(path, text)
+        updateBoard()
+    }
+
+    const handleDeleteComment = (path: ChessTypes.PlyPath) => {
+        analysisBoardStore!.handleDeleteComment(path)
+        updateBoard()
+    }
+
     const onMove = (orig: SquareLabel, dest: SquareLabel, metadata: ChessTypes.ChessJSVerboseMove) => {
         console.log('Move made', orig, dest, metadata)
         analysisBoardStore!.move({
@@ -249,5 +274,22 @@ const ChessboardPosition = (props: ChessboardProps) => {
                 </Col>
             </Row>
         </Col>
+        <Col md={{ span: 12, offset: 2 }} sm={24}>
+            <div>
+            <Scoresheet
+                visible={true}
+                currentPath={analysisBoardStore!.state.currentPath}
+                mainline={analysisBoardStore!.state.mainline}
+                showHideMovesToggle={false}
+                areMovesHiddenForStudents={false}
+                onGoToPath={handleGoToPath}
+                onPromoteVariation={handlePromoteVariation}
+                onDeleteVariation={handleDeleteVariation}
+                onAddComment={handleAddComment}
+                onDeleteComment={handleDeleteComment}
+                onHideMovesChange={() => {}}
+              />
+            </div>
+        </Col>    
     </Row>)
 }
