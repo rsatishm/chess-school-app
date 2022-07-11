@@ -2,10 +2,13 @@ import { BackwardOutlined, DownOutlined, FastBackwardOutlined, FastForwardOutlin
 import { Button, Col, Row, Space, Table, Tooltip } from 'antd';
 import { set } from 'mobx';
 import { MobXProviderContext, observer } from 'mobx-react';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SplitterLayout from 'react-splitter-layout';
 import Chessgroundboard from '../../../../components/chessgroundboard/Chessgroundboard';
 import './PGNList.css'
+import * as _Chess from 'chess.js'
+import { SquareLabel } from '../../../../types/ChessTypes/ChessTypes';
+import { ChessTypes } from '../../../../types';
 
 interface PGNRecord {
     sno: number,
@@ -56,7 +59,8 @@ const columns = [
     },
 ];
 
-
+const Chess = typeof _Chess == 'function' ? _Chess : _Chess.Chess
+const g = new Chess()
 export const PGNList = observer(() => {
     const { gameboxDatabaseStore } = React.useContext(MobXProviderContext)
 
@@ -69,59 +73,113 @@ export const PGNList = observer(() => {
     const [chessboardState, setChessboardState] = useState<ChessboardState>()
 
     //console.log("prop: " + JSON.stringify(props.pgnList))
-    const data = gameboxDatabaseStore!.loading ? [] : 
-    gameboxDatabaseStore!.pgnList.map((pgnRec: any) => ({
-        sno: pgnRec.sno,
-        white: pgnRec.white,
-        black: pgnRec.black,
-        result: pgnRec.result,
-        uuid: pgnRec.uuid,
-        pgn: pgnRec.pgn,
-        fen: pgnRec.fen
-    }))
+    const data = gameboxDatabaseStore!.loading ? [] :
+        gameboxDatabaseStore!.pgnList.map((pgnRec: any) => ({
+            sno: pgnRec.sno,
+            white: pgnRec.white,
+            black: pgnRec.black,
+            result: pgnRec.result,
+            uuid: pgnRec.uuid,
+            pgn: pgnRec.pgn,
+            fen: pgnRec.fen
+        }))
 
     return <div>
         <SplitterLayout percentage secondaryInitialSize={50}>
             <div>
                 <Table
-                className='pgnTable'
-                rowClassName={(record) => {      
-                    if (!record || !chessboardState)               {
-                        return ''
+                    className='pgnTable'
+                    rowClassName={(record) => {
+                        if (!record || !chessboardState) {
+                            return ''
+                        }
+                        return record.uuid == chessboardState!.uuid ? 'rowSelected' : ''
                     }
-                    return record.uuid == chessboardState!.uuid ? 'rowSelected' : ''
-                }
-                }
-                rowKey="uuid"
+                    }
+                    rowKey="uuid"
                     columns={columns}
                     dataSource={data}
-                    loading={gameboxDatabaseStore!.loading} 
+                    loading={gameboxDatabaseStore!.loading}
                     onRow={(record: any) => ({
                         onClick: () => {
-                            setChessboardState({uuid: record.uuid, fen: record.fen, pgn: record.pgn})
+                            setChessboardState({ uuid: record.uuid, fen: record.fen, pgn: record.pgn })
                         }
-                    })}/>
+                    })} />
             </div>
             <div>
                 <ChessboardPosition
-                    fen={chessboardState?.fen ? 
-                        chessboardState?.fen : gameboxDatabaseStore!.defaultPgnRec.fen} />
+                    pgn={chessboardState?.pgn} />
             </div>
         </SplitterLayout>
     </div>
 })
 
 interface ChessboardProps {
+    pgn: string | undefined
+}
+
+interface State {
     fen: string
+    orientation: string
 }
 
 const ChessboardPosition = (props: ChessboardProps) => {
+    const { analysisBoardStore } = useContext(MobXProviderContext)
+    const [state, setState] = useState<State>({ fen: '', orientation: 'white' })
 
-    const backward = () => { }
-    const prev = () => { }
-    const handleFlip = () => { }
-    const next = () => { }
-    const forward = () => { }
+    useEffect(() => {
+        if (props.pgn) {
+            analysisBoardStore!.loadPgnText(props.pgn)
+            updateBoard()
+        }
+    }, [])
+
+    const onMove = (orig: SquareLabel, dest: SquareLabel, metadata: ChessTypes.ChessJSVerboseMove) => {
+        console.log('Move made', orig, dest, metadata)
+        analysisBoardStore!.move({
+            from: orig,
+            to: dest,
+            promotion: metadata && metadata.promotion
+        })
+        console.log("fen after update " + analysisBoardStore!.fen)
+        updateBoard()
+    }
+
+    const updateState = (newState: Partial<State>) => {
+        setState((prevState) => {
+            return { ...prevState, ...newState }
+        })
+    }
+
+    const updateBoard = () => {
+        updateState({ fen: analysisBoardStore!.fen })
+    }
+
+    const backward = () => {
+        analysisBoardStore!.backward()
+        updateBoard()
+    }
+
+    const prev = () => {
+        analysisBoardStore!.prev()
+        updateBoard()
+    }
+
+    const next = () => {
+        analysisBoardStore!.next()
+        updateBoard()
+    }
+
+    const forward = () => {
+        analysisBoardStore!.forward()
+        updateBoard()
+    }
+
+    const handleFlip = () => {
+        updateState({
+            orientation: state.orientation === 'white' ? 'black' : 'white'
+        })
+    }
 
     return (<Row className="analysis-board scoresheet-container">
         <Col md={{ span: 12, offset: 2 }} sm={24}>
@@ -129,9 +187,10 @@ const ChessboardPosition = (props: ChessboardProps) => {
                 height={600}
                 width={600}
                 orientation='w'
-                fen={props.fen}
-                turnColor='white'
-                onMove={() => { }}
+                fen={state.fen}
+                turnColor={analysisBoardStore!.sideToPlay}
+                onMove={onMove}
+                movable={analysisBoardStore!.calcMovable()}
             />
             <Row
                 justify="center"

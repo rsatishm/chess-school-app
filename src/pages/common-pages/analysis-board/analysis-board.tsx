@@ -280,6 +280,7 @@ export const AnalysisBoard = observer(()=>{
   const handlePastePgnOk = (pgn: string) => {
     console.log("Load game for pgn: " + pgn)
     analysisBoardStore!.loadPgnText(pgn)
+    updateBoard()
     updateState({
       pastePgnModalVisible: false
     })
