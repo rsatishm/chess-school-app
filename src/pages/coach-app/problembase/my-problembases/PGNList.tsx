@@ -10,6 +10,7 @@ import * as _Chess from 'chess.js'
 import { SquareLabel } from '../../../../types/ChessTypes/ChessTypes';
 import { ChessTypes } from '../../../../types';
 import { Scoresheet } from '../../../../components/scoresheet/scoresheet';
+import Title from 'antd/lib/typography/Title';
 
 interface PGNRecord {
     sno: number,
@@ -68,10 +69,17 @@ export const PGNList = observer(() => {
     interface ChessboardState {
         uuid: string,
         fen: string,
-        pgn: string
+        pgn: string,
+        pgnTitle: string
     }
 
     const [chessboardState, setChessboardState] = useState<ChessboardState>()
+
+    const updateState = (newState: Partial<ChessboardState>) => {
+        setChessboardState((prevState: ChessboardState) => {
+          return { ...prevState, ...newState }
+        })
+      }
 
     //console.log("prop: " + JSON.stringify(props.pgnList))
     const data = gameboxDatabaseStore!.loading ? [] :
@@ -82,7 +90,8 @@ export const PGNList = observer(() => {
             result: pgnRec.result,
             uuid: pgnRec.uuid,
             pgn: pgnRec.pgn,
-            fen: pgnRec.fen
+            fen: pgnRec.fen,
+            pgnTitle: pgnRec.white + ' vs ' + pgnRec.black + ' ' + pgnRec.result
         }))
 
     return <div>
@@ -103,19 +112,21 @@ export const PGNList = observer(() => {
                     loading={gameboxDatabaseStore!.loading}
                     onRow={(record: any) => ({
                         onClick: () => {
-                            setChessboardState({ uuid: record.uuid, fen: record.fen, pgn: record.pgn })
+                            updateState({ uuid: record.uuid, fen: record.fen, pgn: record.pgn, pgnTitle: record.pgnTitle })
                         }
                     })} />
             </div>
             <div>
                 <ChessboardPosition
-                    pgn={chessboardState?.pgn} />
+                    pgn={chessboardState?.pgn} 
+                    pgnTitle={chessboardState?.pgnTitle}/>
             </div>
         </SplitterLayout>
     </div>
 })
 
 interface ChessboardProps {
+    pgnTitle: string | undefined
     pgn: string | undefined
 }
 
@@ -207,6 +218,9 @@ const ChessboardPosition = (props: ChessboardProps) => {
     }
 
     return (<Row className="analysis-board scoresheet-container">
+        <Col md={{ span: 12, offset: 2 }} sm={24}>
+            <Title level={5}>{props.pgnTitle}</Title>
+        </Col>
         <Col md={{ span: 12, offset: 2 }} sm={24}>
             <Chessgroundboard
                 height={600}
