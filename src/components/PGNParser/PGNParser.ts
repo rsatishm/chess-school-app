@@ -367,9 +367,9 @@ const extractMeta = function extractMeta(
   //const g = new Chess()
   const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
   const g = new ChessJS()
-  g.load_pgn(header)
+  g.load_pgn(header + '\n\n' + '1.')
 
-  console.log("PGN Header: " + JSON.stringify(g.header() as { [tag: string]: string }))
+  console.log("PGN Header: " + JSON.stringify(g.header()))
 
   return g.header() as { [tag: string]: string }
 }

@@ -64,20 +64,21 @@ export const AnalysisBoard = observer(()=>{
   const navigate = useNavigate()
   
   useEffect(()=>{
-    const params: any = queryString.parse(location.search)
+    /*const params: any = queryString.parse(location.search)
+    
     if (params.gameUuid != null) {
       analysisBoardStore.loadGame(params.gameUuid)
-    }
+    }*/
 
     gameboxDatabaseStore.load()
-
+/*
     document
       .querySelector('meta[name="viewport"]')!
       .setAttribute('content', 'width=device-width, initial-scale=1.0')
     return ()=>{
       document.querySelector('meta[name="viewport"]')!.setAttribute('content', '')
-    }  
-  })
+    }  */
+  }, [])
 
   const updateState = (newState: Partial<State>) => {
     setState((prevState) => {
