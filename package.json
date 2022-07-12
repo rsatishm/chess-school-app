@@ -5,7 +5,7 @@
   "proxy": "http://localhost:3000",
   "homepage": ".",
   "engines": {
-    "node": "=16"
+    "node": "=16.14.0"
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
