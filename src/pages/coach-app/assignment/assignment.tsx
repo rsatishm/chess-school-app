@@ -36,12 +36,16 @@ export const Assignment = ()=>{
       </Menu>
       <Routes>
         <Route
-          path={'exercise'}
+          path='/exercise'
           element={<Exercise/>}
         />
         <Route
-          path={'assigned'}
+          path='/assigned'
           element={<Assigned/>}
+        />
+        <Route
+          path="/*"
+          element={<Exercise />}
         />
       </Routes>
     </Content>

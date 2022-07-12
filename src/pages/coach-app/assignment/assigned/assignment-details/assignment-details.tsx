@@ -20,12 +20,12 @@ interface State { }
 export const AssignmentDetails = observer((props: Props) => {
   const { studentsGroupsStore, coachAssignmentCompletionDetailsStore } = React.useContext(MobXProviderContext)
   React.useEffect(() => {
-    studentsGroupsStore!.load()
-    coachAssignmentCompletionDetailsStore!.load(props.assignment.uuid)
+    //studentsGroupsStore!.load()
+    //coachAssignmentCompletionDetailsStore!.load(props.assignment.uuid)
   })
   const handleRetry = () => {
-    studentsGroupsStore!.load()
-    coachAssignmentCompletionDetailsStore!.load(props.assignment.uuid)
+    //studentsGroupsStore!.load()
+    //coachAssignmentCompletionDetailsStore!.load(props.assignment.uuid)
   }
 
   // Extract the list of unique students and groups

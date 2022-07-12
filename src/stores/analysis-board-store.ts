@@ -102,7 +102,7 @@ export class AnalysisBoardStore {
     const dests = new Map()
     const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
     const chess = new ChessJS(this.fen)
-    chess.SQUARES.forEach(s => {
+    _ChessJS.SQUARES.forEach(s => {
       const ms = chess.moves({ square: s, verbose: true })
       if (ms.length) dests.set(s, ms.map(m => m.to))
     })

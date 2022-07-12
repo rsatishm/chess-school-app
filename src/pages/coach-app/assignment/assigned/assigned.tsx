@@ -51,8 +51,8 @@ export const Assigned = observer(()=>{
     })
   }
   React.useEffect(()=>{
-    coachAssignmentStore!.load()
-    studentsGroupsStore!.load()
+    //coachAssignmentStore!.load()
+    //studentsGroupsStore!.load()
   })
   const handleSearchChange = (event: any) => {
     updateState({ search: event.target.value })

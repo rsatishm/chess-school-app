@@ -73,10 +73,10 @@ export class ExerciseStore {
           this.exercises = response.data.records
           this.lastLoadTime = +new Date()
         })  
-      } catch (e) {
+      } catch (e) {      
         // FIXME
         console.log(
-          'FATAL: error loading exercises ( This is a ninja quick fix. Please find a proper fix )'
+          'FATAL: error loading exercises ( This is a ninja quick fix. Please find a proper fix )' + JSON.stringify(e)
         )
         runInAction(()=>{
           this.loading = false

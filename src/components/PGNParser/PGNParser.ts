@@ -23,20 +23,29 @@ const getMoves = function getMoves(
   if (trimmed.length === 0) {
     return [[], startFen]
   }
+  moveText = moveText.trim()
+  /*
   console.log("StartFen:" + `[FEN "${startFen}"]`)
   console.log("MoveText:" + `${moveText}`)
+  console.log("PGN:" + [
+    `[FEN "${startFen}"]`,
+    '[SetUp "1"]',
+    `\n`,
+    `${moveText}` // '1. ' Due to weird bugs in Chess.JS!
+  ].join('\n'))*/
+  const pgn = [
+    `[FEN "${startFen}"]`,
+    '[SetUp "1"]',
+    `\n`,
+    `${moveText}` // '1. ' Due to weird bugs in Chess.JS!
+  ].join('\n')
+
+  const pgn1 = `[FEN "${startFen}"]` + "\n" + '[SetUp "1"]' + "\n\n" + `${moveText}`
+  console.log("pgn:'" + pgn1 + "'")
   //const g = new Chess()
   const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
 const g = new ChessJS()
-  const loaded = g.load_pgn(
-    [
-      `[FEN "${startFen}"]`,
-      '[SetUp "1"]',
-      `\n`,
-      `${moveText}` // '1. ' Due to weird bugs in Chess.JS!
-    ].join('\n'),
-    { sloppy: true }
-  )
+  const loaded = g.load_pgn(pgn1, { sloppy: true })
 
   if (!loaded) {
     console.log('--------------------')

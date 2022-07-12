@@ -18,6 +18,7 @@ import { MobXProviderContext, observer } from 'mobx-react'
 import { useForm } from 'antd/es/form/Form'
 import { ExceptionOutlined, LoadingOutlined } from '@ant-design/icons'
 import { ProblembaseDrawer } from '../problembase-drawer/problembase-drawer'
+import Title from 'antd/lib/typography/Title'
 
 const TODAY_MOMENT = moment()
 
@@ -101,12 +102,16 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
     })
   }
   const [form] = useForm()
+  
+  /*
   React.useEffect(() => {
+    console.log("state.problembaseDrawerVisible: " + state.problembaseDrawerVisible)
     if (!state.problembaseDrawerVisible) {
     form.resetFields()
     props.onClose()
     }
-  }, [state.problembaseDrawerVisible])
+  }, [state.problembaseDrawerVisible])*/
+
 
   const handleCleanupAndClose = () => {
     updateState(
@@ -117,6 +122,8 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
         selectedProblemUuidsError: ''
       }      
     )
+    form.resetFields()
+    props.onClose()
   }
 
   const handleProblembaseDrawerClose = () => {
@@ -137,6 +144,7 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
     })
   }
 
+  /*
   React.useEffect(    () => {
     if (state.selectedProblemUuidsError == '') {
     form.validateFields().then(
@@ -145,7 +153,7 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
       }
     )
     }
-  }, [state.selectedProblemUuidsError])
+  }, [state.selectedProblemUuidsError])*/
 
   const submitExercise = async ()=>{
     const data = {
@@ -291,12 +299,15 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
     )
   }
 
-  const renderContent = () => {
+  const renderContent = () => {  
+    console.log("render create exercise content")
     if (exerciseStore!.submitting) {
+      console.log("renderSubmittingState")
       return renderSubmittingState()
     }
 
     if (exerciseStore!.submitError) {
+      console.log("renderSubmitErrorState")
       return renderSubmitErrorState()
     }
 
@@ -408,6 +419,8 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
   }
 
   const renderProblembaseViewDrawer = () => {}
+  console.log("state.problembaseDrawerVisible: " + state.problembaseDrawerVisible)
+  console.log("props.visible: " + props.visible)
   return (
     <Drawer
       className="create-exercise-drawer"
@@ -418,13 +431,15 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
       closable={false}
       visible={props.visible}
     >
-      <ProblembaseDrawer
+      {state.problembaseDrawerVisible && <ProblembaseDrawer
         onClose={handleProblembaseDrawerClose}
         visible={state.problembaseDrawerVisible}
         onSelectedProblemsChange={handleSelectedProblemsChange}
         selectedProblemUuids={state.selectedProblemUuids}
-      />
-      {renderContent()}
+      />}
+      {
+      renderContent()
+      }
     </Drawer>
   )
 })

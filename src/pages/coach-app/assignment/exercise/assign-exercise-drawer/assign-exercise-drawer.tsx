@@ -43,7 +43,7 @@ export const AssignExerciseDrawer = observer((props: Props) => {
     })
   }
   React.useEffect(() => {
-    studentsGroupsStore!.load()
+    //studentsGroupsStore!.load()
   })
   const [form] = useForm()
   const handleCancelClick = () => {

@@ -14,7 +14,7 @@ import { Classrooms } from './classrooms/classrooms';
 import { CreateClassroom } from './classrooms/create-classroom-form';
 import { StartClassRoom } from './classrooms/start-classroom';
 import { TournamentView } from '../../components/tournaments/tournament-view';
-import { Assignment } from '../student-app/assignment/assignment';
+import { Assignment } from '../coach-app/assignment/assignment';
 import { Practice } from '../student-app/practice/practice';
 import { User } from '../user/user';
 import { Blindbot } from '../student-app/blindbot/blindbot';
@@ -82,7 +82,7 @@ export const CoachApp = observer(() => {
       <Sidebar />
       <Routes>
         <Route path="/academy/*" element={<Academy/>} />
-        <Route path="/assignment" element={<Assignment/>} />
+        <Route path="/assignment/*" element={<Assignment/>} />
         <Route path="/practice/*" element={<Practice/>} />
         <Route
           path="/preferences"

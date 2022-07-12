@@ -14,8 +14,6 @@ import { inject, MobXProviderContext, observer } from 'mobx-react'
 import AwesomeDebouncePromise from 'awesome-debounce-promise'
 import InfiniteScroller from 'react-infinite-scroller'
 
-const { Option } = Select
-
 import './exercise.less'
 
 import { ExerciseStore } from '../../../../stores/exercise'
@@ -24,6 +22,9 @@ import { AssignExerciseDrawer } from './assign-exercise-drawer/assign-exercise-d
 import { ProblemsList } from './problems-list/problems-list'
 import { States } from '../../../../components/states/states'
 import { CaretDownOutlined, CaretUpOutlined, FlagOutlined } from '@ant-design/icons'
+
+
+const { Option } = Select
 
 interface State {
   createExerciseDrawerVisible: boolean
@@ -45,9 +46,9 @@ export const Exercise = observer(()=>{
       return { ...prevState, ...newState }
     })
   }
-  let debouncedLoad = AwesomeDebouncePromise(exerciseStore!.load, 500)
+  //let debouncedLoad = AwesomeDebouncePromise(exerciseStore!.load, 500)
   React.useEffect(()=>{
-    exerciseStore!.load(state.search, state.sortBy)
+    //exerciseStore!.load(state.search, state.sortBy)
   })
 
   const handleRetry = () => {
@@ -59,12 +60,14 @@ export const Exercise = observer(()=>{
   }
 
   const handleCreateButtonClick = () => {
+    console.log("set createExerciseDrawerVisible to true")
     updateState({
       createExerciseDrawerVisible: true
     })
   }
 
   const handleCreateExerciseDrawerClose = () => {
+    console.log("handleCreateExerciseDrawerClose called")
     updateState({
       createExerciseDrawerVisible: false
     })
@@ -75,10 +78,11 @@ export const Exercise = observer(()=>{
       exerciseUuidToAssign: ''
     })
   }
-
+/*
   React.useEffect(() => {
     debouncedLoad(state.search, state.sortBy)
-  }, [state.sortBy, state.search])
+  }, [state.sortBy, state.search])*/
+
   const handleSortByChange = (sortBy: any) => {
     updateState({ sortBy } as State)
   }
@@ -195,6 +199,7 @@ export const Exercise = observer(()=>{
 
   const renderExercisePage = () => {
     if (exerciseStore!.error) {
+      console.log("show retry")
       return (
         <States
           type="error"
@@ -203,13 +208,13 @@ export const Exercise = observer(()=>{
         />
       )
     }
-
+/*
     if (exerciseStore!.loading) {
       return <States type="loading" />
     }
-
+*/
     const exercises = exerciseStore!.exercises as any[]
-
+    console.log("render excercise")
     return (
       <>
         {(exercises.length > 0 || state.search.trim() !== '') && (
@@ -284,18 +289,19 @@ export const Exercise = observer(()=>{
     return []
   })()
 
+  console.log("state.createExerciseDrawerVisible: " + state.createExerciseDrawerVisible)
   return (
     <div className="exercise inner">
-      <AssignExerciseDrawer
+      {state.exerciseUuidToAssign !== '' && <AssignExerciseDrawer
         exerciseUuid={state.exerciseUuidToAssign}
         problemUuids={problemUuidsToAssign}
         visible={state.exerciseUuidToAssign !== ''}
         onClose={handleAssignExerciseDrawerClose}
-      />
-      <CreateExerciseDrawer
+      />}
+      {state.createExerciseDrawerVisible && <CreateExerciseDrawer
         visible={state.createExerciseDrawerVisible}
         onClose={handleCreateExerciseDrawerClose}
-      />
+      />}
       {renderExercisePage()}
     </div>
   )

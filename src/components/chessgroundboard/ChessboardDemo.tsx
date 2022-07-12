@@ -48,7 +48,7 @@ export const ChessboardDemo = () => {
 
   const calcMovable = () => {
     const dests = new Map()
-    chess.SQUARES.forEach(s => {
+    _ChessJS.SQUARES.forEach(s => {
       const ms = chess.moves({ square: s, verbose: true })
       if (ms.length) dests.set(s, ms.map(m => m.to))
     })
