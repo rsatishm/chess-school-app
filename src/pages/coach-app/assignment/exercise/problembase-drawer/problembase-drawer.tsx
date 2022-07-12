@@ -10,6 +10,8 @@ import { PublicProblembaseStore } from '../../../../../stores/public-problembase
 import ProblembaseViewerDrawer from '../problembase-viewer-drawer/problembase-viewer-drawer'
 import { ProblembaseContentStore } from '../../../../../stores/problembase-content'
 import { LoadingOutlined } from '@ant-design/icons'
+import { ProblembaseTree } from '../../../problembase/my-problembases/problembase-tree'
+import { observable } from 'mobx'
 
 interface Props {
   visible: boolean
@@ -26,7 +28,7 @@ interface State {
 }
 
 export const ProblembaseDrawer = observer((props: Props) => {
-  const { privateProblembaseStore, publicProblembaseStore, problembaseContentStore } =
+  const { privateProblembaseStore, publicProblembaseStore, problembaseContentStore, gameboxDatabaseStore} =
     React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     selectedProblembaseUuid: '',
@@ -39,6 +41,11 @@ export const ProblembaseDrawer = observer((props: Props) => {
       return { ...prevState, ...newState }
     })
   }
+
+  React.useEffect(() => {
+    gameboxDatabaseStore!.load()
+  }, [])
+  /*
   React.useEffect(() => {
     privateProblembaseStore!.load()
     publicProblembaseStore!.load()
@@ -48,6 +55,7 @@ export const ProblembaseDrawer = observer((props: Props) => {
       problembaseContentStore!.load(state.selectedProblembaseUuid)
     }
   }, [state.selectedProblembaseUuid])
+  */
 
   const handleProblembaseClick = (uuid: string) => () => {
     updateState({
@@ -155,14 +163,14 @@ export const ProblembaseDrawer = observer((props: Props) => {
 
   const drawerProps = {
     className: 'problembase-drawer',
-    width: 450,
+    width: 600,
     placement: 'right',
     onClose: props.onClose,
     maskClosable: false,
     closable: false,
     visible: props.visible
   } as any
-
+/*
   if (
     privateProblembaseStore!.loading ||
     publicProblembaseStore!.loading
@@ -190,7 +198,7 @@ export const ProblembaseDrawer = observer((props: Props) => {
         </div>
       </Drawer>
     )
-  }
+  }*/
 
   const problembases = sortProblembases(
     getFilteredProblembases(
@@ -218,6 +226,8 @@ export const ProblembaseDrawer = observer((props: Props) => {
         <div className="status-bar">
           Selected {props.selectedProblemUuids.length}
           <div>
+            {
+              /*
             <Checkbox
               className="list-private-checkbox"
               onChange={handleCheckboxToggle('listPrivate')}
@@ -231,7 +241,7 @@ export const ProblembaseDrawer = observer((props: Props) => {
               checked={state.listPublic}
             >
               Public
-            </Checkbox>
+            </Checkbox>*/}
             <Input
               className="search-input"
               placeholder="Search"
@@ -239,6 +249,7 @@ export const ProblembaseDrawer = observer((props: Props) => {
               value={state.search}
               onChange={handleSearchChange}
             />
+            <ProblembaseTree/>
           </div>
         </div>
         <div className="content">
