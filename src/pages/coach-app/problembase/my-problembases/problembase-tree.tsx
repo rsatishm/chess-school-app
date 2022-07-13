@@ -1,19 +1,14 @@
-import { List } from "antd";
 import { DataNode, DirectoryTreeProps } from "antd/lib/tree";
 import DirectoryTree from "antd/lib/tree/DirectoryTree";
-import { observable } from "mobx";
 import { MobXProviderContext, observer } from "mobx-react";
-import React, { useState } from "react";
-import { ChessboardList } from "./chessboard-list";
-import { ChessboardPosition } from "./chessboard-position.";
+import React from "react";
 
-export const ProblembaseTree: React.FC = observer(() => {
-    interface State {
-        showProblembaseTree: boolean
-    }
-    const [state, setState] = useState<State>({
-        showProblembaseTree: true
-    })
+
+interface Props {
+    onSelect?: (uuid: string) => any
+}
+
+export const ProblembaseTree = observer((props: Props) => {
     const { gameboxDatabaseStore } = React.useContext(MobXProviderContext)
     const pgnFiles = (db: any) => {
         console.log("Before rendering: " + JSON.stringify(db))
@@ -34,9 +29,6 @@ export const ProblembaseTree: React.FC = observer(() => {
                 children: pgnFiles(db)
             }
         })
-
-        //console.log("TREE: " + JSON.stringify(tree))
-
         return tree
     }
 
@@ -55,26 +47,15 @@ export const ProblembaseTree: React.FC = observer(() => {
     const onSelect: DirectoryTreeProps['onSelect'] = (keys, info) => {
         console.log('Trigger Select', keys, info);
         gameboxDatabaseStore!.getPgnPiecesByFile(keys[0])
-        setState({ showProblembaseTree: false })
+        //setState({ showProblembaseTree: false })
+        if (props.onSelect) {
+            props.onSelect(keys[0] as string)
+        }
     };
 
     const onExpand: DirectoryTreeProps['onExpand'] = (keys, info) => {
         console.log('Trigger Expand', keys, info);
     };
 
-    return (
-        <>
-            {
-                state.showProblembaseTree &&
-                <DirectoryTree
-                    onSelect={onSelect}
-                    treeData={treeData}
-                />
-            }
-            {
-                !state.showProblembaseTree &&
-                <ChessboardList />
-            }
-        </>
-    );
+    return <DirectoryTree onSelect={onSelect} treeData={treeData} />
 });

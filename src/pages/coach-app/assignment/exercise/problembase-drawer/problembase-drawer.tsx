@@ -12,6 +12,7 @@ import { ProblembaseContentStore } from '../../../../../stores/problembase-conte
 import { LoadingOutlined } from '@ant-design/icons'
 import { ProblembaseTree } from '../../../problembase/my-problembases/problembase-tree'
 import { observable } from 'mobx'
+import { ChessboardList } from '../../../problembase/my-problembases/chessboard-list'
 
 interface Props {
   visible: boolean
@@ -25,6 +26,7 @@ interface State {
   search: string
   listPrivate: boolean
   listPublic: boolean
+  dbDirVisible: boolean 
 }
 
 export const ProblembaseDrawer = observer((props: Props) => {
@@ -34,7 +36,8 @@ export const ProblembaseDrawer = observer((props: Props) => {
     selectedProblembaseUuid: '',
     search: '',
     listPrivate: true,
-    listPublic: true
+    listPublic: true,
+    dbDirVisible: true
   })
   const updateState = (newState: Partial<State>) => {
     setState((prevState) => {
@@ -249,7 +252,10 @@ export const ProblembaseDrawer = observer((props: Props) => {
               value={state.search}
               onChange={handleSearchChange}
             />
-            <ProblembaseTree/>
+            {state.dbDirVisible && <ProblembaseTree onSelect={()=>{
+              updateState({dbDirVisible: false})
+            }}/>}
+            {!state.dbDirVisible && <ChessboardList/>}
           </div>
         </div>
         <div className="content">
