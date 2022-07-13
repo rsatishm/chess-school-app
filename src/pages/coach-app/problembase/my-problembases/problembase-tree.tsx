@@ -6,6 +6,7 @@ import React from "react";
 
 interface Props {
     onSelect?: (uuid: string) => any
+    data: any[]
 }
 
 export const ProblembaseTree = observer((props: Props) => {
@@ -22,7 +23,7 @@ export const ProblembaseTree = observer((props: Props) => {
     }
 
     const dbTree = () => {
-        const tree: any[] = gameboxDatabaseStore!.databases.map((db: any) => {
+        const tree: any[] = props.data.map((db: any) => {
             return {
                 title: db.name,
                 key: db.uuid,

@@ -149,6 +149,7 @@ export const ProblembaseDrawer = observer((props: Props) => {
   }
 
   const getFilteredProblembases = (search: string, problembases: any[]) => {
+    /*
     const publicBases = state.listPublic
       ? publicProblembaseStore!.problembases! || []
       : []
@@ -157,6 +158,9 @@ export const ProblembaseDrawer = observer((props: Props) => {
       : []
     return [...publicBases, ...privateBases].filter(
       p => p.name.toLowerCase().indexOf(state.search.toLowerCase()) >= 0
+    )*/
+    return problembases.filter(
+      p => p.name.toLowerCase().indexOf(search.toLowerCase()) >= 0
     )
   }
 
@@ -206,7 +210,7 @@ export const ProblembaseDrawer = observer((props: Props) => {
   const problembases = sortProblembases(
     getFilteredProblembases(
       state.search,
-      privateProblembaseStore!.problembases! || []
+      gameboxDatabaseStore!.databases! || []
     )
   )
 
@@ -254,13 +258,15 @@ export const ProblembaseDrawer = observer((props: Props) => {
             />
             {state.dbDirVisible && <ProblembaseTree onSelect={()=>{
               updateState({dbDirVisible: false})
-            }}/>}
+            }} data={problembases}/>}
             {!state.dbDirVisible && <ChessboardList/>}
           </div>
         </div>
         <div className="content">
           <div className="problembase-cards container">
-            {problembases.map((g: any) => {
+            {
+            /*
+            problembases.map((g: any) => {
               return (
                 <div
                   key={g.uuid}
@@ -271,7 +277,9 @@ export const ProblembaseDrawer = observer((props: Props) => {
                   <span className="count">{g.count}</span>
                 </div>
               )
-            })}
+            })*/
+            
+            }
           </div>
         </div>
         <div className="button-bar">

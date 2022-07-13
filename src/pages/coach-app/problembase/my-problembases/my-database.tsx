@@ -85,7 +85,7 @@ export const MyDatabase = observer(() => {
       )}
       <div className='inner'>
         <SplitterLayout percentage secondaryInitialSize={85}>
-          <ProblembaseTree/>
+          <ProblembaseTree data={gameboxDatabaseStore!.databases}/>
           <SplitterLayout percentage secondaryInitialSize={65}>
             <PGNList/>            
           </SplitterLayout>
