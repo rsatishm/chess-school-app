@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Drawer} from 'antd'
+import { Button, Drawer } from 'antd'
 import { inject, MobXProviderContext, observer } from 'mobx-react'
 import InfiniteScroller from 'react-infinite-scroller'
 
@@ -9,6 +9,7 @@ import { ProblembaseContentStore } from '../../../../../stores/problembase-conte
 import { ConfiguredChessboard } from '../../../../../components/chessboard/configured-chessboard'
 import { ChessTypes } from '../../../../../types'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
+import { ChessboardPosition } from '../../../problembase/my-problembases/chessboard-position.'
 
 // TODO: Move this method to Chess Lib FEN
 const getSideToMove = (fen: ChessTypes.FEN): ChessTypes.Side => {
@@ -27,11 +28,11 @@ interface Props {
   onProblemUnselect: (uuid: string) => any
 }
 
-const ProblembaseViewerDrawer = observer((props: Props)=>{
-  const {problembaseContentStore} = React.useContext(MobXProviderContext)
+const ProblembaseViewerDrawer = observer((props: Props) => {
+  const { problembaseContentStore } = React.useContext(MobXProviderContext)
   const [state, setState] = React.useState({ hasMore: true })
-  let ref : any = {}
-  React.useEffect(()=>{
+  let ref: any = {}
+  React.useEffect(() => {
     if (props.problembaseUuid.length > 0) {
       problembaseContentStore!.load(props.problembaseUuid)
     }
@@ -69,7 +70,7 @@ const ProblembaseViewerDrawer = observer((props: Props)=>{
   const content = (() => {
     if (
       !props.problembaseUuid ||
-      !props.problembaseContentStore!.content[props.problembaseUuid]
+      !problembaseContentStore!.content[props.problembaseUuid]
     ) {
       return <div className="content" />
     }
@@ -91,7 +92,7 @@ const ProblembaseViewerDrawer = observer((props: Props)=>{
     const problems = problembaseContentStore!.content[
       props.problembaseUuid
     ].problems
-    
+
     return (
       <div className="content">
         <InfiniteScroller
@@ -107,15 +108,17 @@ const ProblembaseViewerDrawer = observer((props: Props)=>{
                 ref[p.uuid] = rf
               }}
               key={p.uuid}
-              className={`problem ${
-                props.selectedProblemUuids.indexOf(p.uuid) >= 0
+              className={`problem ${props.selectedProblemUuids.indexOf(p.uuid) >= 0
                   ? 'selected'
                   : ''
-              }`}
+                }`}
               onClick={handleProblemClick(p.uuid)}
             >
+
               <div style={{ textAlign: 'center' }}>{index + 1}</div>
               <div className="board">
+
+
                 <ConfiguredChessboard
                   key={p.uuid}
                   fen={p.meta.startFen}
@@ -124,12 +127,13 @@ const ProblembaseViewerDrawer = observer((props: Props)=>{
                   height={250}
                   coordinates={false}
                 />
+
               </div>
+
               <div className="assessment">
                 <span
-                  className={`side-to-move ${
-                    getSideToMove(p.meta.startFen) === 'w' ? 'white' : 'black'
-                  }`}
+                  className={`side-to-move ${getSideToMove(p.meta.startFen) === 'w' ? 'white' : 'black'
+                    }`}
                 />
                 <span className="result">{p.meta.result}</span>
               </div>

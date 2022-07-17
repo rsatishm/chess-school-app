@@ -1,10 +1,16 @@
-import { Checkbox, List } from "antd"
+import { Button, Checkbox, List } from "antd"
 import { MobXProviderContext } from "mobx-react"
 import { observer } from "mobx-react-lite"
 import React, { useState } from "react"
 import { ChessboardPosition } from "./chessboard-position."
+import '../../assignment/exercise/problembase-viewer-drawer/problembase-viewer-drawer.less'
+import { props } from "ramda"
 
-export const ChessboardList = observer(() => {
+interface Props {
+    onBack: ()=>void
+}
+
+export const ChessboardList = observer((props: Props) => {
     interface State {
         pgnSelected: any
     }
@@ -68,5 +74,33 @@ export const ChessboardList = observer(() => {
             </List.Item>
         )}
     />
-    return list
+    return <>
+        <div className="select-bar">
+            <Button
+                size="small"
+                className="select-button"
+                onClick={props.onBack}
+            >
+                Back
+            </Button>
+            <Button
+                size="small"
+                className="select-button"
+                onClick={() => { }}
+            >
+                Select 10
+            </Button>
+            <Button
+                size="small"
+                className="select-button"
+                onClick={() => { }}
+            >
+                Select all
+            </Button>
+            <Button size="small" onClick={() => { }}>
+                Deselect all
+            </Button>
+        </div>
+        {list}
+    </>
 })

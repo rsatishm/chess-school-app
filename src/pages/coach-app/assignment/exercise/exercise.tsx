@@ -292,17 +292,17 @@ export const Exercise = observer(()=>{
   console.log("state.createExerciseDrawerVisible: " + state.createExerciseDrawerVisible)
   return (
     <div className="exercise inner">
-      {state.exerciseUuidToAssign !== '' && <AssignExerciseDrawer
-        exerciseUuid={state.exerciseUuidToAssign}
-        problemUuids={problemUuidsToAssign}
-        visible={state.exerciseUuidToAssign !== ''}
-        onClose={handleAssignExerciseDrawerClose}
-      />}
-      {state.createExerciseDrawerVisible && <CreateExerciseDrawer
-        visible={state.createExerciseDrawerVisible}
-        onClose={handleCreateExerciseDrawerClose}
-      />}
-      {renderExercisePage()}
-    </div>
+    <AssignExerciseDrawer
+      exerciseUuid={state.exerciseUuidToAssign}
+      problemUuids={problemUuidsToAssign}
+      visible={state.exerciseUuidToAssign !== ''}
+      onClose={handleAssignExerciseDrawerClose}
+    />
+    <CreateExerciseDrawer
+      visible={state.createExerciseDrawerVisible}
+      onClose={handleCreateExerciseDrawerClose}
+    />
+    {renderExercisePage()}
+  </div>
   )
 })

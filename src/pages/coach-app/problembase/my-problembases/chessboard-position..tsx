@@ -4,10 +4,13 @@ import Title from "antd/lib/typography/Title"
 import { observable } from "mobx"
 import { MobXProviderContext, observer } from "mobx-react"
 import { useContext, useEffect, useState } from "react"
+import { ConfiguredChessboard } from "../../../../components/chessboard/configured-chessboard"
 import Chessgroundboard from "../../../../components/chessgroundboard/Chessgroundboard"
 import { Scoresheet } from "../../../../components/scoresheet/scoresheet"
 import { ChessTypes } from "../../../../types"
 import { SquareLabel } from "../../../../types/ChessTypes/ChessTypes"
+import '../../../common-pages/analysis-board/analysis-board.less'
+import '../../../../components/scoresheet/scoresheet.less'
 
 interface ChessboardProps {
     pgnTitle: string | undefined
@@ -101,6 +104,19 @@ export const ChessboardPosition = observer((props: ChessboardProps) => {
         })
     }
 
+    /*
+              <div className="board">
+                <ConfiguredChessboard
+                  key={p.uuid}
+                  fen={p.meta.startFen}
+                  interactionMode="NONE"
+                  width={250}
+                  height={250}
+                  coordinates={false}
+                />
+              </div>
+
+    */
     return (<Row className="analysis-board scoresheet-container">
         <Col md={{ span: 12, offset: 2 }} sm={24}>
             <Title level={5}>{props.pgnTitle}</Title>
@@ -172,22 +188,24 @@ export const ChessboardPosition = observer((props: ChessboardProps) => {
                 </Col>
             </Row>
         </Col>
+
+        
         <Col md={{ span: 12, offset: 2 }} sm={24}>
             <div>
-            <Scoresheet
-                visible={true}
-                currentPath={analysisBoardStore!.state.currentPath}
-                mainline={analysisBoardStore!.state.mainline}
-                showHideMovesToggle={false}
-                areMovesHiddenForStudents={false}
-                onGoToPath={handleGoToPath}
-                onPromoteVariation={handlePromoteVariation}
-                onDeleteVariation={handleDeleteVariation}
-                onAddComment={handleAddComment}
-                onDeleteComment={handleDeleteComment}
-                onHideMovesChange={() => {}}
-              />
+                <Scoresheet
+                    visible={true}
+                    currentPath={analysisBoardStore!.state.currentPath}
+                    mainline={analysisBoardStore!.state.mainline}
+                    showHideMovesToggle={false}
+                    areMovesHiddenForStudents={false}
+                    onGoToPath={handleGoToPath}
+                    onPromoteVariation={handlePromoteVariation}
+                    onDeleteVariation={handleDeleteVariation}
+                    onAddComment={handleAddComment}
+                    onDeleteComment={handleDeleteComment}
+                    onHideMovesChange={() => { }}
+                />
             </div>
-        </Col>    
+        </Col>
     </Row>)
 })

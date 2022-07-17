@@ -3,6 +3,7 @@ import * as jsEnv from 'browser-or-node'
 import { observable, action, makeObservable, runInAction } from 'mobx'
 
 import { userStore } from './user'
+import * as _ChessJS from 'chess.js';
 
 export interface ProblembaseContent {
   loading: boolean
@@ -36,16 +37,43 @@ export class ProblembaseContentStore {
         const response = await userStore
           .getApiCoreAxiosClient()!
           .get('/database/problembase/' + uuid + '/problems')
-          runInAction(()=>{
-            this.content[uuid] = {
-              loading: false,
-              problems: response.data.records,
-              error: '',
-              currentPage: 1
-            }
-          })
+
+        const records: any[] = response.data.records;
+        const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+        const g = new ChessJS()
+
+        const problems: any = records.map((record, index) => {
+          const pgnArray: any[] = record.pgn.split("\n")
+          const pgn = pgnArray.join('\n')
+          const loaded = g.load_pgn(pgn)
+          if (!loaded) {
+            console.log("Error loading pgn")
+            return []
+          }
+          const header: any = g.header()
+          return {
+            uuid: records[index].uuid,
+            sno: index + 1,
+            meta: {
+              white: header['White'],
+              black: header['Black'],
+              result: header['Result'],
+              startFen: g.fen()
+            },
+            pgn
+          }
+        })
+
+        runInAction(() => {
+          this.content[uuid] = {
+            loading: false,
+            problems,
+            error: '',
+            currentPage: 1
+          }
+        })
       } catch (e) {
-        runInAction(()=>{
+        runInAction(() => {
           this.content[uuid] = {
             ...this.content[uuid],
             error: `Error loading problembase ${uuid}`
@@ -62,24 +90,51 @@ export class ProblembaseContentStore {
           .getApiCoreAxiosClient()!
           .get(
             '/database/problembase/' +
-              uuid +
-              '/problems?page=' +
-              this.content[uuid].currentPage
+            uuid +
+            '/problems?page=' +
+            this.content[uuid].currentPage
           )
-          runInAction(()=>{
-            this.content[uuid] = {
-              ...this.content[uuid],
-              problems: R.uniqBy(p => p.uuid, [
-                ...this.content[uuid].problems,
-                ...response.data.records
-              ]),
-              currentPage: this.content[uuid].currentPage + 1
-            }
-          })
+
+        const records: any[] = response.data.records;
+        const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
+        const g = new ChessJS()
+
+        const problems: any = records.map((record, index) => {
+          const pgnArray: any[] = record.pgn.split("\n")
+          const pgn = pgnArray.join('\n')
+          const loaded = g.load_pgn(pgn)
+          if (!loaded) {
+            console.log("Error loading pgn")
+            return []
+          }
+          const header: any = g.header()
+          return {
+            uuid: records[index].uuid,
+            sno: index + 1,
+            meta: {
+              white: header['White'],
+              black: header['Black'],
+              result: header['Result'],
+              startFen: g.fen()
+            },
+            pgn
+          }
+        })
+
+        runInAction(() => {
+          this.content[uuid] = {
+            ...this.content[uuid],
+            problems: R.uniqBy(p => p.uuid, [
+              ...this.content[uuid].problems,
+              ...problems
+            ]),
+            currentPage: this.content[uuid].currentPage + 1
+          }
+        })
 
         return response.data.total
       } catch (e) {
-        runInAction(()=>{
+        runInAction(() => {
           this.content[uuid] = {
             ...this.content[uuid],
             error: `Error loading problembase ${uuid}`

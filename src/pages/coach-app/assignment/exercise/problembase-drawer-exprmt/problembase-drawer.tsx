@@ -1,12 +1,18 @@
 import * as React from 'react'
 import * as R from 'ramda'
 import { Button, Drawer, Checkbox, Input } from 'antd'
-import { MobXProviderContext, observer } from 'mobx-react'
+import { inject, MobXProviderContext, observer } from 'mobx-react'
 
 import './problembase-drawer.less'
+
+import { PrivateProblembaseStore } from '../../../../../stores/private-problembase'
+import { PublicProblembaseStore } from '../../../../../stores/public-problembase'
 import ProblembaseViewerDrawer from '../problembase-viewer-drawer/problembase-viewer-drawer'
+import { ProblembaseContentStore } from '../../../../../stores/problembase-content'
 import { LoadingOutlined } from '@ant-design/icons'
 import { ProblembaseTree } from '../../../problembase/my-problembases/problembase-tree'
+import { observable } from 'mobx'
+import { ChessboardList } from '../../../problembase/my-problembases/chessboard-list'
 
 interface Props {
   visible: boolean
@@ -20,22 +26,29 @@ interface State {
   search: string
   listPrivate: boolean
   listPublic: boolean
+  dbDirVisible: boolean 
 }
 
-export const ProblembaseDrawer = observer((props: Props) => {
-  const { privateProblembaseStore, publicProblembaseStore, problembaseContentStore } =
+export const ProblembaseDrawer1 = observer((props: Props) => {
+  const { privateProblembaseStore, publicProblembaseStore, problembaseContentStore, gameboxDatabaseStore} =
     React.useContext(MobXProviderContext)
   const [state, setState] = React.useState<State>({
     selectedProblembaseUuid: '',
     search: '',
     listPrivate: true,
-    listPublic: true
+    listPublic: true,
+    dbDirVisible: true
   })
   const updateState = (newState: Partial<State>) => {
     setState((prevState) => {
       return { ...prevState, ...newState }
     })
   }
+
+  React.useEffect(() => {
+    gameboxDatabaseStore!.load()
+  }, [])
+  /*
   React.useEffect(() => {
     privateProblembaseStore!.load()
     publicProblembaseStore!.load()
@@ -45,9 +58,9 @@ export const ProblembaseDrawer = observer((props: Props) => {
       problembaseContentStore!.load(state.selectedProblembaseUuid)
     }
   }, [state.selectedProblembaseUuid])
+  */
 
-  const handleProblembaseClick = (uuid: string) => {
-    console.log("Tree select: " + uuid)
+  const handleProblembaseClick = (uuid: string) => () => {
     updateState({
       selectedProblembaseUuid: uuid
     })
@@ -136,6 +149,7 @@ export const ProblembaseDrawer = observer((props: Props) => {
   }
 
   const getFilteredProblembases = (search: string, problembases: any[]) => {
+    /*
     const publicBases = state.listPublic
       ? publicProblembaseStore!.problembases! || []
       : []
@@ -144,6 +158,9 @@ export const ProblembaseDrawer = observer((props: Props) => {
       : []
     return [...publicBases, ...privateBases].filter(
       p => p.name.toLowerCase().indexOf(state.search.toLowerCase()) >= 0
+    )*/
+    return problembases.filter(
+      p => p.name.toLowerCase().indexOf(search.toLowerCase()) >= 0
     )
   }
 
@@ -152,15 +169,15 @@ export const ProblembaseDrawer = observer((props: Props) => {
   }
 
   const drawerProps = {
-    className: 'problembase-drawer',
-    width: 450,
+    className: 'problembase-viewer-drawer',
+    width: 600,
     placement: 'right',
     onClose: props.onClose,
     maskClosable: false,
     closable: false,
     visible: props.visible
   } as any
-
+/*
   if (
     privateProblembaseStore!.loading ||
     publicProblembaseStore!.loading
@@ -188,16 +205,14 @@ export const ProblembaseDrawer = observer((props: Props) => {
         </div>
       </Drawer>
     )
-  }
+  }*/
 
   const problembases = sortProblembases(
     getFilteredProblembases(
       state.search,
-      privateProblembaseStore!.problembases! || []
+      gameboxDatabaseStore!.databases! || []
     )
   )
-
-  console.log("problembaseUuid: " + state.selectedProblembaseUuid)
 
   return (
     <Drawer {...drawerProps}>
@@ -214,24 +229,11 @@ export const ProblembaseDrawer = observer((props: Props) => {
       <div className="drawer-inner">
         <div className="title">
           <h3>Choose problembase to add problems from</h3>
-        </div>
-        <div className="status-bar">
+        </div>            
+        <div className="content">
+        {state.dbDirVisible && <div className="status-bar">
           Selected {props.selectedProblemUuids.length}
-          <div>
-            <Checkbox
-              className="list-private-checkbox"
-              onChange={handleCheckboxToggle('listPrivate')}
-              checked={state.listPrivate}
-            >
-              My
-            </Checkbox>
-            <Checkbox
-              className="list-public-checkbox"
-              onChange={handleCheckboxToggle('listPublic')}
-              checked={state.listPublic}
-            >
-              Public
-            </Checkbox>
+          <div>            
             <Input
               className="search-input"
               placeholder="Search"
@@ -240,12 +242,16 @@ export const ProblembaseDrawer = observer((props: Props) => {
               onChange={handleSearchChange}
             />
           </div>
-        </div>
-        <div className="content">
-          <div className="problembase-cards container">
-          <ProblembaseTree onSelect={handleProblembaseClick} data={problembases}/>
+        </div>}
+        {state.dbDirVisible && <ProblembaseTree onSelect={()=>{
+              updateState({dbDirVisible: false})
+            }} data={problembases}/>}
+            {!state.dbDirVisible && <ChessboardList onBack={()=>{
+              updateState({dbDirVisible: true})
+            }}/>}
+          <div className="container">
             {
-              /*
+            /*
             problembases.map((g: any) => {
               return (
                 <div
@@ -258,6 +264,7 @@ export const ProblembaseDrawer = observer((props: Props) => {
                 </div>
               )
             })*/
+            
             }
           </div>
         </div>
