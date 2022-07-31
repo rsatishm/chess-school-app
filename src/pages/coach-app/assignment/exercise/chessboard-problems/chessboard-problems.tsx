@@ -1,5 +1,5 @@
 import { BackwardOutlined, FastBackwardOutlined, FastForwardOutlined, ForwardOutlined, SwapOutlined } from "@ant-design/icons"
-import { Button, Tooltip } from "antd"
+import { Button, Checkbox, Collapse, Tooltip } from "antd"
 import { MobXProviderContext, observer } from "mobx-react"
 import { useContext, useEffect, useState } from "react"
 
@@ -8,11 +8,15 @@ import { Scoresheet } from "../../../../../components/scoresheet/scoresheet"
 import { ChessTypes } from "../../../../../types"
 import { SquareLabel } from "../../../../../types/ChessTypes/ChessTypes"
 import './chessboard-problems.less'
+import { CaretRightOutlined } from '@ant-design/icons';
 
 interface ChessboardProps {
     meta: any
     pgn: string | undefined
     index: number
+    uuid: string
+    selected: boolean
+    onSelect: () => any
 }
 
 export const ChessboardProblems = observer((props: ChessboardProps) => {
@@ -96,8 +100,8 @@ export const ChessboardProblems = observer((props: ChessboardProps) => {
         return <div className="flex justify-between">
             <div>
                 <p><span>{props.index}. </span>{props.meta['white']} - {props.meta['black']}</p>
-                {props.meta['date'] || props.meta['site']&&
-                (<p className="text-xs text-gray-700">{props.meta['date']}, {props.meta['site']}</p>)}
+                {props.meta['date'] || props.meta['site'] &&
+                    (<p className="text-xs text-gray-700">{props.meta['date']}, {props.meta['site']}</p>)}
             </div>
             <div>{props.meta['result']}</div>
         </div>
@@ -106,47 +110,47 @@ export const ChessboardProblems = observer((props: ChessboardProps) => {
     const ButtonPanel = () => {
         return <div className="flex flex-col">
             <Button.Group className="mb-2">
-            <Tooltip title="fast-backward (< key)">
-                <Button
-                    icon={<FastBackwardOutlined />}
-                    type="link"
-                    size="small"
-                    onClick={backward}
-                />
-            </Tooltip>
-            <Tooltip title="backward (left arrow)">
-                <Button
-                    icon={<BackwardOutlined />}
-                    type="link"
-                    size="small"
-                    onClick={prev}
-                />
-            </Tooltip>
-            <Tooltip title="flip board (f key)">
-                <Button
-                    icon={<SwapOutlined />}
-                    style={{ transform: 'rotate(90deg)' }}
-                    type="link"
-                    size="small"
-                    onClick={handleFlip} //{this.props.analysisBoardStore!.prev} //change this
-                />
-            </Tooltip>
-            <Tooltip title="forward (right arrow)">
-                <Button
-                    icon={<ForwardOutlined />}
-                    type="link"
-                    size="small"
-                    onClick={next}
-                />
-            </Tooltip>
-            <Tooltip title="fast-forward (> key)">
-                <Button
-                    icon={<FastForwardOutlined />}
-                    type="link"
-                    size="small"
-                    onClick={forward}
-                />
-            </Tooltip>
+                <Tooltip title="fast-backward (< key)">
+                    <Button
+                        icon={<FastBackwardOutlined />}
+                        type="link"
+                        size="small"
+                        onClick={backward}
+                    />
+                </Tooltip>
+                <Tooltip title="backward (left arrow)">
+                    <Button
+                        icon={<BackwardOutlined />}
+                        type="link"
+                        size="small"
+                        onClick={prev}
+                    />
+                </Tooltip>
+                <Tooltip title="flip board (f key)">
+                    <Button
+                        icon={<SwapOutlined />}
+                        style={{ transform: 'rotate(90deg)' }}
+                        type="link"
+                        size="small"
+                        onClick={handleFlip} //{this.props.analysisBoardStore!.prev} //change this
+                    />
+                </Tooltip>
+                <Tooltip title="forward (right arrow)">
+                    <Button
+                        icon={<ForwardOutlined />}
+                        type="link"
+                        size="small"
+                        onClick={next}
+                    />
+                </Tooltip>
+                <Tooltip title="fast-forward (> key)">
+                    <Button
+                        icon={<FastForwardOutlined />}
+                        type="link"
+                        size="small"
+                        onClick={forward}
+                    />
+                </Tooltip>
             </Button.Group>
         </div>
     }
@@ -176,29 +180,45 @@ export const ChessboardProblems = observer((props: ChessboardProps) => {
     }
 
     const PGN = () => {
-        return <div className="flex-1 my-1">
-            <Scoresheet
-                visible={true}
-                currentPath={analysisBoardStore!.state.currentPath}
-                mainline={analysisBoardStore!.state.mainline}
-                showHideMovesToggle={false}
-                areMovesHiddenForStudents={false}
-                onGoToPath={handleGoToPath}
-                onPromoteVariation={handlePromoteVariation}
-                onDeleteVariation={handleDeleteVariation}
-                onAddComment={handleAddComment}
-                onDeleteComment={handleDeleteComment}
-                onHideMovesChange={() => { }}
-            />
-        </div>
+        return <Scoresheet
+            visible={true}
+            currentPath={analysisBoardStore!.state.currentPath}
+            mainline={analysisBoardStore!.state.mainline}
+            showHideMovesToggle={false}
+            areMovesHiddenForStudents={false}
+            onGoToPath={handleGoToPath}
+            onPromoteVariation={handlePromoteVariation}
+            onDeleteVariation={handleDeleteVariation}
+            onAddComment={handleAddComment}
+            onDeleteComment={handleDeleteComment}
+            onHideMovesChange={() => { }}
+        />
     }
 
+    const { Panel } = Collapse;
+
     return <div className="chessproblems">
+        <div className="p-2 flex items-baseline">
+            <Checkbox
+                checked={props.selected}
+                onChange={props.onSelect}>
+                <strong className="ml-2">Select</strong>
+            </Checkbox>
+        </div>
         <div className="flex p-2">
             <Chessboard />
             <div className="ml-4 flex-1 flex flex-col">
                 <ChessTitle />
-                <PGN />
+                <div className="flex-1 my-1">
+                    <Collapse
+                    accordion
+                        bordered={false}                        
+                        expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}                                    >
+                        <Panel header="PGN" key="1" style={{ border: "0px", background: "white" }}>
+                            <PGN />
+                        </Panel>
+                    </Collapse>
+                </div>
                 <ButtonPanel />
             </div>
         </div>

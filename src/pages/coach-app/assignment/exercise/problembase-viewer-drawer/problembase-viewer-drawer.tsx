@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, Drawer } from 'antd'
+import { Button, Divider, Drawer } from 'antd'
 import { inject, MobXProviderContext, observer } from 'mobx-react'
 import InfiniteScroller from 'react-infinite-scroller'
 
@@ -58,10 +58,12 @@ const ProblembaseViewerDrawer = observer((props: Props) => {
   }
 
   const handleLoadMore = async (page: number) => {
+    console.log("Page: " + page)
     const count = await problembaseContentStore!.loadMore(
       props.problembaseUuid,
       page
     )
+    console.log("Count: " + count)
 
     if (!count) {
       setState({ hasMore: false })
@@ -94,6 +96,7 @@ const ProblembaseViewerDrawer = observer((props: Props) => {
       props.problembaseUuid
     ].problems
 
+    console.log("Problems size: " + problems.length )
     return (
       <div className="content">
         <InfiniteScroller
@@ -112,11 +115,15 @@ const ProblembaseViewerDrawer = observer((props: Props) => {
               className={`problem ${props.selectedProblemUuids.indexOf(p.uuid) >= 0
                   ? 'selected'
                   : ''
-                }`}
-              onClick={handleProblemClick(p.uuid)}
-            >
-              <ChessboardProblems pgn={p.pgn} meta={p.meta} index={index + 1}/>
-
+                }`}>
+              <ChessboardProblems 
+              selected={props.selectedProblemUuids.indexOf(p.uuid) >= 0} 
+              uuid={p.uuid} 
+              pgn={p.pgn} 
+              meta={p.meta} 
+              index={index + 1}
+              onSelect={handleProblemClick(p.uuid)}/>
+              <Divider/>
             </div>
           ))}
         </InfiniteScroller>
