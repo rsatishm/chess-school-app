@@ -51,6 +51,7 @@ export class ProblembaseContentStore {
             return []
           }
           const header: any = g.header()
+          console.log(JSON.stringify(header))
           return {
             uuid: records[index].uuid,
             sno: index + 1,
@@ -58,6 +59,8 @@ export class ProblembaseContentStore {
               white: header['White'],
               black: header['Black'],
               result: header['Result'],
+              date: header['Date'],
+              site: header['Site'],
               startFen: g.fen()
             },
             pgn

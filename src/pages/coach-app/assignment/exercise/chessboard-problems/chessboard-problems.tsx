@@ -10,8 +10,9 @@ import { SquareLabel } from "../../../../../types/ChessTypes/ChessTypes"
 import './chessboard-problems.less'
 
 interface ChessboardProps {
-    pgnTitle: string | undefined
+    meta: any
     pgn: string | undefined
+    index: number
 }
 
 export const ChessboardProblems = observer((props: ChessboardProps) => {
@@ -94,10 +95,11 @@ export const ChessboardProblems = observer((props: ChessboardProps) => {
     const ChessTitle = () => {
         return <div className="flex justify-between">
             <div>
-                <p><span>1. </span>Example - ?</p>
-                <p className="text-xs text-gray-700">1979.??.??, ?</p>
+                <p><span>{props.index}. </span>{props.meta['white']} - {props.meta['black']}</p>
+                {props.meta['date'] || props.meta['site']&&
+                (<p className="text-xs text-gray-700">{props.meta['date']}, {props.meta['site']}</p>)}
             </div>
-            <div> 0-1</div>
+            <div>{props.meta['result']}</div>
         </div>
     }
 

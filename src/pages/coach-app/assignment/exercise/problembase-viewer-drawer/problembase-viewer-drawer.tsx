@@ -115,7 +115,7 @@ const ProblembaseViewerDrawer = observer((props: Props) => {
                 }`}
               onClick={handleProblemClick(p.uuid)}
             >
-              <ChessboardProblems pgn={p.pgn} pgnTitle=""/>
+              <ChessboardProblems pgn={p.pgn} meta={p.meta} index={index + 1}/>
 
             </div>
           ))}
