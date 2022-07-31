@@ -8,7 +8,9 @@ import {
   Form,
   Radio,
   Input,
-  Select
+  Select,
+  Divider,
+  List
 } from 'antd'
 import moment, { Moment } from 'moment'
 
@@ -18,6 +20,7 @@ import { MobXProviderContext, observer } from 'mobx-react'
 import { useForm } from 'antd/es/form/Form'
 import { ExceptionOutlined, LoadingOutlined } from '@ant-design/icons'
 import { ProblembaseDrawer } from '../problembase-drawer/problembase-drawer'
+import { ChessboardProblems } from '../chessboard-problems/chessboard-problems'
 
 const TODAY_MOMENT = moment()
 
@@ -73,8 +76,8 @@ interface State {
   }
 }
 
-export const CreateExerciseDrawer = observer((props: Props)=>{
-  const {exerciseStore} = React.useContext(MobXProviderContext)
+export const CreateExerciseDrawer = observer((props: Props) => {
+  const { exerciseStore, problembaseContentStore } = React.useContext(MobXProviderContext)
   const MAX_BATCH_SIZE = 50
   const [state, setState] = React.useState<State>({
     showLimitExceededModal: false,
@@ -103,8 +106,8 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
   const [form] = useForm()
   React.useEffect(() => {
     if (!state.problembaseDrawerVisible) {
-    form.resetFields()
-    props.onClose()
+      form.resetFields()
+      props.onClose()
     }
   }, [state.problembaseDrawerVisible])
 
@@ -117,7 +120,7 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
         selectedProblemUuids: [],
         selectedProblemUuidsError: '',
         confirmDirty: false
-      }      
+      }
     )
     props.onClose()
   }
@@ -140,17 +143,20 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
     })
   }
 
-  React.useEffect(    () => {
+  /*
+  React.useEffect(() => {
     if (state.selectedProblemUuidsError == '' && state.confirmDirty) {
-    form.validateFields().then(
-       (values: any) => {
-        submitExercise()
-      }
-    )
+      form.validateFields().then(
+        (values: any) => {
+          submitExercise()
+        }
+      )
     }
-  }, [state.selectedProblemUuidsError])
+  }, [state.selectedProblemUuidsError, state.confirmDirty])
+*/
 
-  const submitExercise = async ()=>{
+
+  const submitExercise = async () => {
     const data = {
       name: form.getFieldValue('name'),
       description: form.getFieldValue('description'),
@@ -179,6 +185,14 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
           selectedProblemUuidsError: ''
         }
       )
+
+      form.validateFields().then(async (values: any) => {
+        console.log('---> values: ', JSON.stringify(values))
+        submitExercise()
+      }).catch(()=>{
+        message.error('Failed to create exercise.')
+      })
+
     } else if (state.selectedProblemUuids.length > MAX_BATCH_SIZE) {
       form.validateFields().then((values: any) => {
         updateState({
@@ -338,36 +352,36 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
         <div className="content">
           <Form form={form} className="create-exercise-form">
             <Form.Item
-            name='name'
-            rules={ [
-              {
-                required: true,
-                message: 'Name is required'
-              }
-            ]}>
+              name='name'
+              rules={[
+                {
+                  required: true,
+                  message: 'Name is required'
+                }
+              ]}>
               <Input placeholder="Name" autoComplete="false" onBlur={handleConfirmBlur} />
             </Form.Item>
             <Form.Item
-            name='description'>
-                <Input.TextArea
-                  rows={3}
-                  placeholder="Description"
-                  autoComplete="false"
-                />
+              name='description'>
+              <Input.TextArea
+                rows={3}
+                placeholder="Description"
+                autoComplete="false"
+              />
             </Form.Item>
             <Form.Item
-            name='level'
-            rules= {[
-              {
-                required: true,
-                message: 'Level is required'
-              }
-            ]}>
-                <Radio.Group size="large">
-                  <Radio value="easy">Beginner</Radio>
-                  <Radio value="medium">Intermediate</Radio>
-                  <Radio value="hard">Advanced</Radio>
-                </Radio.Group>
+              name='level'
+              rules={[
+                {
+                  required: true,
+                  message: 'Level is required'
+                }
+              ]}>
+              <Radio.Group size="large">
+                <Radio value="easy">Beginner</Radio>
+                <Radio value="medium">Intermediate</Radio>
+                <Radio value="hard">Advanced</Radio>
+              </Radio.Group>
             </Form.Item>
             <Button onClick={handleAddProblemsClick}>
               Add Problems{' '}
@@ -381,19 +395,26 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
             >
               <div className="ant-form-explain">
                 {state.selectedProblemUuidsError &&
-               state.selectedProblemUuids.length === 0
+                  state.selectedProblemUuids.length === 0
                   ? state.selectedProblemUuidsError
                   : ''}
               </div>
             </div>
-            <Form.Item 
-            name="tags-field"
-            className="tags-field">
-<Select mode="multiple" placeholder="Tags">
-                  {exerciseTagOptions}
-                </Select>
+            <Form.Item
+              name="tags-field"
+              className="tags-field">
+              <Select mode="multiple" placeholder="Tags">
+                {exerciseTagOptions}
+              </Select>
             </Form.Item>
           </Form>
+          <List
+            size='small'
+            loading={false}
+            itemLayout="vertical"
+            dataSource={state.selectedProblemUuids}
+            renderItem={renderProblem}
+          />
         </div>
         <div className="button-bar">
           <Button
@@ -410,7 +431,42 @@ export const CreateExerciseDrawer = observer((props: Props)=>{
     )
   }
 
-  const renderProblembaseViewDrawer = () => {}
+  const renderProblem = (uuid: string, index: number) => {
+    console.log("renderProblem for uuid: " + uuid)
+    const p: any = problembaseContentStore!.pgnContent[uuid]
+    console.log("problem for uuid: " + JSON.stringify(p))
+    return <List.Item key={p.uuid}><div>
+      <ChessboardProblems
+        selected={state.selectedProblemUuids.indexOf(p.uuid) >= 0}
+        uuid={p.uuid}
+        pgn={p.pgn}
+        meta={p.meta}
+        index={index + 1}
+        onSelect={() => { }} />
+      <Divider />
+    </div></List.Item>
+  }
+
+  const renderSelectedProblems = () => {
+    return state.selectedProblemUuids.map((uuid, index: number) => {
+      console.log("selected uuid: " + uuid)
+      const p: any = problembaseContentStore!.pgnContent[uuid]
+      console.log("problem for uuid: " + JSON.stringify(p))
+      return <div
+        key={p.uuid}>
+        <ChessboardProblems
+          selected={state.selectedProblemUuids.indexOf(p.uuid) >= 0}
+          uuid={p.uuid}
+          pgn={p.pgn}
+          meta={p.meta}
+          index={index + 1}
+          onSelect={() => { }} />
+        <Divider />
+      </div>
+    })
+  }
+
+  const renderProblembaseViewDrawer = () => { }
   return (
     <Drawer
       className="create-exercise-drawer"

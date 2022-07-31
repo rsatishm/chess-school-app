@@ -17,6 +17,10 @@ export class ProblembaseContentStore {
     [baseUuid: string]: ProblembaseContent
   } = {}
 
+  pgnContent: {
+    [uuid: string]: any
+  } = {}
+
   constructor(initValues: any = {}) {
     this.content = initValues.content || {}
     makeObservable(this, {
@@ -68,6 +72,9 @@ export class ProblembaseContentStore {
         })
 
         runInAction(() => {
+          problems.forEach((problem: any) => {
+            this.pgnContent[problem.uuid] = problem
+          });
           this.content[uuid] = {
             loading: false,
             problems,
@@ -102,7 +109,7 @@ export class ProblembaseContentStore {
         const ChessJS = typeof _ChessJS === 'function' ? _ChessJS : _ChessJS.Chess
         const g = new ChessJS()
 
-        const problems: any = records.map((record, index) => {
+        const problems: Array<any> = records.map((record, index) => {
           const pgnArray: any[] = record.pgn.split("\n")
           const pgn = pgnArray.join('\n')
           const loaded = g.load_pgn(pgn)
@@ -125,6 +132,9 @@ export class ProblembaseContentStore {
         })
 
         runInAction(() => {
+          problems.forEach((problem: any) => {
+            this.pgnContent[problem.uuid] = problem
+          });
           this.content[uuid] = {
             ...this.content[uuid],
             problems: R.uniqBy(p => p.uuid, [

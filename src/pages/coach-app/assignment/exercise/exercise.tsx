@@ -48,7 +48,7 @@ export const Exercise = observer(()=>{
   }
   //let debouncedLoad = AwesomeDebouncePromise(exerciseStore!.load, 500)
   React.useEffect(()=>{
-    //exerciseStore!.load(state.search, state.sortBy)
+    exerciseStore!.load(state.search, state.sortBy)
   })
 
   const handleRetry = () => {
@@ -129,6 +129,71 @@ export const Exercise = observer(()=>{
   }
 
   const renderExercises = (exercises: any[]) => {
+    console.log("Render exercises")
+    if (exercises.length === 0) {
+      return (
+        <div className="blank-state container">
+          <FlagOutlined />
+          <p className="exception-text">
+            No exercises found for the search criteria
+          </p>
+        </div>
+      )
+    }
+
+    return (
+      <div className="exercises container">
+          <Collapse className="exercise-collapse" bordered={false}>
+            {exercises.map(e => {
+              console.log("Render exercise " + JSON.stringify(e))
+              const header = (
+                <div className="panel-header">
+                  <div className="meta">
+                    <span className="name">{e.name}</span>
+                    <span className="count">({e.problemIds.length})</span>
+                  </div>
+                  <div className="submeta">
+                    <span className="created">
+                      {renderCreatedAt(e.createdAt)}.
+                    </span>
+                    <span className="description">{e.description}</span>
+                  </div>
+                  <div className="tags-container">
+                    {renderLevelTag(e.difficultyLevel)}
+                    {e.tags && e.tags.map((t: string) => (
+                      <Tag key={t}>{t}</Tag>
+                    ))}
+                  </div>
+                </div>
+              )
+
+              return (
+                <Collapse.Panel key={e.uuid} header={header}>
+                  <div className="action-buttons">
+                    <Popconfirm
+                      title="Are you sure you want to delete the exercise?"
+                      onConfirm={handleDeleteExercise(e.uuid)}
+                    >
+                      <Button danger>Delete</Button>
+                    </Popconfirm>
+                    <Button
+                      onClick={handleAssignExercise(e.uuid)}
+                      type="primary"
+                    >
+                      Assign
+                    </Button>
+                  </div>
+                  <ProblemsList problemUuids={e.problemIds} />
+                </Collapse.Panel>
+              )
+            })}
+          </Collapse>
+      </div>
+    )
+  }
+
+  const renderExercisesByPage = (exercises: any[]) => {
+    console.log("Render exercises")
     if (exercises.length === 0) {
       return (
         <div className="blank-state container">
@@ -150,6 +215,7 @@ export const Exercise = observer(()=>{
         >
           <Collapse className="exercise-collapse" bordered={false}>
             {exercises.map(e => {
+              console.log("Render exercise " + JSON.stringify(e))
               const header = (
                 <div className="panel-header">
                   <div className="meta">
@@ -164,7 +230,7 @@ export const Exercise = observer(()=>{
                   </div>
                   <div className="tags-container">
                     {renderLevelTag(e.difficultyLevel)}
-                    {e.tags.map((t: string) => (
+                    {e.tags && e.tags.map((t: string) => (
                       <Tag key={t}>{t}</Tag>
                     ))}
                   </div>

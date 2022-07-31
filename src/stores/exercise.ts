@@ -71,6 +71,7 @@ export class ExerciseStore {
         runInAction(()=>{
           this.loading = false
           this.exercises = response.data.records
+          console.log("Exercises: " + JSON.stringify(this.exercises))
           this.lastLoadTime = +new Date()
         })  
       } catch (e) {      
@@ -120,7 +121,7 @@ export class ExerciseStore {
     this.submitError = ''
 
     try {
-      await userStore.getApiCoreAxiosClient()!.post('/exercise', {
+      await userStore.getApiCoreAxiosClient()!.post('/exercise/create', {
         coachId: userStore.uuid,
         ...exercise
       })
