@@ -41,7 +41,8 @@ interface Props {
   orientation: string
   turnColor: string,
   movable?: typeof PropTypes.object,
-  lastMove?: typeof PropTypes.array
+  lastMove?: typeof PropTypes.array,
+  coordinates?: boolean
 }
 
 type PromotionPopupDetails = null | {
@@ -65,7 +66,7 @@ const Chessgroundboard = (props: Props) => {
 
   const [state, setState] = useState<State>({
     size: 0,
-    width: 400,
+    width: props.width as number,
     promotionPopupDetails: null
   })
 
@@ -132,7 +133,8 @@ const Chessgroundboard = (props: Props) => {
     turnColor: PropTypes.string,
     lastMove: PropTypes.array,
     movable: PropTypes.object,
-    onMove: PropTypes.func
+    onMove: PropTypes.func,
+    coordinates: PropTypes.bool
   }
 
   const buildConfigFromProps = () => {
@@ -140,7 +142,9 @@ const Chessgroundboard = (props: Props) => {
 
     Object.keys(propTypes).forEach(k => {
       const v = (props as any)[k]
-      if (v) {
+      console.log(k + "=" + v)
+      if (v !== undefined) {
+        console.log("set " + k + "=" + v)
         const match = k.match(/^on([A-Z]\S*)/)
         if (k === 'onMove') {
           config.events['move'] = handleOnMove
@@ -183,10 +187,11 @@ const Chessgroundboard = (props: Props) => {
     //audio.play()
   }
 
+  /*
   useEffect(() => {
     playSound()
   }, [props.fen])
-
+*/
   type qrnb = 'q' | 'r' | 'n' | 'b'
 
   const renderPromotionPopup = () => {
@@ -240,7 +245,7 @@ const Chessgroundboard = (props: Props) => {
     )
   }
 
-  const defaultSize = 400
+  const defaultSize = props.width
   const padding = 12
 
   return (

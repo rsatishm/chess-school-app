@@ -10,6 +10,7 @@ import { ConfiguredChessboard } from '../../../../../components/chessboard/confi
 import { ChessTypes } from '../../../../../types'
 import { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import { ChessboardPosition } from '../../../problembase/my-problembases/chessboard-position.'
+import { ChessboardProblems } from '../chessboard-problems/chessboard-problems'
 
 // TODO: Move this method to Chess Lib FEN
 const getSideToMove = (fen: ChessTypes.FEN): ChessTypes.Side => {
@@ -114,32 +115,8 @@ const ProblembaseViewerDrawer = observer((props: Props) => {
                 }`}
               onClick={handleProblemClick(p.uuid)}
             >
+              <ChessboardProblems pgn={p.pgn} pgnTitle=""/>
 
-              <div style={{ textAlign: 'center' }}>{index + 1}</div>
-              <div className="board">
-
-
-                <ConfiguredChessboard
-                  key={p.uuid}
-                  fen={p.meta.startFen}
-                  interactionMode="NONE"
-                  width={250}
-                  height={250}
-                  coordinates={false}
-                />
-
-              </div>
-
-              <div className="assessment">
-                <span
-                  className={`side-to-move ${getSideToMove(p.meta.startFen) === 'w' ? 'white' : 'black'
-                    }`}
-                />
-                <span className="result">{p.meta.result}</span>
-              </div>
-              <div className="overlay">
-                <CheckCircleOutlined />
-              </div>
             </div>
           ))}
         </InfiniteScroller>
@@ -150,7 +127,7 @@ const ProblembaseViewerDrawer = observer((props: Props) => {
   return (
     <Drawer
       className="problembase-viewer-drawer"
-      width={345}
+      width={445}
       placement="right"
       maskClosable={false}
       closable={false}
