@@ -98,6 +98,14 @@ export const ProblemsList = observer((props: Props)=>{
     if (!problem || problem.loading) {
       return <LoadingOutlined spin={true} />
     }
+    /*
+    content: {
+startFen: "".
+meta: {
+result: ""
+},
+mainline: []
+}*/
 
     return (
       <>

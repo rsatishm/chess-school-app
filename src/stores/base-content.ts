@@ -1,6 +1,7 @@
 import * as jsEnv from 'browser-or-node'
 import { observable, action, makeObservable, runInAction } from 'mobx'
 import { ChessTypes } from '../types'
+import * as PGNParser from '../components/PGNParser/PGNParser'
 
 import { userStore } from './user'
 
@@ -36,10 +37,12 @@ export class BaseContentStore {
         const response = await userStore
           .getApiCoreAxiosClient()!
           .get(`/database/${baseType}/` + uuid)
+       const game : ChessTypes.Game = PGNParser.parsePgn(response.data.pgn)
+       console.log("GAME: " + JSON.stringify(game))
        runInAction(()=>{
         this.content[uuid] = {
           loading: false,
-          content: response.data as ChessTypes.Game,
+          content: game,
           error: ''
         }
        })   
