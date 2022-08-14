@@ -43,8 +43,8 @@ export const AssignExerciseDrawer = observer((props: Props) => {
     })
   }
   React.useEffect(() => {
-    //studentsGroupsStore!.load()
-  })
+    studentsGroupsStore!.load()
+  }, [])
   const [form] = useForm()
   const handleCancelClick = () => {
     props.onClose()
@@ -242,6 +242,7 @@ export const AssignExerciseDrawer = observer((props: Props) => {
             </Select>
           </Form.Item>
           <Form.Item
+            name="scheduleDate"
             extra="The exercise will be visible to the student only from this date."
             initialValue={TODAY_MOMENT}
             rules={[

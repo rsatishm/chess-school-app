@@ -88,7 +88,7 @@ export class CoachAssignmentStore {
     this.submitError = ''
 
     try {
-      await userStore.getApiCoreAxiosClient()!.post('/assignment', {
+      await userStore.getApiCoreAxiosClient()!.post('/assignment/create', {
         status: 'active',
         ...assignment
       })

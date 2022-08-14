@@ -166,7 +166,7 @@ export const Exercise = observer(()=>{
                   </div>
                 </div>
               )
-
+              console.log("UUID: " + e.uuid)
               return (
                 <Collapse.Panel key={e.uuid} header={header}>
                   <div className="action-buttons">
