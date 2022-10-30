@@ -129,6 +129,8 @@ export const Assigned = observer(()=>{
   }
 
   const filterAssignments = (search: string, assignments: any[]) => {
+    console.log("In filterAssignments")
+    console.log(JSON.stringify(assignments))
     return R.filter(
       (a: any) =>
         a.exercise.name.toLowerCase().indexOf(search.toLowerCase()) >= 0,
